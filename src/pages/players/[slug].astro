@@ -1,0 +1,116 @@
+---
+import { render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import StatTable from '../../components/StatTable.astro'
+import Headshot from '../../components/Headshot.astro'
+import { org, allPlayers, affiliateById } from '../../lib/build/data.js'
+import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/org.js'
+import { levelFor } from '../../lib/levels.js'
+import { playerSlug, idFromSlug } from '../../lib/slug.js'
+import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
+import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
+import { postsForPlayer } from '../../lib/posts.js'
+
+export async function getStaticPaths() {
+  return allPlayers().map((p) => ({ params: { slug: playerSlug(p.name, p.id) }, props: { player: p } }))
+}
+
+const { player } = Astro.props
+const club = player.assignment ? affiliateById.get(player.assignment.teamId) : null
+const level = club ? levelFor(club.sportId) : null
+const group = primaryGroup(player)
+const other = group === 'hitting' ? 'pitching' : 'hitting'
+const primaryRows = statRows(player, group)
+const otherRows = statRows(player, other)
+const path = levelPath(player)
+const where = (() => {
+  const g = player.assignment ? statusGroup(player.assignment.status) : null
+  if (!club) return 'Not on a Brewers affiliate roster'
+  if (g === 'gone') return `Left the org (last with ${club.name})`
+  if (g === 'injured') return `${club.name} · injured list`
+  return club.name
+})()
+
+const note = (await playerNotes()).find((n) => idFromSlug(n.id) === player.id) ?? null
+const { Content: NoteContent } = note ? await render(note) : { Content: null }
+const posts = postsForPlayer(await allPosts(), player.id)
+const draft = player.draft
+const draftText = draft
+  ? [draft.year, draft.round && `round ${draft.round}`, draft.pick && `pick ${draft.pick}`, draft.team && `by ${draft.team}`]
+      .filter(Boolean)
+      .join(', ')
+  : null
+---
+<Base title={player.name} description={`${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}>
+  <div class="hero">
+    <Headshot id={player.id} name={player.name} />
+    <div>
+      {level && <span class="pennant">{level.label}</span>}
+      <h1>{player.name}</h1>
+      <p><strong>{orDash(player.pos)}</strong> · {where}</p>
+      {player.rank && (
+        <p>
+          <span class="rank-chip">MLB Pipeline Brewers #{player.rank.orgRank}</span>
+          {player.rank.topRank && <> <span class="rank-chip">Top 100 #{player.rank.topRank}</span></>}
+        </p>
+      )}
+      <dl class="facts">
+        <dt>B/T</dt><dd>{batsThrows(player.bats, player.throws)}</dd>
+        <dt>Size</dt><dd>{heightWeight(player.height, player.weight)}</dd>
+        <dt>Born</dt><dd>{orDash(player.birthDate)}{player.birthPlace ? ` · ${player.birthPlace}` : ''}</dd>
+        <dt>Acquired</dt><dd>{draftText ? `Drafted ${draftText}` : '—'}</dd>
+        {player.mlbDebutDate && <><dt>MLB debut</dt><dd>{player.mlbDebutDate}</dd></>}
+      </dl>
+    </div>
+  </div>
+
+  {note && (
+    <section class="section">
+      <h2>Notes</h2>
+      <div class="note prose"><NoteContent /></div>
+    </section>
+  )}
+
+  <section class="section">
+    <h2>Level path</h2>
+    {path.length === 0 ? (
+      <p class="muted">No MiLB games on record.</p>
+    ) : (
+      <ol class="path">
+        {path.map((s) => (
+          <li>
+            <span class="pennant">{s.label}</span>
+            <span class="num">{s.season}</span>
+            <span class="muted">{s.team}</span>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  <section class="section">
+    <h2>{group === 'hitting' ? 'Hitting' : 'Pitching'}</h2>
+    {primaryRows.length ? <StatTable rows={primaryRows} group={group} /> : <p class="muted">No {group} stats on record.</p>}
+  </section>
+  {otherRows.length > 0 && (
+    <section class="section">
+      <h2>{other === 'hitting' ? 'Hitting' : 'Pitching'}</h2>
+      <StatTable rows={otherRows} group={other} />
+    </section>
+  )}
+
+  <section class="section">
+    <h2>Posts about him</h2>
+    {posts.length === 0 ? (
+      <p class="muted">None yet.</p>
+    ) : (
+      <ul>
+        {posts.map((p) => <li><a href={postUrl(p)}>{p.data.title}</a> <span class="muted">· {p.type.label}</span></li>)}
+      </ul>
+    )}
+  </section>
+
+  <p class="muted section">
+    Stats from the MLB Stats API, through {new Date(org.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}.
+  </p>
+</Base>

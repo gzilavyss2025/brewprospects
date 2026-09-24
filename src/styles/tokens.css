@@ -1,0 +1,31 @@
+/* Design tokens. Use these names in rules, never a raw hex.
+   Brewers navy and gold lead; minor-league fun comes from type, shape and
+   motion, not from more colors. scripts/checks/run-all.mjs reads the PAIRS comment
+   below and fails lint when a pair drops under WCAG AA (4.5:1).
+   --navy and --gold are the Brewers' navy and gold as commonly published;
+   they were set from memory, not an official style guide. Verify before launch. */
+
+/* PAIRS: ink/paper ink-soft/paper navy/gold gold/navy ink/card ink-soft/card paper/navy link/paper */
+
+:root {
+  --navy: #12284b;
+  --gold: #ffc52f;
+  --paper: #fbf6e9;
+  --card: #ffffff;
+  --ink: #12284b;
+  --ink-soft: #4a5670;
+  --link: #0b4f8a;
+  --rule: #e6dcc3;
+  --stitch: #c8102e;
+
+  --font-display: 'Alfa Slab One', 'Rockwell', Georgia, serif;
+  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-num: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --gap: 16px;
+  --shadow: 0 2px 0 var(--navy);
+  --shadow-lift: 0 5px 0 var(--navy);
+  --max: 1080px;
+}

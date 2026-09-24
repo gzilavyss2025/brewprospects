@@ -1,0 +1,296 @@
+{
+  "generatedAt": "2026-09-24T23:08:39.990Z",
+  "source": "https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1",
+  "prospects": [
+    {
+      "orgRank": 1,
+      "topRank": 1,
+      "playerId": 815908,
+      "name": "Jesús Made",
+      "position": "SS",
+      "levelRaw": "AA",
+      "statLine": ".271, 14 HR, 91 RBI",
+      "age": 19
+    },
+    {
+      "orgRank": 2,
+      "topRank": 19,
+      "playerId": 821270,
+      "name": "Luis Peña",
+      "position": "SS",
+      "levelRaw": "ALL (3)",
+      "statLine": ".296, 3 HR, 27 RBI",
+      "age": 19
+    },
+    {
+      "orgRank": 3,
+      "topRank": 85,
+      "playerId": 815304,
+      "name": "Josh Adamczewski",
+      "position": "OF",
+      "levelRaw": "ALL (2)",
+      "statLine": ".300, 18 HR, 72 RBI",
+      "age": 21
+    },
+    {
+      "orgRank": 4,
+      "topRank": 95,
+      "playerId": 815816,
+      "name": "Brady Ebel",
+      "position": "SS",
+      "levelRaw": "ALL (2)",
+      "statLine": ".252, 10 HR, 71 RBI",
+      "age": 19
+    },
+    {
+      "orgRank": 5,
+      "topRank": null,
+      "playerId": 702652,
+      "name": "Andrew Fischer",
+      "position": "3B",
+      "levelRaw": "ALL (2)",
+      "statLine": ".273, 48 HR, 114 RBI",
+      "age": 22
+    },
+    {
+      "orgRank": 6,
+      "topRank": null,
+      "playerId": 815520,
+      "name": "Braylon Payne",
+      "position": "OF",
+      "levelRaw": "ALL (2)",
+      "statLine": ".277, 28 HR, 67 RBI",
+      "age": 20
+    },
+    {
+      "orgRank": 7,
+      "topRank": null,
+      "playerId": 824620,
+      "name": "Tyson Hardin",
+      "position": "RHP",
+      "levelRaw": "ALL (2)",
+      "statLine": "119.2 IP, 5.34 ERA, 139 SO",
+      "age": 24
+    },
+    {
+      "orgRank": 8,
+      "topRank": null,
+      "playerId": 811309,
+      "name": "Bishop Letson",
+      "position": "RHP",
+      "levelRaw": "AA",
+      "statLine": "94.2 IP, 4.85 ERA, 99 SO",
+      "age": 22
+    },
+    {
+      "orgRank": 9,
+      "topRank": null,
+      "playerId": 805807,
+      "name": "Josh Knoth",
+      "position": "RHP",
+      "levelRaw": "ALL (3)",
+      "statLine": "87.2 IP, 4.11 ERA, 87 SO",
+      "age": 21
+    },
+    {
+      "orgRank": 10,
+      "topRank": null,
+      "playerId": 702518,
+      "name": "Jett Williams",
+      "position": "SS",
+      "levelRaw": "AAA",
+      "statLine": ".233, 9 HR, 41 RBI",
+      "age": 22
+    },
+    {
+      "orgRank": 11,
+      "topRank": null,
+      "playerId": 691620,
+      "name": "Jeferson Quero",
+      "position": "C",
+      "levelRaw": "ALL (2)",
+      "statLine": ".245, 15 HR, 69 RBI",
+      "age": 23
+    },
+    {
+      "orgRank": 12,
+      "topRank": null,
+      "playerId": 695501,
+      "name": "Blake Burke",
+      "position": "1B",
+      "levelRaw": "ALL (2)",
+      "statLine": ".263, 34 HR, 97 RBI",
+      "age": 23
+    },
+    {
+      "orgRank": 13,
+      "topRank": null,
+      "playerId": 702726,
+      "name": "Luke Adams",
+      "position": "1B",
+      "levelRaw": "ALL (2)",
+      "statLine": ".267, 16 HR, 43 RBI",
+      "age": 22
+    },
+    {
+      "orgRank": 14,
+      "topRank": null,
+      "playerId": 701392,
+      "name": "Marco Dinges",
+      "position": "DH",
+      "levelRaw": "ALL (2)",
+      "statLine": ".243, 12 HR, 45 RBI",
+      "age": 23
+    },
+    {
+      "orgRank": 15,
+      "topRank": null,
+      "playerId": 835022,
+      "name": "Ricki Moneys",
+      "position": "SS",
+      "levelRaw": "ROK",
+      "statLine": ".289, 5 HR, 43 RBI",
+      "age": 17
+    },
+    {
+      "orgRank": 16,
+      "topRank": null,
+      "playerId": 820831,
+      "name": "Sawyer Strosnider",
+      "position": "OF",
+      "levelRaw": "A+",
+      "statLine": ".276, 2 HR, 14 RBI",
+      "age": 21
+    },
+    {
+      "orgRank": 17,
+      "topRank": null,
+      "playerId": 821931,
+      "name": "Trey Ebel",
+      "position": "SS",
+      "levelRaw": "A",
+      "statLine": ".190, 1 HR, 5 RBI",
+      "age": 17
+    },
+    {
+      "orgRank": 18,
+      "topRank": null,
+      "playerId": 702505,
+      "name": "J.D. Thompson",
+      "position": "LHP",
+      "levelRaw": "ALL (3)",
+      "statLine": "61.0 IP, 3.98 ERA, 80 SO",
+      "age": 22
+    },
+    {
+      "orgRank": 19,
+      "topRank": null,
+      "playerId": 836601,
+      "name": "Diego Frontado",
+      "position": "SS",
+      "levelRaw": "ROK",
+      "statLine": ".289, 10 HR, 46 RBI",
+      "age": 18
+    },
+    {
+      "orgRank": 21,
+      "topRank": null,
+      "playerId": 836624,
+      "name": "José Rodríguez",
+      "position": "SS",
+      "levelRaw": "ROK",
+      "statLine": ".265, 2 HR, 27 RBI",
+      "age": 17
+    },
+    {
+      "orgRank": 22,
+      "topRank": null,
+      "playerId": 803848,
+      "name": "Jayden Dubanewicz",
+      "position": "RHP",
+      "levelRaw": "ALL (3)",
+      "statLine": "79.2 IP, 4.41 ERA, 79 SO",
+      "age": 20
+    },
+    {
+      "orgRank": 23,
+      "topRank": null,
+      "playerId": 689441,
+      "name": "Coleman Crow",
+      "position": "RHP",
+      "levelRaw": "ALL (2)",
+      "statLine": "124.0 IP, 3.85 ERA, 112 SO",
+      "age": 25
+    },
+    {
+      "orgRank": 24,
+      "topRank": null,
+      "playerId": 821136,
+      "name": "Handelfry Encarnacion",
+      "position": "OF",
+      "levelRaw": "A",
+      "statLine": ".250, 12 HR, 71 RBI",
+      "age": 19
+    },
+    {
+      "orgRank": 25,
+      "topRank": null,
+      "playerId": 812807,
+      "name": "Kyle Jones",
+      "position": "OF",
+      "levelRaw": "A",
+      "statLine": ".250, 1 HR, 15 RBI",
+      "age": 21
+    },
+    {
+      "orgRank": 26,
+      "topRank": null,
+      "playerId": 800724,
+      "name": "Eric Bitonti",
+      "position": "1B",
+      "levelRaw": "ALL (2)",
+      "statLine": ".262, 25 HR, 93 RBI",
+      "age": 20
+    },
+    {
+      "orgRank": 27,
+      "topRank": null,
+      "playerId": 809229,
+      "name": "Jaron DeBerry",
+      "position": "RHP",
+      "levelRaw": "AA",
+      "statLine": "128.2 IP, 4.69 ERA, 138 SO",
+      "age": 24
+    },
+    {
+      "orgRank": 28,
+      "topRank": null,
+      "playerId": 827980,
+      "name": "Frank Cairone",
+      "position": "LHP",
+      "levelRaw": "ALL (2)",
+      "statLine": "7.0 IP, 6.43 ERA, 11 SO",
+      "age": 19
+    },
+    {
+      "orgRank": 29,
+      "topRank": null,
+      "playerId": 829073,
+      "name": "Brailyn Antunez",
+      "position": "OF",
+      "levelRaw": "ALL (2)",
+      "statLine": ".302, 16 HR, 74 RBI",
+      "age": 18
+    },
+    {
+      "orgRank": 30,
+      "topRank": null,
+      "playerId": 828475,
+      "name": "Ethan Dorchies",
+      "position": "RHP",
+      "levelRaw": "A+",
+      "statLine": "113.0 IP, 5.26 ERA, 101 SO",
+      "age": 19
+    }
+  ]
+}

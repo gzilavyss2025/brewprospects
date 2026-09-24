@@ -1,0 +1,42 @@
+---
+// One player's MiLB year-by-year table for one stat group. A missing value
+// shows a dash; the table never computes a stat the API did not send.
+import { levelFor } from '../lib/levels.js'
+import { orDash } from '../lib/format.js'
+
+const { rows, group } = Astro.props
+const COLS = {
+  hitting: [
+    ['g', 'G'], ['pa', 'PA'], ['h', 'H'], ['d', '2B'], ['t', '3B'], ['hr', 'HR'], ['r', 'R'], ['rbi', 'RBI'],
+    ['bb', 'BB'], ['so', 'SO'], ['sb', 'SB'], ['avg', 'AVG'], ['obp', 'OBP'], ['slg', 'SLG'], ['ops', 'OPS'],
+  ],
+  pitching: [
+    ['g', 'G'], ['gs', 'GS'], ['w', 'W'], ['l', 'L'], ['sv', 'SV'], ['ip', 'IP'], ['h', 'H'], ['bb', 'BB'],
+    ['so', 'SO'], ['hr', 'HR'], ['era', 'ERA'], ['whip', 'WHIP'], ['k9', 'K/9'], ['bb9', 'BB/9'],
+  ],
+}[group]
+---
+<div class="table-scroll">
+  <table class="stats">
+    <thead>
+      <tr>
+        <th scope="col">Year</th>
+        <th scope="col">Lvl</th>
+        <th scope="col">Club</th>
+        <th scope="col">Age</th>
+        {COLS.map(([, label]) => <th scope="col">{label}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <td>{r.season}</td>
+          <td>{levelFor(r.sportId)?.label ?? '—'}</td>
+          <td>{r.team || '—'}</td>
+          <td>{orDash(r.age)}</td>
+          {COLS.map(([key]) => <td>{orDash(r[key])}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,22 @@
+---
+// A player photo, or his initials when MLB has no photo on file. The swap runs
+// on the image's error event, so a missing photo never shows a broken icon.
+import { headshotUrl } from '../lib/affiliates.js'
+
+const { id, name } = Astro.props
+const initials = String(name ?? '')
+  .split(/\s+/)
+  .filter(Boolean)
+  .map((w) => w[0])
+  .slice(0, 2)
+  .join('')
+---
+<img
+  class="headshot"
+  src={headshotUrl(id)}
+  alt={`${name}`}
+  width="132"
+  height="176"
+  loading="lazy"
+  onerror={`this.replaceWith(Object.assign(document.createElement('div'),{className:'initials',textContent:${JSON.stringify(initials)}}))`}
+/>

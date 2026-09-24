@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro'
+import { allPosts, postUrl, POST_TYPES } from '../../lib/build/content.js'
+
+const posts = await allPosts()
+---
+<Base title="Posts">
+  <h1>Posts</h1>
+  {POST_TYPES.map((t) => {
+    const list = posts.filter((p) => p.type.key === t.key)
+    return (
+      <section class="section">
+        <h2>{t.plural}</h2>
+        {list.length === 0 ? (
+          <p class="muted">None yet.</p>
+        ) : (
+          <ul>
+            {list.map((p) => (
+              <li>
+                <a href={postUrl(p)}>{p.data.title}</a>
+                <span class="muted"> · {p.data.date.toLocaleDateString('en-US', { dateStyle: 'medium', timeZone: 'UTC' })}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    )
+  })}
+</Base>
