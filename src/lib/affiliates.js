@@ -29,6 +29,21 @@ export function teamLogoUrl(teamId) {
   return teamId ? `https://www.mlbstatic.com/team-logos/${teamId}.svg` : null
 }
 
+// A team id outlives its club. Id 249 was the Carolina Mudcats through 2025 and
+// is the Wilson Warbirds now; id 559 was the Brewers' Huntsville Stars and is
+// another org's club today. The logo CDN and ACCENTS describe only the club
+// that holds the id now, so a past club gets them only when its name that
+// season matches the current name. Otherwise it gets no logo and the Brewers
+// fallback accent: a missing logo beats a wrong one (ADR-0003).
+// `currentName` is the id's name in org.json, or undefined for a non-affiliate.
+export function clubIdentity(club, currentName) {
+  const same = Boolean(club?.name) && club.name === currentName
+  return {
+    logo: same ? teamLogoUrl(club.id) : null,
+    accent: accentFor(same ? club.id : null),
+  }
+}
+
 // The `milb` headshot exists for many prospects whose studio `silo` shot does
 // not. A player with no photo 404s, and the page falls back to initials.
 export function headshotUrl(personId, width = 240) {
