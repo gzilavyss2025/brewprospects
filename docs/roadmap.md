@@ -76,14 +76,15 @@ in `tokens.css` makes lint check it at 3:1 on every surface.
 The rest of the token work moved to Phase 2, item 7 (decided 2026-09-25). The
 CSS is small, so the sweep stays cheap for a while.
 
-### 0.6 The season is data, not the clock
-- Store `season` inside `org.json` and `pipeline.json`.
-- Add `src/data/seasons.json` with `current` and the archive list. Pages read
-  it instead of `new Date()`.
-- A test runs the generators with the clock at Jan 1 and at a thin spring
-  roster, and asserts they write nothing (Tally ADR-0086).
-- Decide what `gen-org` does from February to April while rosters fill. Today
-  a count of 1 to 99 throws, so the job would be red for weeks.
+### 0.6 The season is data, not the clock (done)
+Most of this was already true. `org.json` stores `season`, the archive takes
+its last season from `org.json`, and pages never read the clock for a season.
+The gap was spring. A new season's rosters fill in a few players at a time,
+and any count from 1 to 99 threw, so the nightly job would have been red for
+weeks. `snapshotAction()` in `src/lib/org.js` now keeps the last season while
+a new one fills in. It still fails on a thin roster for the season already on
+disk. `pipeline.json` gets no `season`: it is a rolling list, and its date is
+the honest label. The freshness check in 0.7 catches a job stuck on "keep".
 
 ### 0.7 Harden the nightly job
 `.github/workflows/nightly-data.yml` today can put unbuilt data on `main`.
