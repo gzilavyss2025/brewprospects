@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro'
+import { org, pipeline, affiliates, affiliateById, assignments, playerUrl } from '../lib/build/data.js'
+import { levelFor } from '../lib/levels.js'
+import { accentFor, teamLogoUrl } from '../lib/affiliates.js'
+import { allPosts, postUrl } from '../lib/build/content.js'
+import { SITE_TAGLINE } from '../config/site.js'
+
+const top = pipeline.prospects.slice(0, 10)
+const posts = (await allPosts()).slice(0, 6)
+// Pipeline labels a multi-level season "ALL (3)". The site's own roster data
+// says where he is now, so that wins; Pipeline's label is the fallback.
+const levelNow = (p) => {
+  const club = affiliateById.get(assignments.get(p.playerId)?.teamId)
+  return (club && levelFor(club.sportId)?.label) || p.levelRaw || '—'
+}
+const urlFor = (id) => (org.players[id] ? playerUrl(org.players[id]) : null)
+---
+<Base>
+  <h1>{SITE_TAGLINE}</h1>
+
+  <section class="section">
+    <h2>Latest posts</h2>
+    {posts.length === 0 ? (
+      <p class="muted">No posts yet.</p>
+    ) : (
+      <div class="grid">
+        {posts.map((p) => (
+          <a class="card" href={postUrl(p)}>
+            <span class="pennant">{p.type.label}</span>
+            <h3>{p.data.title}</h3>
+            <p class="muted">{p.data.summary}</p>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <section class="section">
+    <h2>MLB Pipeline top 10</h2>
+    <div class="table-scroll">
+      <table class="stats">
+        <thead><tr><th>#</th><th>Player</th><th>Pos</th><th>Lvl</th><th>Age</th><th>Line</th></tr></thead>
+        <tbody>
+          {top.map((p) => (
+            <tr>
+              <td>{p.orgRank}</td>
+              <td>{urlFor(p.playerId) ? <a href={urlFor(p.playerId)}>{p.name}</a> : p.name}</td>
+              <td>{p.position || '—'}</td>
+              <td>{levelNow(p)}</td>
+              <td>{p.age ?? '—'}</td>
+              <td>{p.statLine || '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">Brewers org ranks from MLB Pipeline, as of {new Date(pipeline.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}.</p>
+  </section>
+
+  <section class="section">
+    <h2>The clubs</h2>
+    <div class="grid">
+      {affiliates.map((a) => {
+        const accent = accentFor(a.id)
+        return (
+          <a class="card" href={`/depth-chart#club-${a.id}`} style={`border-top: 10px solid ${accent.primary}`}>
+            <img src={teamLogoUrl(a.id)} alt="" width="56" height="56" loading="lazy" />
+            <span class="pennant">{levelFor(a.sportId)?.label}</span>
+            <h3>{a.name}</h3>
+            <p class="muted">{a.league || '—'} · {a.city || '—'}</p>
+          </a>
+        )
+      })}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro'
+import { org, affiliates, rankById, playerUrl } from '../lib/build/data.js'
+import { BUCKETS, depthChart } from '../lib/org.js'
+import { levelFor } from '../lib/levels.js'
+import { accentFor, teamLogoUrl } from '../lib/affiliates.js'
+
+const season = org.season
+const clubs = affiliates.map((a) => ({
+  ...a,
+  level: levelFor(a.sportId),
+  accent: accentFor(a.id),
+  chart: depthChart(a.id, org.rosters, org.players, season),
+}))
+const nameOf = (e) => org.players[e.id]?.name ?? e.name
+const urlOf = (e) => (org.players[e.id] ? playerUrl(org.players[e.id]) : null)
+---
+<Base title="Depth chart" description={`Every Brewers affiliate's ${season} roster, by level and position.`}>
+  <h1>Org depth chart</h1>
+  <p class="muted">
+    {season} active rosters, Triple-A down to the complex leagues. Starters are pitchers with starts in half or more of
+    their games at that club. Gold chips are MLB Pipeline org ranks.
+  </p>
+  <p>
+    {clubs.map((c, i) => <>{i > 0 && ' · '}<a href={`#club-${c.id}`}>{c.shortName} ({c.level?.label})</a></>)}
+  </p>
+
+  {clubs.map((c) => (
+    <section class="club" id={`club-${c.id}`} style={`--club:${c.accent.primary};--club-ink:${c.accent.ink}`}>
+      <div class="club-head">
+        <img src={teamLogoUrl(c.id)} alt="" width="48" height="48" loading="lazy" />
+        <div>
+          <h2>{c.name}</h2>
+          <div class="sub">{c.level?.name} · {c.league || '—'} · {c.venue || '—'}</div>
+        </div>
+      </div>
+      <div class="club-body">
+        <div class="buckets">
+          {BUCKETS.map((b) => (
+            <div class="bucket">
+              <h3>{b.label}</h3>
+              {c.chart.buckets[b.key].length === 0 ? (
+                <p class="muted">None on the active roster.</p>
+              ) : (
+                <ul>
+                  {c.chart.buckets[b.key].map((e) => (
+                    <li>
+                      <span class="jersey">{e.jersey ?? ''}</span>
+                      {urlOf(e) ? <a href={urlOf(e)}>{nameOf(e)}</a> : <span>{nameOf(e)}</span>}
+                      <span class="muted">{e.pos}</span>
+                      {rankById.get(e.id) && <span class="rank-chip" title="MLB Pipeline org rank">#{rankById.get(e.id).orgRank}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+          <div class="bucket">
+            <h3>Injured list</h3>
+            {c.chart.injured.length === 0 ? (
+              <p class="muted">Nobody.</p>
+            ) : (
+              <ul>
+                {c.chart.injured.map((e) => (
+                  <li>
+                    {urlOf(e) ? <a href={urlOf(e)}>{nameOf(e)}</a> : <span>{nameOf(e)}</span>}
+                    <span class="muted">{e.pos} · {e.statusText}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  ))}
+  <p class="muted">Data as of {new Date(org.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}.</p>
+</Base>

@@ -1,0 +1,38 @@
+---
+// The {% prospect-card playerId=… /%} Markdoc tag. It fills the card from the
+// nightly snapshot at build time, then hydrates the live island when the card
+// scrolls into view. A player outside the snapshot (traded, a typo) renders a
+// plain note instead of a broken card.
+import ProspectCard from './ProspectCard.jsx'
+import { org, affiliateById, assignments, rankById, playerUrl } from '../lib/build/data.js'
+import { primaryGroup, statRows } from '../lib/org.js'
+import { headshotUrl } from '../lib/affiliates.js'
+import { orDash } from '../lib/format.js'
+
+const { playerId } = Astro.props
+const p = org.players[playerId]
+const group = p ? primaryGroup(p) : 'hitting'
+const last = p ? statRows(p, group).at(-1) : null
+const snapshotLine = last
+  ? group === 'pitching'
+    ? `${last.season}: ${orDash(last.era)} ERA, ${orDash(last.ip)} IP, ${orDash(last.so)} SO`
+    : `${last.season}: ${orDash(last.avg)}/${orDash(last.obp)}/${orDash(last.slg)}, ${orDash(last.hr)} HR, ${orDash(last.sb)} SB`
+  : 'No MiLB games on record.'
+const club = p ? affiliateById.get(assignments.get(p.id)?.teamId)?.name ?? '' : ''
+---
+{p ? (
+  <ProspectCard
+    client:visible
+    playerId={p.id}
+    href={playerUrl(p)}
+    name={p.name}
+    pos={p.pos}
+    club={club}
+    group={group}
+    snapshotLine={snapshotLine}
+    photo={headshotUrl(p.id, 144)}
+    rank={rankById.get(p.id)?.orgRank ?? null}
+  />
+) : (
+  <p class="note">Player {playerId} is not in the Brewers farm snapshot.</p>
+)}

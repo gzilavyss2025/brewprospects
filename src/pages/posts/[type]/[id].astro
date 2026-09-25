@@ -1,0 +1,36 @@
+---
+import { render } from 'astro:content'
+import Base from '../../../layouts/Base.astro'
+import ProspectCardTag from '../../../components/ProspectCardTag.astro'
+import { allPosts } from '../../../lib/build/content.js'
+import { affiliateById } from '../../../lib/build/data.js'
+
+export async function getStaticPaths() {
+  return (await allPosts()).map((post) => ({ params: { type: post.type.key, id: post.id }, props: { post } }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+const club = post.data.affiliateId ? affiliateById.get(Number(post.data.affiliateId)) : null
+---
+<Base title={post.data.title} description={post.data.summary || undefined}>
+  <article class="prose">
+    <span class="pennant">{post.type.label}</span>
+    <h1>{post.data.title}</h1>
+    <p class="muted">
+      {post.data.date.toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })}
+      {club && <> · {club.name}</>}
+    </p>
+    <Content />
+    {post.data.entries?.length > 0 && (
+      <ol>
+        {post.data.entries.map((e) => (
+          <li>
+            <ProspectCardTag playerId={e.playerId} />
+            {e.note && <p>{e.note}</p>}
+          </li>
+        ))}
+      </ol>
+    )}
+  </article>
+</Base>
