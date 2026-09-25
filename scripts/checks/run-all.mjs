@@ -4,10 +4,10 @@
 // suggested (Tally ADR-0038): when a check fails, split the file or folder,
 // do not raise the cap.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
-import { join, relative } from 'node:path'
+import { join } from 'node:path'
 import { contrastRatio } from '../../src/lib/color.js'
+import { ROOT, relPath } from './paths.mjs'
 
-const ROOT = new URL('../../', import.meta.url).pathname
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
 
 function walk(dir, out = []) {
@@ -27,7 +27,7 @@ function checkClaudeMd(files) {
     .filter((f) => f.endsWith('CLAUDE.md'))
     .map((f) => [f, readFileSync(f, 'utf8').split('\n').length])
     .filter(([, n]) => n > CAP)
-    .map(([f, n]) => `${relative(ROOT, f)} has ${n} lines (cap ${CAP}). Move detail to docs/.`)
+    .map(([f, n]) => `${relPath(ROOT, f)} has ${n} lines (cap ${CAP}). Move detail to docs/.`)
 }
 
 // A code folder past 10 files needs a subfolder. Content folders are exempt:
@@ -36,7 +36,7 @@ function checkDirSize(files) {
   const CAP = 10
   const counts = new Map()
   for (const f of files) {
-    const rel = relative(ROOT, f)
+    const rel = relPath(ROOT, f)
     if (!rel.startsWith('src/') && !rel.startsWith('scripts/')) continue
     if (rel.startsWith('src/content/')) continue
     const dir = rel.slice(0, rel.lastIndexOf('/'))
@@ -53,7 +53,7 @@ function checkFileSize(files) {
     .filter((f) => /\.(js|jsx|mjs|astro|css)$/.test(f))
     .map((f) => [f, readFileSync(f, 'utf8').split('\n').length])
     .filter(([, n]) => n > CAP)
-    .map(([f, n]) => `${relative(ROOT, f)} has ${n} lines (cap ${CAP}). Split it.`)
+    .map(([f, n]) => `${relPath(ROOT, f)} has ${n} lines (cap ${CAP}). Split it.`)
 }
 
 // Every token pair named on the PAIRS line of tokens.css must pass WCAG AA.
@@ -70,15 +70,25 @@ function checkContrast() {
   })
 }
 
-// Pages and components use tokens, not raw colors. Only the token file, the
-// color data module and the Keystatic config may hold a hex value.
+// Pages and components use tokens, not raw colors. Only the token file and
+// the two color modules may hold a hex value.
 function checkRawHex(files) {
   const ALLOWED = ['src/styles/tokens.css', 'src/lib/affiliates.js', 'src/lib/color.js']
   return files
     .filter((f) => /\.(astro|css|jsx)$/.test(f))
-    .filter((f) => !ALLOWED.includes(relative(ROOT, f)))
+    .filter((f) => !ALLOWED.includes(relPath(ROOT, f)))
     .filter((f) => /#[0-9a-f]{6}\b/i.test(readFileSync(f, 'utf8')))
-    .map((f) => `${relative(ROOT, f)} has a raw hex color. Use a token from tokens.css.`)
+    .map((f) => `${relPath(ROOT, f)} has a raw hex color. Use a token from tokens.css.`)
+}
+
+// Every text file uses LF. One CRLF file on Windows can turn a two-line edit
+// into a whole-file conflict (Tally 7646ae1eb). .gitattributes sets eol=lf;
+// this catches a file written before git normalizes it.
+function checkLineEndings(files) {
+  return files
+    .filter((f) => /\.(js|jsx|mjs|astro|css|json|md|mdoc|yml|yaml|txt)$/.test(f))
+    .filter((f) => readFileSync(f, 'utf8').includes('\r\n'))
+    .map((f) => `${relPath(ROOT, f)} has CRLF line endings. Save it with LF.`)
 }
 
 const files = walk(ROOT)
@@ -88,6 +98,7 @@ const problems = [
   ...checkFileSize(files),
   ...checkContrast(),
   ...checkRawHex(files),
+  ...checkLineEndings(files),
 ]
 if (problems.length) {
   console.error(problems.map((p) => `✗ ${p}`).join('\n'))

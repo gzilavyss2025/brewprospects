@@ -12,7 +12,7 @@
     "preview": "astro preview --port 4322",
     "data": "node scripts/data/gen-org.mjs && node scripts/data/fetch-pipeline.mjs && node scripts/data/gen-archive.mjs && node scripts/data/gen-prospect-history.mjs",
     "lint": "eslint . && node scripts/checks/run-all.mjs",
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node scripts/test.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.9",
