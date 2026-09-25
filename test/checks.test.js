@@ -60,15 +60,78 @@ test('relPath leaves a POSIX path as it is', () => {
   assert.equal(relPath('/repo/', '/repo/src/lib/org.js', posix), 'src/lib/org.js')
 })
 
-test('the focus ring passes 3:1 on every surface in tokens.css', () => {
+test('every PAIRS and FOCUS line in tokens.css passes in both themes', () => {
   // The ring was gold: 1.47:1 on paper, and invisible on the gold header.
   const css = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8')
   assert.deepEqual(checkContrastLines(css), [])
 })
 
+// A two-theme tokens.css in miniature. Both themes pass as written.
+const LINES = '/* PAIRS: text-ink/surface-paper */ /* FOCUS: focus-ring|focus-halo/surface-paper */'
+const LIGHT = { 'surface-paper': '#fbf6e9', 'text-ink': '#12284b', 'focus-ring': '#12284b', 'focus-halo': 'var(--surface-paper)' }
+const DARK = { 'surface-paper': '#080f1b', 'text-ink': '#fbf6e9', 'focus-ring': '#fbf6e9', 'focus-halo': 'var(--surface-paper)' }
+const block = (vars) => Object.entries(vars).map(([k, v]) => `--${k}: ${v};`).join(' ')
+const themed = ({ light = LIGHT, dark = DARK, lines = LINES } = {}) =>
+  `${lines}\n:root { ${block(light)} }\n[data-theme="dark"] { ${block(dark)} }\n`
+
+test('two passing themes, with var() links, pass', () => {
+  assert.deepEqual(checkContrastLines(themed()), [])
+})
+
 test('a gold focus ring on paper fails the FOCUS line', () => {
-  const css = '--gold: #ffc52f; --paper: #fbf6e9; /* PAIRS: gold/gold */ /* FOCUS: gold/paper */'
-  assert.match(checkContrastLines(css).join('\n'), /FOCUS pair gold\/paper is 1\.\d\d:1/)
+  const lines = '/* PAIRS: text-ink/surface-paper */ /* FOCUS: brand-gold/surface-paper */'
+  const css = themed({ light: { ...LIGHT, 'brand-gold': '#ffc52f' }, dark: { ...DARK, 'brand-gold': '#ffc52f' }, lines })
+  assert.match(checkContrastLines(css).join('\n'), /FOCUS pair brand-gold\/surface-paper is 1\.\d\d:1 in light/)
+})
+
+test('a failing dark text pair fails even when light passes', () => {
+  const problems = checkContrastLines(themed({ dark: { ...DARK, 'text-ink': '#1b2436' } }))
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /PAIRS pair text-ink\/surface-paper is 1\.\d\d:1 in dark/)
+})
+
+test('passing dark values cannot hide a failing light pair', () => {
+  // The old check read every `--x: #hex` in the file into one map, so the
+  // dark block's later --text-ink won and this light failure passed.
+  const problems = checkContrastLines(themed({ light: { ...LIGHT, 'text-ink': '#f0ead8' } }))
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /PAIRS pair text-ink\/surface-paper is 1\.\d\d:1 in light/)
+})
+
+test('the dark focus ring is checked', () => {
+  const problems = checkContrastLines(themed({ dark: { ...DARK, 'focus-ring': '#12284b' } }))
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /FOCUS pair focus-ring\|focus-halo\/surface-paper is 1\.\d\d:1 in dark/)
+})
+
+test('a missing theme block fails', () => {
+  const css = `${LINES}\n:root { ${block(LIGHT)} }\n`
+  assert.deepEqual(checkContrastLines(css), ['tokens.css has no [data-theme="dark"] block (dark theme).'])
+})
+
+test('a role missing from one theme fails; it is not read from the other', () => {
+  const dark = { ...DARK }
+  delete dark['text-ink']
+  const problems = checkContrastLines(themed({ dark })).join('\n')
+  assert.match(problems, /--text-ink does not resolve to a hex color in \[data-theme="dark"\]/)
+  assert.match(problems, /PAIRS pair text-ink\/surface-paper in dark: --text-ink does not resolve/)
+})
+
+test('a token that does not resolve to a hex fails', () => {
+  for (const bad of ['var(--nope)', 'navy', '#fff', 'var(--focus-halo)']) {
+    const problems = checkContrastLines(themed({ light: { ...LIGHT, 'focus-halo': bad } })).join('\n')
+    assert.match(problems, /--focus-halo does not resolve to a hex color/, bad)
+  }
+})
+
+test('a missing check line fails', () => {
+  const problems = checkContrastLines(themed({ lines: '/* PAIRS: text-ink/surface-paper */' }))
+  assert.deepEqual(problems, ['tokens.css has no FOCUS line to check.'])
+})
+
+test('brand and club colors may not change between themes', () => {
+  const css = themed({ light: { ...LIGHT, 'brand-navy': '#12284b' }, dark: { ...DARK, 'brand-navy': '#2a4a7b' } })
+  assert.match(checkContrastLines(css).join('\n'), /--brand-navy changes between themes/)
 })
 
 test('schemaProblems names a field only one side declares', async () => {

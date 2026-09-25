@@ -6,21 +6,52 @@
 // keeps its source and confidence so the caveat travels with the value. A club
 // with no researched pair (the complex clubs) uses Brewers navy; an invented
 // hex would be worse than the fallback.
-import { pickInk } from './color.js'
+//
+// Lint and rendering share one rule: a primary must reach 4.5:1 with the ink
+// pickInk() picks for it. A failed or malformed entry stays in ACCENTS, so
+// lint reports it, and accentFor() paints Brewers navy instead (ADR-0012).
+import { contrastRatio, pickInk } from './color.js'
 
 export const BREWERS = { navy: '#12284b', gold: '#ffc52f' }
 
-const ACCENTS = {
+export const ACCENT_MIN = 4.5
+
+export const ACCENTS = {
   556: { primary: '#071d49', secondary: '#c8102e', confidence: 'medium', source: 'Wikipedia' },
   5015: { primary: '#0f69b1', secondary: '#e2b880', confidence: 'medium', source: 'sportsfancovers.com' },
   572: { primary: '#862633', secondary: '#010101', confidence: 'medium', source: 'trucolor.net' },
   249: { primary: '#091f2c', secondary: '#00677f', confidence: 'medium', source: 'trucolor.net' },
 }
 
-export function accentFor(teamId) {
-  const a = ACCENTS[teamId]
-  const primary = a?.primary ?? BREWERS.navy
-  return { primary, secondary: a?.secondary ?? BREWERS.gold, ink: pickInk(primary), researched: Boolean(a) }
+// The ink a primary gets and its ratio. A value that is not a six-digit hex
+// gets no ink and no ratio, and is not ok.
+export function measureAccent(primary) {
+  if (!/^#[0-9a-f]{6}$/i.test(primary ?? '')) return { ink: null, ratio: null, ok: false }
+  const ink = pickInk(primary)
+  const ratio = contrastRatio(primary, ink)
+  return { ink, ratio, ok: ratio >= ACCENT_MIN }
+}
+
+// One line per entry that fails. Lint prints these; the page still renders.
+export function accentProblems(accents = ACCENTS) {
+  return Object.entries(accents).flatMap(([id, a]) => {
+    const { ink, ratio, ok } = measureAccent(a?.primary)
+    if (ok) return []
+    const why = ratio === null
+      ? `has no valid primary color (${a?.primary ?? 'missing'})`
+      : `${a.primary} with ${ink} ink is ${ratio.toFixed(2)}:1 (needs ${ACCENT_MIN}:1)`
+    return [`Affiliate ${id} accent ${why}. It renders as Brewers navy.`]
+  })
+}
+
+// `researched` says an entry exists (its provenance); `fallback` says the page
+// paints Brewers navy, because there is no entry or it failed its check.
+export function accentFor(teamId, accents = ACCENTS) {
+  const a = accents[teamId]
+  const usable = Boolean(a) && measureAccent(a.primary).ok
+  const primary = usable ? a.primary : BREWERS.navy
+  const secondary = (usable && a.secondary) || BREWERS.gold
+  return { primary, secondary, ink: pickInk(primary), researched: Boolean(a), fallback: !usable }
 }
 
 // Logos come from MLB's public CDN, keyed by team id. Checked live for all

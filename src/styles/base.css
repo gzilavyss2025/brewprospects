@@ -4,8 +4,8 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--surface-paper);
+  color: var(--text-ink);
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.5;
@@ -13,7 +13,7 @@ body {
 
 img { max-width: 100%; display: block; }
 
-a { color: var(--link); text-underline-offset: 3px; }
+a { color: var(--text-link); text-underline-offset: 3px; }
 a:hover { text-decoration-thickness: 2px; }
 
 h1, h2, h3 {
@@ -29,11 +29,11 @@ h3 { font-size: 20px; }
 
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--space-4); }
 
-.muted { color: var(--ink-soft); }
+.muted { color: var(--text-ink-soft); }
 
 .num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 2px var(--focus-halo); }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; box-shadow: 0 0 0 2px var(--focus-halo); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }

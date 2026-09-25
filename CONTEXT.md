@@ -80,6 +80,24 @@ The pill radius is 999px; the round radius is 50%.
 **Duration token**: a shared motion time, named `--dur-*`. The current card
 hover uses `--dur-fast` (160ms).
 
+**Color role**: a color token named for its job, `--{role}-{name}`, in
+`tokens.css`. The roles are `surface` (paper, card, logo plate), `text` (ink,
+ink-soft, link, on-navy), `line` (rule, stitch, edge), `focus` (ring, halo),
+`brand` (navy, gold) and `club` (bar, on-bar). Each role has a light and a
+dark value (ADR-0012).
+_Avoid_: naming a color token for its hue alone, such as `--blue`.
+
+**Brand color**: Brewers navy or gold, the same in every theme. Gold means
+"Brewers" and nothing else.
+
+**Club bar**: the band in an affiliate's own color at the top of its section
+or card (`--club-bar`), with readable text on it (`--club-on-bar`). A club
+with no researched color, or one that fails 4.5:1, gets Brewers navy.
+_Avoid_: "club accent" as a token. There is no `--club-accent`.
+
+**Theme**: a set of color role values. Light (`:root`) is the live one. Dark
+(`[data-theme="dark"]`, navy-black) is defined and checked but not in use.
+
 **Postseason**: baseball's October, and every league's post-regular-season
 rounds. Lint fails on the other word.
 

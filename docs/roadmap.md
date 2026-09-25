@@ -170,20 +170,15 @@ For example: `src/lib/identity/` (color, affiliates, club identity) and
      and `--dur-*`. Lint rejects raw px in `padding`, `gap`, `margin` and
      `border-radius`, including longhands and inline styles. It allows 0,
      1px, 2px and tokens.css. Counts and preserved steps are in ADR-0011.
-   - Every color token is a light and dark pair, and the contrast check runs
-     on both themes.
-   - Run the contrast check over every entry in `ACCENTS`, not only `PAIRS`
-     (Tally: 15 of 67 hand-picked club pairs failed on the first run).
-   - Name color roles for their job (`bar`, `accent`, `onBar`). Gold means
-     "Brewers" and nothing else.
-   - A naming ADR (0010, reserved for C): a class is named for its job
-     (`.roster`), never its shape. Keep `.card` as the one card primitive.
-
-   B uses navy-black, selected from the
-   [palette study](https://brewprospects-palette-study.gary-zilavy.chatgpt.site).
-   Keep brand navy and gold unchanged. Use `--surface-card`, omit
-   `--club-accent`, and fail lint plus fall back to Brewers navy on a failed
-   affiliate pair. Gold means Brewers only.
+   - **Done (B):** color roles named for their job (`--{role}-{name}`), each
+     a light and dark pair. The dark values are navy-black, from the
+     [palette study](https://brewprospects-palette-study.gary-zilavy.chatgpt.site);
+     the ones the study did not set are provisional. `PAIRS` and `FOCUS` run
+     in both themes. Every `ACCENTS` primary is checked with its ink at
+     4.5:1; a failure fails lint and the club renders Brewers navy. Brand
+     navy and gold are unchanged, and gold means Brewers only. See ADR-0012.
+   - **Open (C):** a naming ADR (0010, reserved): a class is named for its
+     job (`.roster`), never its shape. Keep `.card` as the one card primitive.
 
    **Open, separate work:** the dark theme toggle. The token PRs prepare
    for it; they do not activate a dark theme on any page.

@@ -1,36 +1,36 @@
 /* Site header: a gold band with a navy stitched edge, like a ballpark banner. */
 .site-header {
-  background: var(--gold);
-  border-bottom: 4px dashed var(--stitch);
-  box-shadow: inset 0 -8px 0 var(--navy);
+  background: var(--brand-gold);
+  border-bottom: 4px dashed var(--line-stitch);
+  box-shadow: inset 0 -8px 0 var(--brand-navy);
   padding-bottom: var(--space-2);
 }
 .site-header .wrap { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-3); }
-.brand { display: flex; align-items: center; gap: var(--space-2-5); text-decoration: none; color: var(--navy); }
+.brand { display: flex; align-items: center; gap: var(--space-2-5); text-decoration: none; color: var(--brand-navy); }
 .brand img { width: 44px; height: 44px; }
 .brand span { font-family: var(--font-display); font-size: 24px; }
 .site-nav { display: flex; gap: var(--space-1-5); flex-wrap: wrap; margin-left: auto; }
 .site-nav a {
-  font-weight: 700; text-decoration: none; color: var(--navy);
-  padding: var(--space-1-5) var(--space-3); border-radius: var(--radius-pill); border: 2px solid var(--navy);
+  font-weight: 700; text-decoration: none; color: var(--brand-navy);
+  padding: var(--space-1-5) var(--space-3); border-radius: var(--radius-pill); border: 2px solid var(--brand-navy);
 }
-.site-nav a[aria-current='page'] { background: var(--navy); color: var(--paper); }
+.site-nav a[aria-current='page'] { background: var(--brand-navy); color: var(--text-on-navy); }
 
-.site-footer { margin-top: var(--space-16); background: var(--navy); color: var(--paper); padding: var(--space-6) 0 var(--space-10); font-size: 14px; }
-.site-footer a { color: var(--paper); }
+.site-footer { margin-top: var(--space-16); background: var(--brand-navy); color: var(--text-on-navy); padding: var(--space-6) 0 var(--space-10); font-size: 14px; }
+.site-footer a { color: var(--text-on-navy); }
 
 main { padding-top: var(--space-6); }
 
 /* Pennant: the level badge. */
 .pennant {
   display: inline-block; font-family: var(--font-num); font-weight: 700; font-size: 14px;
-  padding: var(--space-0-5) var(--space-5) var(--space-0-5) var(--space-2); margin-bottom: var(--space-1-5); background: var(--navy); color: var(--paper);
+  padding: var(--space-0-5) var(--space-5) var(--space-0-5) var(--space-2); margin-bottom: var(--space-1-5); background: var(--brand-navy); color: var(--text-on-navy);
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
 }
 
 /* Card: white stock with a hard navy shadow that lifts on hover. */
 .card {
-  background: var(--card); border: 2px solid var(--navy); border-radius: var(--radius-md);
+  background: var(--surface-card); border: 2px solid var(--line-edge); border-radius: var(--radius-md);
   box-shadow: var(--shadow); padding: var(--space-4);
   transition: transform var(--dur-fast) ease-out, box-shadow var(--dur-fast) ease-out;
 }
@@ -43,46 +43,46 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 .club { margin: var(--space-8) 0; }
 .club-head {
   display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2-5) var(--space-3-5);
-  background: var(--club); color: var(--club-ink); border-radius: var(--radius-md) var(--radius-md) 0 0;
-  border: 2px solid var(--navy); border-bottom: 0;
+  background: var(--club-bar); color: var(--club-on-bar); border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border: 2px solid var(--line-edge); border-bottom: 0;
 }
-.club-head img { width: 48px; height: 48px; background: var(--card); border-radius: var(--radius-round); padding: var(--space-1); }
+.club-head img { width: 48px; height: 48px; background: var(--surface-logo); border-radius: var(--radius-round); padding: var(--space-1); }
 .club-head .club-logo-none { width: 48px; height: 48px; flex: none; }
 .club-head h2 { margin: 0; font-size: 24px; }
 .club-head .sub { font-size: 14px; opacity: 0.9; }
 .club-body {
-  border: 2px solid var(--navy); border-radius: 0 0 var(--radius-md) var(--radius-md);
-  background: var(--card); padding: var(--space-4); box-shadow: var(--shadow);
+  border: 2px solid var(--line-edge); border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--surface-card); padding: var(--space-4); box-shadow: var(--shadow);
 }
 .buckets { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 .bucket h3 { font-size: 16px; font-family: var(--font-body); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-1-5); }
 .bucket ul { list-style: none; margin: 0; padding: 0; }
-.bucket li { padding: var(--space-0-75) 0; border-bottom: 1px dotted var(--rule); display: flex; gap: var(--space-2); align-items: baseline; }
-.bucket .jersey { font-family: var(--font-num); color: var(--ink-soft); min-width: 2ch; text-align: right; }
+.bucket li { padding: var(--space-0-75) 0; border-bottom: 1px dotted var(--line-rule); display: flex; gap: var(--space-2); align-items: baseline; }
+.bucket .jersey { font-family: var(--font-num); color: var(--text-ink-soft); min-width: 2ch; text-align: right; }
 .rank-chip {
   margin-left: auto; font-family: var(--font-num); font-weight: 700; font-size: 13px;
-  background: var(--gold); color: var(--navy); border-radius: var(--radius-pill); padding: 0 var(--space-2);
+  background: var(--brand-gold); color: var(--brand-navy); border-radius: var(--radius-pill); padding: 0 var(--space-2);
 }
 
 /* Stat tables scroll inside themselves; the page never scrolls sideways. */
-.table-scroll { overflow-x: auto; border: 2px solid var(--navy); border-radius: var(--radius-sm); background: var(--card); }
+.table-scroll { overflow-x: auto; border: 2px solid var(--line-edge); border-radius: var(--radius-sm); background: var(--surface-card); }
 table.stats { border-collapse: collapse; width: 100%; font-family: var(--font-num); font-size: 16px; }
 table.stats th, table.stats td { padding: var(--space-1-5) var(--space-2-5); text-align: right; white-space: nowrap; }
 table.stats th:first-child, table.stats td:first-child,
 table.stats th:nth-child(2), table.stats td:nth-child(2),
 table.stats th:nth-child(3), table.stats td:nth-child(3) { text-align: left; }
-table.stats thead th { background: var(--navy); color: var(--paper); position: sticky; top: 0; }
-table.stats tbody tr:nth-child(even) { background: var(--paper); }
+table.stats thead th { background: var(--brand-navy); color: var(--text-on-navy); position: sticky; top: 0; }
+table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 
 /* Player hero. */
 .hero { display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap; }
 .headshot {
   width: 132px; height: 176px; object-fit: cover; object-position: top center;
-  border: 3px solid var(--navy); border-radius: var(--radius-md); background: var(--gold); box-shadow: var(--shadow);
+  border: 3px solid var(--line-edge); border-radius: var(--radius-md); background: var(--brand-gold); box-shadow: var(--shadow);
 }
 .initials {
-  width: 132px; height: 176px; display: grid; place-items: center; border: 3px solid var(--navy);
-  border-radius: var(--radius-md); background: var(--gold); font-family: var(--font-display); font-size: 44px;
+  width: 132px; height: 176px; display: grid; place-items: center; border: 3px solid var(--line-edge);
+  border-radius: var(--radius-md); background: var(--brand-gold); color: var(--brand-navy); font-family: var(--font-display); font-size: 44px;
 }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-0-5) var(--space-3-5); margin: var(--space-3) 0 0; }
 .facts dt { font-weight: 700; }
@@ -93,11 +93,11 @@ table.stats tbody tr:nth-child(even) { background: var(--paper); }
 .path li { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-0-5); font-size: 14px; }
 
 .section { margin-top: var(--space-9); }
-.note { background: var(--card); border-left: 6px solid var(--gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
+.note { background: var(--surface-card); border-left: 6px solid var(--brand-gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 
 /* Live prospect card (island) inside posts. */
 .pcard { display: flex; gap: var(--space-3-5); align-items: center; margin: var(--space-5) 0; }
-.pcard img { width: 72px; height: 96px; object-fit: cover; object-position: top; border-radius: var(--radius-sm); border: 2px solid var(--navy); background: var(--gold); }
+.pcard img { width: 72px; height: 96px; object-fit: cover; object-position: top; border-radius: var(--radius-sm); border: 2px solid var(--line-edge); background: var(--brand-gold); }
 .pcard .line { font-family: var(--font-num); font-size: 18px; }
 
 .prose { max-width: 70ch; }
@@ -105,6 +105,6 @@ table.stats tbody tr:nth-child(even) { background: var(--paper); }
 
 /* Ranked prospect lists (Top 100 history, season pages). */
 .ranked { list-style: none; padding: 0; margin: 0 0 var(--space-2); }
-.ranked li { padding: var(--space-1) 0; border-bottom: 1px dotted var(--rule); }
+.ranked li { padding: var(--space-1) 0; border-bottom: 1px dotted var(--line-rule); }
 .ranked .rank-chip { margin-right: var(--space-1-5); }
 .club-body h3 { font-size: 16px; font-family: var(--font-body); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { playerSlug, idFromSlug, slugify, paths, canonicalUrl } from '../src/lib/slug.js'
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/color.js'
-import { accentFor, BREWERS, clubIdentity } from '../src/lib/affiliates.js'
+import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/affiliates.js'
 import { cardPlayerIds, linkedPlayerIds, postsForPlayer } from '../src/lib/posts.js'
 import { pickSeasonLine, lineText } from '../src/lib/card.js'
 import season from './fixtures/person-season.json' with { type: 'json' }
@@ -35,10 +35,45 @@ test('contrast math matches known WCAG values', () => {
 })
 
 test('every affiliate accent gets an ink that passes WCAG AA', () => {
-  for (const id of [556, 5015, 572, 249, 406, 2101, 607]) {
+  // Every ACCENTS entry, plus the 2026 clubs with no entry.
+  for (const id of new Set([...Object.keys(ACCENTS).map(Number), 556, 5015, 572, 249, 406, 2101, 607])) {
     const a = accentFor(id)
-    assert.ok(contrastRatio(a.primary, a.ink) >= 4.5, `club ${id}: ${a.primary} on ${a.ink}`)
+    assert.ok(contrastRatio(a.primary, a.ink) >= ACCENT_MIN, `club ${id}: ${a.primary} on ${a.ink}`)
   }
+  assert.deepEqual(accentProblems(), [])
+  // Each entry passes on its own color, not on the fallback.
+  for (const [id, entry] of Object.entries(ACCENTS)) {
+    assert.equal(accentFor(Number(id)).primary, entry.primary)
+    assert.equal(measureAccent(entry.primary).ok, true, `club ${id}`)
+  }
+  // The lowest entry, measured 2026-09-25: #0f69b1 with white ink.
+  assert.equal(measureAccent(ACCENTS[5015].primary).ratio.toFixed(2), '5.71')
+})
+
+// #777777 with white is 4.48:1, and with navy 3.34:1: no ink passes.
+const FAILING = { 1: { primary: '#777777', secondary: '#c8102e', confidence: 'low', source: 'test' } }
+
+test('a failing accent is reported to lint and renders as Brewers navy', () => {
+  assert.deepEqual(accentProblems(FAILING), [
+    'Affiliate 1 accent #777777 with #ffffff ink is 4.48:1 (needs 4.5:1). It renders as Brewers navy.',
+  ])
+  const a = accentFor(1, FAILING)
+  assert.equal(a.primary, BREWERS.navy)
+  assert.equal(a.secondary, BREWERS.gold)
+  assert.equal(a.ink, '#ffffff')
+  assert.equal(a.researched, true)
+  assert.equal(a.fallback, true)
+})
+
+test('a missing or malformed accent color is reported and falls back', () => {
+  const bad = { 2: { primary: 'navy' }, 3: { secondary: '#ffffff' }, 4: { primary: '#fff' }, 5: null }
+  assert.deepEqual(accentProblems(bad), [
+    'Affiliate 2 accent has no valid primary color (navy). It renders as Brewers navy.',
+    'Affiliate 3 accent has no valid primary color (missing). It renders as Brewers navy.',
+    'Affiliate 4 accent has no valid primary color (#fff). It renders as Brewers navy.',
+    'Affiliate 5 accent has no valid primary color (missing). It renders as Brewers navy.',
+  ])
+  for (const id of [2, 3, 4, 5]) assert.equal(accentFor(id, bad).primary, BREWERS.navy)
 })
 
 test('a club with no researched color falls back to Brewers navy, not a guess', () => {

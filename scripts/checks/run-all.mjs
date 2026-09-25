@@ -10,6 +10,7 @@ import { adrNumberProblems, wordProblems } from './docs.mjs'
 import { loadContentConfigs, schemaProblems, clubListProblems } from './content-config.mjs'
 import { ROOT, relPath } from './paths.mjs'
 import { rawValueProblems } from './raw-values.mjs'
+import { accentProblems } from '../../src/lib/affiliates.js'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
 
@@ -59,7 +60,8 @@ function checkFileSize(files) {
     .map(([f, n]) => `${relPath(ROOT, f)} has ${n} lines (cap ${CAP}). Split it.`)
 }
 
-// The PAIRS and FOCUS lines of tokens.css must pass WCAG (see contrast.mjs).
+// The PAIRS and FOCUS lines of tokens.css must pass WCAG in both themes
+// (see contrast.mjs).
 function checkContrast() {
   return checkContrastLines(readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8'))
 }
@@ -120,6 +122,9 @@ const problems = [
   ...checkDirSize(files),
   ...checkFileSize(files),
   ...checkContrast(),
+  // Every affiliate accent reaches 4.5:1 with its ink. A failure fails lint;
+  // the page meanwhile paints Brewers navy (ADR-0012).
+  ...accentProblems(),
   ...checkRawHex(files),
   ...files.flatMap((f) => rawValueProblems(relPath(ROOT, f), readFileSync(f, 'utf8'))),
   ...checkLineEndings(files),

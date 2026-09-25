@@ -64,7 +64,7 @@ const urlFor = (id) => (org.players[id] ? playerUrl(org.players[id]) : null)
       {affiliates.map((a) => {
         const accent = accentFor(a.id)
         return (
-          <a class="card" href={`/depth-chart#club-${a.id}`} style={`border-top: 10px solid ${accent.primary}`}>
+          <a class="card" href={`/depth-chart#club-${a.id}`} style={`--club-bar:${accent.primary};border-top: 10px solid var(--club-bar)`}>
             <img src={teamLogoUrl(a.id)} alt="" width="56" height="56" loading="lazy" />
             <span class="pennant">{levelFor(a.sportId)?.label}</span>
             <h3>{a.name}</h3>

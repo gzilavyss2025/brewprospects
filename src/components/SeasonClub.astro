@@ -18,7 +18,7 @@ const hitters = roster.filter((e) => e.hitting && e.pos !== 'P').sort(byName)
 const pitchers = roster.filter((e) => e.pitching).sort(byName)
 const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
 ---
-<section class="club" id={`club-${club.id}`} style={`--club:${accent.primary};--club-ink:${accent.ink}`}>
+<section class="club" id={`club-${club.id}`} style={`--club-bar:${accent.primary};--club-on-bar:${accent.ink}`}>
   <div class="club-head">
     {logo ? <img src={logo} alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" /> : <span class="club-logo-none" aria-hidden="true" />}
     <div>
