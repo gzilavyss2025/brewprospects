@@ -130,3 +130,20 @@ export function rosterVerdict(playerCount) {
   if (playerCount === 0) return 'not-started'
   return playerCount < 100 ? 'thin' : 'ok'
 }
+
+// What gen-org does with a fetched season. `season` is the season fetched,
+// `onDisk` the season in the current org.json (or null), and `explicit` is
+// true when the season was named on the command line.
+// - 'write': the rosters look complete.
+// - 'keep': leave org.json alone and succeed. This covers the offseason (no
+//   rosters yet) and the spring weeks when the new season's rosters fill in
+//   a few players at a time. The last good season stays on the site.
+// - 'fail': a thin roster for the season already on disk is a bad response,
+//   and so is anything short of complete for a season named by hand, or
+//   when there is no org.json to keep.
+export function snapshotAction(verdict, { season, onDisk, explicit = false }) {
+  if (verdict === 'ok') return 'write'
+  if (explicit || onDisk == null) return 'fail'
+  if (verdict === 'not-started') return 'keep'
+  return String(season) === String(onDisk) ? 'fail' : 'keep'
+}

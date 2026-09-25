@@ -85,14 +85,15 @@ values and needed a month of sweeps (ADR-0023, 0084, 0085). Now:
 - A short naming ADR: a class is named for its job (`.roster`, `.prospect`),
   never its shape (`.card2`).
 
-### 0.6 The season is data, not the clock
-- Store `season` inside `org.json` and `pipeline.json`.
-- Add `src/data/seasons.json` with `current` and the archive list. Pages read
-  it instead of `new Date()`.
-- A test runs the generators with the clock at Jan 1 and at a thin spring
-  roster, and asserts they write nothing (Tally ADR-0086).
-- Decide what `gen-org` does from February to April while rosters fill. Today
-  a count of 1 to 99 throws, so the job would be red for weeks.
+### 0.6 The season is data, not the clock (done)
+Most of this was already true. `org.json` stores `season`, the archive takes
+its last season from `org.json`, and pages never read the clock for a season.
+The gap was spring. A new season's rosters fill in a few players at a time,
+and any count from 1 to 99 threw, so the nightly job would have been red for
+weeks. `snapshotAction()` in `src/lib/org.js` now keeps the last season while
+a new one fills in. It still fails on a thin roster for the season already on
+disk. `pipeline.json` gets no `season`: it is a rolling list, and its date is
+the honest label. The freshness check in 0.7 catches a job stuck on "keep".
 
 ### 0.7 Harden the nightly job
 `.github/workflows/nightly-data.yml` today can put unbuilt data on `main`.

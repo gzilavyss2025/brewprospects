@@ -11,9 +11,9 @@
 // must never replace good data (docs/adr/0003).
 //
 // Usage: node scripts/data/gen-org.mjs [season]
-import { mkdir, writeFile, rename } from 'node:fs/promises'
+import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
-import { orgPlayerIds, rosterVerdict } from '../../src/lib/org.js'
+import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/org.js'
 import { slimAffiliate, slimRosterEntry, slimPerson } from './slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
@@ -47,15 +47,16 @@ async function main() {
   }
 
   const ids = orgPlayerIds(rosters)
-  const verdict = rosterVerdict(ids.length)
-  // Between seasons (about October to March) the new calendar year has
-  // affiliates but no rosters. Keep last season's snapshot and succeed, so
-  // the nightly job stays green. An explicit season argument still fails.
-  if (verdict === 'not-started' && !process.argv[2]) {
-    console.log(`gen-org: ${season} rosters are empty (season not started); keeping the last snapshot.`)
+  // Between seasons, and while a new season's rosters fill in during spring,
+  // keep last season's snapshot and succeed so the nightly job stays green.
+  // A thin roster for the season already on disk still fails (snapshotAction).
+  const onDisk = await readFile(OUT, 'utf8').then((t) => JSON.parse(t).season, () => null)
+  const action = snapshotAction(rosterVerdict(ids.length), { season, onDisk, explicit: Boolean(process.argv[2]) })
+  if (action === 'keep') {
+    console.log(`gen-org: ${season} has ${ids.length} org players so far; keeping the ${onDisk} snapshot.`)
     return
   }
-  if (verdict !== 'ok') {
+  if (action === 'fail') {
     throw new Error(`Only ${ids.length} org players for ${season}; expected 100 or more.`)
   }
 
