@@ -4,10 +4,12 @@ import '../styles/base.css'
 import '../styles/components.css'
 import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
 import { teamLogoUrl } from '../lib/affiliates.js'
+import { canonicalUrl } from '../lib/slug.js'
 
 const { title, description = SITE_TAGLINE } = Astro.props
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME
 const path = Astro.url.pathname
+const canonical = canonicalUrl(Astro.site, path)
 const nav = [
   { href: '/', label: 'Home' },
   { href: '/depth-chart', label: 'Depth chart' },
@@ -27,6 +29,8 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <meta name="description" content={description} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {canonical && <meta property="og:url" content={canonical} />}
     <link rel="icon" href={teamLogoUrl(ORG_ID)} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

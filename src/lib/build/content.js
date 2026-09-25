@@ -2,6 +2,7 @@
 // leave this module.
 import { getCollection } from 'astro:content'
 import { byNewest } from '../posts.js'
+import { paths } from '../slug.js'
 
 export const POST_TYPES = [
   { key: 'recaps', label: 'Recap', plural: 'Recaps' },
@@ -35,5 +36,5 @@ async function loadPosts() {
 }
 
 export function postUrl(post) {
-  return `/posts/${post.type.key}/${post.id}`
+  return paths.post(post.type.key, post.id)
 }

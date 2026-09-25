@@ -4,7 +4,7 @@ import org from '../../data/org.json' with { type: 'json' }
 import pipeline from '../../data/pipeline.json' with { type: 'json' }
 import { levelRank } from '../levels.js'
 import { currentAssignments, orgPlayerIds } from '../org.js'
-import { playerSlug } from '../slug.js'
+import { paths } from '../slug.js'
 
 export { org, pipeline }
 
@@ -19,7 +19,7 @@ export const assignments = currentAssignments(org.rosters)
 export const rankById = new Map(pipeline.prospects.map((p) => [p.playerId, p]))
 
 export function playerUrl(player) {
-  return `/players/${playerSlug(player.name, player.id)}`
+  return paths.player(player.name, player.id)
 }
 
 // Every org player with his current assignment and rank, for list pages.

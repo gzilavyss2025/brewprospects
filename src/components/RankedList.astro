@@ -2,12 +2,12 @@
 // One season's ranked Brewers, from src/data/prospect-history.json. Shows the
 // source on every list and flags a player who also played for another
 // organization that season (docs/adr/0007).
-import { playerSlug } from '../lib/slug.js'
+import { paths } from '../lib/slug.js'
 
 const { season, pagedIds } = Astro.props
 // MLB published 99 names in 2020 and 2021; it was still its Top 100 list.
 const listName = (depth) => (depth >= 99 ? 'Top 100' : `Top ${depth}`)
-const href = (p) => (pagedIds.has(p.playerId) ? `/players/${playerSlug(p.name, p.playerId)}` : `https://www.milb.com/player/${p.playerId}`)
+const href = (p) => (pagedIds.has(p.playerId) ? paths.player(p.name, p.playerId) : `https://www.milb.com/player/${p.playerId}`)
 ---
 {season.missing ? (
   <p class="muted">{season.missing}</p>

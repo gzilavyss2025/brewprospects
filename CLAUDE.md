@@ -71,6 +71,8 @@ deploys. The nightly data job is the one planned exception.
    per file. When one fails, split. Do not raise the cap.
 7. **Tests stay honest.** A bug fix ships with a test that fails without it.
    Never loosen or skip a test to get green.
+8. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
+   `src/lib/slug.js`; a new kind of page adds its row to the ADR's table.
 
 ## Content
 
