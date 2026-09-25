@@ -41,8 +41,14 @@ deploys. The nightly data job is the one planned exception.
   players).
 - `scripts/data/fetch-pipeline.mjs` writes `src/data/pipeline.json`: the MLB
   Pipeline Brewers list. It reads an undocumented MLB.com page (ADR-0004).
+- `scripts/data/gen-archive.mjs` writes `src/data/archive/{season}.json` for
+  2006 to last season, one frozen file each, plus `people.json` (ADR-0006).
+- `scripts/data/gen-prospect-history.mjs` writes `src/data/prospect-history.json`
+  from the bbsbh Top 100 rows in `data/sources/` (ADR-0007). Never edit
+  `data/sources/` by hand; see its PROVENANCE.md.
 - Both **fail loudly and keep the last good file** when a response looks wrong.
-- Pages read the snapshots only through `src/lib/build/data.js`.
+- Pages read the snapshots only through `src/lib/build/data.js` and
+  `src/lib/build/archive.js`.
 - The one live read is the prospect-card island (`src/components/ProspectCard.jsx`),
   which calls `statsapi.mlb.com` from the browser (CORS is open) and keeps the
   snapshot on any error.
@@ -76,9 +82,10 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
 
 ## Map
 
-- `src/pages/` — home, `/depth-chart`, `/players`, `/players/{name-id}`, `/posts`
+- `src/pages/` — home, `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
+  `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`
 - `src/components/` — `StatTable`, `Headshot`, `ProspectCard` (+ its tag)
-- `src/lib/` — pure model (`org`, `levels`, `card`, `posts`, `slug`, `format`, `color`, `affiliates`)
+- `src/lib/` — pure model (`org`, `archive`, `levels`, `card`, `posts`, `slug`, `format`, `color`, `affiliates`)
 - `docs/adr/` — the why behind each decision. Read before you change one.
 
 ## Writing style

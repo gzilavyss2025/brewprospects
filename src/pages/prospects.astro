@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro'
+import RankedList from '../components/RankedList.astro'
+import { org, pipeline, playerUrl } from '../lib/build/data.js'
+import { prospectHistory, pagedIds } from '../lib/build/archive.js'
+
+const seasons = [...prospectHistory.seasons].reverse()
+const urlFor = (id) => (org.players[id] ? playerUrl(org.players[id]) : null)
+const ranked100 = pipeline.prospects.filter((p) => p.topRank).sort((a, b) => a.topRank - b.topRank)
+---
+<Base title="Top 100 history" description="Every Brewers prospect on a preseason Top 100 list since 2006.">
+  <h1>Top 100 history</h1>
+  <p class="muted">
+    Brewers on each preseason Top 100 list: Baseball America for 2006–2008, MLB Pipeline from 2009. A player counts
+    for a year when he played in the Brewers system that year, so a prospect traded during the season is marked with
+    the other club he played for.
+  </p>
+
+  <section class="section">
+    <h2>{org.season} <span class="muted">(current list)</span></h2>
+    {ranked100.length === 0 ? (
+      <p class="muted">No Brewers in the current MLB Pipeline Top 100.</p>
+    ) : (
+      <ol class="ranked">
+        {ranked100.map((p) => (
+          <li>
+            <span class="rank-chip">#{p.topRank}</span>
+            {urlFor(p.playerId) ? <a href={urlFor(p.playerId)}>{p.name}</a> : p.name}
+            <span class="muted"> {p.position}</span>
+          </li>
+        ))}
+      </ol>
+    )}
+    <p class="muted">MLB Pipeline Top 100 as of {new Date(pipeline.generatedAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}.</p>
+  </section>
+
+  {seasons.map((s) => (
+    <section class="section">
+      <h2><a href={`/seasons/${s.season}`}>{s.season}</a></h2>
+      <RankedList season={s} pagedIds={pagedIds} />
+    </section>
+  ))}
+</Base>

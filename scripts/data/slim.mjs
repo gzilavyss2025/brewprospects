@@ -100,3 +100,28 @@ export function slimPerson(p) {
     pitching: splitsFor('pitching').map(slimPitching),
   }
 }
+
+// One archive roster entry: who, and his line FOR THIS CLUB only. The season
+// stats hydrate returns one split per club at that level plus a no-team total
+// when a player changed clubs (checked live: Biloxi 2025, Raúl Alcantara).
+// Only the split whose team is this affiliate is kept; with none, the player
+// was on the roster but did not play for this club, and the line is null.
+export function slimArchiveEntry(e, teamId, sportId) {
+  const lineFor = (group, slim) => {
+    const splits = (e.person?.stats ?? []).find((s) => s.group?.displayName === group)?.splits ?? []
+    const split = splits.find((s) => s.team?.id === teamId)
+    return split ? slim({ ...split, sport: split.sport ?? { id: sportId } }) : null
+  }
+  return {
+    ...slimRosterEntry(e),
+    hitting: lineFor('hitting', slimHitting),
+    pitching: lineFor('pitching', slimPitching),
+  }
+}
+
+// The short bio kept for a past player. Same fields as slimPerson, no stats:
+// a past player's lines come from the archive rosters.
+export function slimBio(p) {
+  const { hitting: _h, pitching: _p, ...bio } = slimPerson({ ...p, stats: [] })
+  return bio
+}

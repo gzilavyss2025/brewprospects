@@ -1,0 +1,81 @@
+---
+// One affiliate in one archive season: hitters and pitchers with their line
+// for this club. Names link to a player page when one exists, else to MiLB.com.
+import { levelFor } from '../lib/levels.js'
+import { orDash } from '../lib/format.js'
+import { accentFor, teamLogoUrl } from '../lib/affiliates.js'
+import { playerSlug } from '../lib/slug.js'
+
+const { club, roster, pagedIds } = Astro.props
+const level = levelFor(club.sportId)
+const accent = accentFor(club.id)
+const href = (e) => (pagedIds.has(e.id) ? `/players/${playerSlug(e.name, e.id)}` : `https://www.milb.com/player/${e.id}`)
+const byName = (a, b) => a.name.localeCompare(b.name)
+// A two-way line puts a player in both tables. Most rows hold one or the other.
+const hitters = roster.filter((e) => e.hitting && e.pos !== 'P').sort(byName)
+const pitchers = roster.filter((e) => e.pitching).sort(byName)
+const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
+---
+<section class="club" id={`club-${club.id}`} style={`--club:${accent.primary};--club-ink:${accent.ink}`}>
+  <div class="club-head">
+    <img src={teamLogoUrl(club.id)} alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" />
+    <div>
+      <h2>{club.name}</h2>
+      <div class="sub">{level?.name ?? '—'} · {club.league || '—'}</div>
+    </div>
+  </div>
+  <div class="club-body">
+    <h3>Hitters</h3>
+    {hitters.length === 0 ? <p class="muted">No hitting lines on record.</p> : (
+      <div class="table-scroll">
+        <table class="stats">
+          <thead><tr><th>Player</th><th>Pos</th><th>Age</th><th>G</th><th>PA</th><th>HR</th><th>SB</th><th>AVG</th><th>OBP</th><th>SLG</th></tr></thead>
+          <tbody>
+            {hitters.map((e) => (
+              <tr>
+                <td><a href={href(e)}>{e.name}</a></td>
+                <td>{orDash(e.pos)}</td>
+                <td>{orDash(e.hitting.age)}</td>
+                <td>{orDash(e.hitting.g)}</td>
+                <td>{orDash(e.hitting.pa)}</td>
+                <td>{orDash(e.hitting.hr)}</td>
+                <td>{orDash(e.hitting.sb)}</td>
+                <td>{orDash(e.hitting.avg)}</td>
+                <td>{orDash(e.hitting.obp)}</td>
+                <td>{orDash(e.hitting.slg)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+    <h3 class="section">Pitchers</h3>
+    {pitchers.length === 0 ? <p class="muted">No pitching lines on record.</p> : (
+      <div class="table-scroll">
+        <table class="stats">
+          <thead><tr><th>Player</th><th>Age</th><th>G</th><th>GS</th><th>IP</th><th>ERA</th><th>WHIP</th><th>SO</th><th>BB</th></tr></thead>
+          <tbody>
+            {pitchers.map((e) => (
+              <tr>
+                <td><a href={href(e)}>{e.name}</a></td>
+                <td>{orDash(e.pitching.age)}</td>
+                <td>{orDash(e.pitching.g)}</td>
+                <td>{orDash(e.pitching.gs)}</td>
+                <td>{orDash(e.pitching.ip)}</td>
+                <td>{orDash(e.pitching.era)}</td>
+                <td>{orDash(e.pitching.whip)}</td>
+                <td>{orDash(e.pitching.so)}</td>
+                <td>{orDash(e.pitching.bb)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+    {idle.length > 0 && (
+      <p class="muted section">
+        On the roster with no games for this club: {idle.map((e, i) => <>{i > 0 && ', '}<a href={href(e)}>{e.name}</a></>)}
+      </p>
+    )}
+  </div>
+</section>

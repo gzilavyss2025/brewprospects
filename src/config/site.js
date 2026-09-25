@@ -10,4 +10,12 @@ export const ORG_ID = 158
 // Shown in the footer on every page. The site uses MLB Stats API data and MLB
 // Pipeline rankings, and is not run by MLB, MiLB or the Brewers.
 export const DISCLAIMER =
-  'Fan site. Not affiliated with MLB, MiLB or the Milwaukee Brewers. Stats from the MLB Stats API; prospect ranks from MLB Pipeline.'
+  'Fan site. Not affiliated with MLB, MiLB or the Milwaukee Brewers. Stats from the MLB Stats API; prospect ranks from MLB Pipeline and, for 2006–2008, Baseball America.'
+
+// The archive's first season. Past seasons run from here to the season before
+// the current one; the current season lives in src/data/org.json.
+export const ARCHIVE_FIRST_SEASON = 2006
+
+// Seasons with no minor-league games at all. The archive records them with a
+// reason instead of treating their empty rosters as a bad response.
+export const NO_MILB_SEASONS = { 2020: 'No minor-league season was played in 2020 (COVID-19).' }

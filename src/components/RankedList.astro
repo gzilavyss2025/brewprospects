@@ -1,0 +1,38 @@
+---
+// One season's ranked Brewers, from src/data/prospect-history.json. Shows the
+// source on every list and flags a player who also played for another
+// organization that season (docs/adr/0007).
+import { playerSlug } from '../lib/slug.js'
+
+const { season, pagedIds } = Astro.props
+// MLB published 99 names in 2020 and 2021; it was still its Top 100 list.
+const listName = (depth) => (depth >= 99 ? 'Top 100' : `Top ${depth}`)
+const href = (p) => (pagedIds.has(p.playerId) ? `/players/${playerSlug(p.name, p.playerId)}` : `https://www.milb.com/player/${p.playerId}`)
+---
+{season.missing ? (
+  <p class="muted">{season.missing}</p>
+) : (
+  <>
+    {season.incomplete && <p class="note">{season.incomplete}</p>}
+    {season.prospects.length === 0 && season.unlinked.length === 0 ? (
+      <p class="muted">No Brewers on the {season.sourceLabel} {listName(season.depth)} this year.</p>
+    ) : (
+      <ol class="ranked">
+        {[...season.prospects.map((p) => ({ ...p, linked: true })), ...season.unlinked]
+          .sort((a, b) => a.rank - b.rank)
+          .map((p) => (
+            <li>
+              <span class="rank-chip">#{p.rank}</span>
+              {p.linked ? <a href={href(p)}>{p.name}</a> : <span>{p.name}</span>}
+              {p.pos && <span class="muted"> {p.pos}</span>}
+              {!p.linked && <span class="muted"> · never reached the majors; club per Baseball America</span>}
+              {p.inMilwaukee && !p.onFarm && <span class="muted"> · spent the year in Milwaukee</span>}
+              {p.invited && !p.inMilwaukee && !p.onFarm && <span class="muted"> · invited to big-league camp</span>}
+              {p.otherClubs?.length > 0 && <span class="muted"> · also played for {p.otherClubs.join(', ')}</span>}
+            </li>
+          ))}
+      </ol>
+    )}
+    <p class="muted">{season.sourceLabel} preseason {listName(season.depth)}.</p>
+  </>
+)}

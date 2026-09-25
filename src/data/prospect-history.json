@@ -1,0 +1,745 @@
+{
+ "generatedAt": "2026-09-25T16:40:26.607Z",
+ "lastList": 2024,
+ "seasons": [
+  {
+   "season": 2006,
+   "source": "baseball-america",
+   "sourceLabel": "Baseball America",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 11,
+     "source": "baseball-america",
+     "playerId": 425902,
+     "onFarm": false,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Prince Fielder",
+     "pos": "1B",
+     "otherClubs": []
+    },
+    {
+     "rank": 44,
+     "source": "baseball-america",
+     "playerId": 449161,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Mark Rogers",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 49,
+     "source": "baseball-america",
+     "playerId": 460075,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Ryan Braun",
+     "pos": "LF",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2007,
+   "source": "baseball-america",
+   "sourceLabel": "Baseball America",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 16,
+     "source": "baseball-america",
+     "playerId": 451596,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Yovani Gallardo",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 26,
+     "source": "baseball-america",
+     "playerId": 460075,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Ryan Braun",
+     "pos": "LF",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": [
+    {
+     "rank": 91,
+     "name": "Will Inman"
+    }
+   ]
+  },
+  {
+   "season": 2008,
+   "source": "baseball-america",
+   "sourceLabel": "Baseball America",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 23,
+     "source": "baseball-america",
+     "playerId": 453181,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Matt LaPorta",
+     "pos": "1B",
+     "otherClubs": [
+      "Akron Aeros"
+     ]
+    },
+    {
+     "rank": 72,
+     "source": "baseball-america",
+     "playerId": 448159,
+     "onFarm": false,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Manny Parra",
+     "pos": "P",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2009,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 50,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 8,
+     "source": "mlb-pipeline",
+     "playerId": 444876,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Alcides Escobar",
+     "pos": "SS",
+     "otherClubs": []
+    },
+    {
+     "rank": 23,
+     "source": "mlb-pipeline",
+     "playerId": 451143,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Mat Gamel",
+     "pos": "3B",
+     "otherClubs": []
+    },
+    {
+     "rank": 44,
+     "source": "mlb-pipeline",
+     "playerId": 502026,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jeremy Jeffress",
+     "pos": "P",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2010,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 50,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 12,
+     "source": "mlb-pipeline",
+     "playerId": 444876,
+     "onFarm": false,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Alcides Escobar",
+     "pos": "SS",
+     "otherClubs": []
+    },
+    {
+     "rank": 26,
+     "source": "mlb-pipeline",
+     "playerId": 543434,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Brett Lawrie",
+     "pos": "3B",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2011,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 50,
+   "incomplete": null,
+   "prospects": [],
+   "unlinked": []
+  },
+  {
+   "season": 2012,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 49,
+     "source": "mlb-pipeline",
+     "playerId": 503449,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Wily Peralta",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 55,
+     "source": "mlb-pipeline",
+     "playerId": 516416,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Jean Segura",
+     "pos": "SS",
+     "otherClubs": [
+      "Arkansas Travelers",
+      "Los Angeles Angels"
+     ]
+    },
+    {
+     "rank": 97,
+     "source": "mlb-pipeline",
+     "playerId": 605152,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jed Bradley",
+     "pos": "P",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2013,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 64,
+     "source": "mlb-pipeline",
+     "playerId": 503449,
+     "onFarm": false,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Wily Peralta",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 93,
+     "source": "mlb-pipeline",
+     "playerId": 606115,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Orlando Arcia",
+     "pos": "SS",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2014,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 83,
+     "source": "mlb-pipeline",
+     "playerId": 519076,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Jimmy Nelson",
+     "pos": "P",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2015,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 71,
+     "source": "mlb-pipeline",
+     "playerId": 570267,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Domingo Santana",
+     "pos": "RF",
+     "otherClubs": [
+      "Fresno Grizzlies",
+      "Houston Astros"
+     ]
+    },
+    {
+     "rank": 88,
+     "source": "mlb-pipeline",
+     "playerId": 606115,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Orlando Arcia",
+     "pos": "SS",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2016,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 6,
+     "source": "mlb-pipeline",
+     "playerId": 606115,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Orlando Arcia",
+     "pos": "SS",
+     "otherClubs": []
+    },
+    {
+     "rank": 16,
+     "source": "mlb-pipeline",
+     "playerId": 621446,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Lewis Brinson",
+     "pos": "CF",
+     "otherClubs": [
+      "AZL Rangers",
+      "Frisco RoughRiders"
+     ]
+    },
+    {
+     "rank": 32,
+     "source": "mlb-pipeline",
+     "playerId": 621433,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Brett Phillips",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 57,
+     "source": "mlb-pipeline",
+     "playerId": 605347,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jorge López",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 61,
+     "source": "mlb-pipeline",
+     "playerId": 623352,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Josh Hader",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 73,
+     "source": "mlb-pipeline",
+     "playerId": 656814,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Luis Ortiz",
+     "pos": "P",
+     "otherClubs": [
+      "Frisco RoughRiders",
+      "High Desert Mavericks"
+     ]
+    },
+    {
+     "rank": 83,
+     "source": "mlb-pipeline",
+     "playerId": 663757,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Trent Grisham",
+     "pos": "CF",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2017,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 18,
+     "source": "mlb-pipeline",
+     "playerId": 621446,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Lewis Brinson",
+     "pos": "CF",
+     "otherClubs": []
+    },
+    {
+     "rank": 30,
+     "source": "mlb-pipeline",
+     "playerId": 641999,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Corey Ray",
+     "pos": "CF",
+     "otherClubs": []
+    },
+    {
+     "rank": 38,
+     "source": "mlb-pipeline",
+     "playerId": 623352,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Josh Hader",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 62,
+     "source": "mlb-pipeline",
+     "playerId": 656814,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Luis Ortiz",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 65,
+     "source": "mlb-pipeline",
+     "playerId": 656371,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Isan Díaz",
+     "pos": "2B",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2018,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 56,
+     "source": "mlb-pipeline",
+     "playerId": 669374,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Keston Hiura",
+     "pos": "1B",
+     "otherClubs": []
+    },
+    {
+     "rank": 69,
+     "source": "mlb-pipeline",
+     "playerId": 669203,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Corbin Burnes",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 96,
+     "source": "mlb-pipeline",
+     "playerId": 605540,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Brandon Woodruff",
+     "pos": "P",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2019,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 20,
+     "source": "mlb-pipeline",
+     "playerId": 669374,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Keston Hiura",
+     "pos": "1B",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2020,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 99,
+   "incomplete": "No farm rosters exist for this season. Only prospects on the Milwaukee roster or invited to big-league camp can be matched.",
+   "prospects": [],
+   "unlinked": []
+  },
+  {
+   "season": 2021,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 99,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 64,
+     "source": "mlb-pipeline",
+     "playerId": 669003,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Garrett Mitchell",
+     "pos": "CF",
+     "otherClubs": []
+    },
+    {
+     "rank": 95,
+     "source": "mlb-pipeline",
+     "playerId": 668930,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Brice Turang",
+     "pos": "2B",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2022,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 70,
+     "source": "mlb-pipeline",
+     "playerId": 686217,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Sal Frelick",
+     "pos": "RF",
+     "otherClubs": []
+    },
+    {
+     "rank": 100,
+     "source": "mlb-pipeline",
+     "playerId": 686894,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Joey Wiemer",
+     "pos": "RF",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2023,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 8,
+     "source": "mlb-pipeline",
+     "playerId": 694192,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jackson Chourio",
+     "pos": "LF",
+     "otherClubs": []
+    },
+    {
+     "rank": 30,
+     "source": "mlb-pipeline",
+     "playerId": 686217,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Sal Frelick",
+     "pos": "RF",
+     "otherClubs": []
+    },
+    {
+     "rank": 90,
+     "source": "mlb-pipeline",
+     "playerId": 686894,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Joey Wiemer",
+     "pos": "RF",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2024,
+   "source": "mlb-pipeline",
+   "sourceLabel": "MLB Pipeline",
+   "depth": 100,
+   "incomplete": null,
+   "prospects": [
+    {
+     "rank": 2,
+     "source": "mlb-pipeline",
+     "playerId": 694192,
+     "onFarm": false,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Jackson Chourio",
+     "pos": "LF",
+     "otherClubs": []
+    },
+    {
+     "rank": 33,
+     "source": "mlb-pipeline",
+     "playerId": 694819,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jacob Misiorowski",
+     "pos": "P",
+     "otherClubs": []
+    },
+    {
+     "rank": 35,
+     "source": "mlb-pipeline",
+     "playerId": 691620,
+     "onFarm": true,
+     "inMilwaukee": false,
+     "invited": false,
+     "name": "Jeferson Quero",
+     "pos": "C",
+     "otherClubs": []
+    },
+    {
+     "rank": 46,
+     "source": "mlb-pipeline",
+     "playerId": 672012,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Tyler Black",
+     "pos": "DH",
+     "otherClubs": []
+    },
+    {
+     "rank": 63,
+     "source": "mlb-pipeline",
+     "playerId": 687401,
+     "onFarm": true,
+     "inMilwaukee": true,
+     "invited": false,
+     "name": "Joey Ortiz",
+     "pos": "SS",
+     "otherClubs": []
+    }
+   ],
+   "unlinked": []
+  },
+  {
+   "season": 2025,
+   "missing": "No Top 100 list on record for 2025 yet."
+  }
+ ]
+}

@@ -1,0 +1,166 @@
+[
+  {
+    "season": 2005,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 91,
+    "source": "baseball-america",
+    "fetchedAt": "2026-09-01T14:14:03.951Z",
+    "note": "MLB Pipeline still has no ranked list for this season (HTTP 200, real empty shell, confirmed live -- see the original note this replaces). Filled instead from a third-party CSV transcription of Baseball America's preseason top-100 list: github.com/feralad/rostercrunch, \"Final Datasets/ba_1990_2020_top_100_preseason_prospect_rankings_id_debut_updates_may_2024.csv\", retrieved 2026-09-01T14:14:03.951Z. That CSV declares NO licence (no LICENSE file, no terms in its README) -- these 91 rows are Baseball America editorial content used without a declared licence, by deliberate choice, not because it is public domain. BA ranked 100 players; 9 of them carry no Retrosheet id because they never reached the majors, and are excluded here but recorded in ba-non-debuts.json, not dropped silently. The other 91 joined to an MLBAM id via the Chadwick Bureau register (github.com/chadwickbureau/register, Open Data Commons Attribution License 1.0) at a 100% join rate (91 of 91)."
+  },
+  {
+    "season": 2006,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 94,
+    "source": "baseball-america",
+    "fetchedAt": "2026-09-01T14:14:03.951Z",
+    "note": "MLB Pipeline still has no ranked list for this season (HTTP 200, real empty shell, confirmed live -- see the original note this replaces). Filled instead from a third-party CSV transcription of Baseball America's preseason top-100 list: github.com/feralad/rostercrunch, \"Final Datasets/ba_1990_2020_top_100_preseason_prospect_rankings_id_debut_updates_may_2024.csv\", retrieved 2026-09-01T14:14:03.951Z. That CSV declares NO licence (no LICENSE file, no terms in its README) -- these 94 rows are Baseball America editorial content used without a declared licence, by deliberate choice, not because it is public domain. BA ranked 100 players; 6 of them carry no Retrosheet id because they never reached the majors, and are excluded here but recorded in ba-non-debuts.json, not dropped silently. The other 94 joined to an MLBAM id via the Chadwick Bureau register (github.com/chadwickbureau/register, Open Data Commons Attribution License 1.0) at a 100% join rate (94 of 94)."
+  },
+  {
+    "season": 2007,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 95,
+    "source": "baseball-america",
+    "fetchedAt": "2026-09-01T14:14:03.951Z",
+    "note": "MLB Pipeline still has no ranked list for this season (HTTP 200, real empty shell, confirmed live -- see the original note this replaces). Filled instead from a third-party CSV transcription of Baseball America's preseason top-100 list: github.com/feralad/rostercrunch, \"Final Datasets/ba_1990_2020_top_100_preseason_prospect_rankings_id_debut_updates_may_2024.csv\", retrieved 2026-09-01T14:14:03.951Z. That CSV declares NO licence (no LICENSE file, no terms in its README) -- these 95 rows are Baseball America editorial content used without a declared licence, by deliberate choice, not because it is public domain. BA ranked 100 players; 5 of them carry no Retrosheet id because they never reached the majors, and are excluded here but recorded in ba-non-debuts.json, not dropped silently. The other 95 joined to an MLBAM id via the Chadwick Bureau register (github.com/chadwickbureau/register, Open Data Commons Attribution License 1.0) at a 100% join rate (95 of 95)."
+  },
+  {
+    "season": 2008,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 95,
+    "source": "baseball-america",
+    "fetchedAt": "2026-09-01T14:14:03.951Z",
+    "note": "MLB Pipeline still has no ranked list for this season (HTTP 200, real empty shell, confirmed live -- see the original note this replaces). Filled instead from a third-party CSV transcription of Baseball America's preseason top-100 list: github.com/feralad/rostercrunch, \"Final Datasets/ba_1990_2020_top_100_preseason_prospect_rankings_id_debut_updates_may_2024.csv\", retrieved 2026-09-01T14:14:03.951Z. That CSV declares NO licence (no LICENSE file, no terms in its README) -- these 95 rows are Baseball America editorial content used without a declared licence, by deliberate choice, not because it is public domain. BA ranked 100 players; 5 of them carry no Retrosheet id because they never reached the majors, and are excluded here but recorded in ba-non-debuts.json, not dropped silently. The other 95 joined to an MLBAM id via the Chadwick Bureau register (github.com/chadwickbureau/register, Open Data Commons Attribution License 1.0) at a 100% join rate (95 of 95)."
+  },
+  {
+    "season": 2009,
+    "status": "ok",
+    "depth": 50,
+    "rowCount": 50,
+    "fetchedAt": "2026-08-28T14:35:26.889Z",
+    "note": "50 ranks retrieved, contiguous 1..50, no duplicate ranks or ids."
+  },
+  {
+    "season": 2010,
+    "status": "ok",
+    "depth": 50,
+    "rowCount": 50,
+    "fetchedAt": "2026-08-28T14:35:28.136Z",
+    "note": "50 ranks retrieved, contiguous 1..50, no duplicate ranks or ids."
+  },
+  {
+    "season": 2011,
+    "status": "ok",
+    "depth": 50,
+    "rowCount": 50,
+    "fetchedAt": "2026-08-28T14:35:29.417Z",
+    "note": "50 ranks retrieved, contiguous 1..50, no duplicate ranks or ids."
+  },
+  {
+    "season": 2012,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:30.692Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2013,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:31.943Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2014,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:33.209Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2015,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:34.490Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2016,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:35.769Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2017,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:37.058Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2018,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:38.368Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2019,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:39.651Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2020,
+    "status": "ok",
+    "depth": 99,
+    "rowCount": 99,
+    "fetchedAt": "2026-08-28T14:35:40.963Z",
+    "note": "99 ranks retrieved, contiguous 1..99, no duplicate ranks or ids. Non-round depth -- confirmed NOT a parsing gap by the contiguity check above; MLB simply published 99 names this year."
+  },
+  {
+    "season": 2021,
+    "status": "ok",
+    "depth": 99,
+    "rowCount": 99,
+    "fetchedAt": "2026-08-28T14:35:42.290Z",
+    "note": "99 ranks retrieved, contiguous 1..99, no duplicate ranks or ids. Non-round depth -- confirmed NOT a parsing gap by the contiguity check above; MLB simply published 99 names this year."
+  },
+  {
+    "season": 2022,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:43.587Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2023,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:44.857Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  },
+  {
+    "season": 2024,
+    "status": "ok",
+    "depth": 100,
+    "rowCount": 100,
+    "fetchedAt": "2026-08-28T14:35:46.146Z",
+    "note": "100 ranks retrieved, contiguous 1..100, no duplicate ranks or ids."
+  }
+]

@@ -12,6 +12,8 @@ npm install
 npm run dev        # http://127.0.0.1:4321
                    # editor: http://127.0.0.1:4321/keystatic
 npm run data       # refresh src/data/*.json (runs nightly in Actions)
+node scripts/data/gen-archive.mjs --season 2015   # rebuild one past season
+node scripts/data/gen-archive.mjs --refetch       # rebuild every past season
 npm run lint && npm test && npm run build
 ```
 
@@ -23,6 +25,9 @@ npm run lint && npm test && npm run build
 | `/depth-chart` | Every affiliate's active roster by position, plus injured list |
 | `/players` | Every org player, grouped by current club |
 | `/players/{name-id}` | Bio, level path, MiLB stats by year, your notes, posts about him |
+| `/seasons` | Every past season since 2006 |
+| `/seasons/{year}` | That year's affiliates, each player's line for his club, and the Brewers on that year's Top 100 |
+| `/prospects` | Top 100 history: every Brewer on a preseason list since 2006 |
 | `/posts` | All posts by type |
 
 ## Writing a post

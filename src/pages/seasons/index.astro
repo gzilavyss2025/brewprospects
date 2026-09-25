@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro'
+import { org } from '../../lib/build/data.js'
+import { archive, prospectHistory } from '../../lib/build/archive.js'
+import { clubsByLevel, affiliatePlayerIds } from '../../lib/archive.js'
+import { levelFor } from '../../lib/levels.js'
+
+// Newest first. The current season links to the live depth chart.
+const rows = [...archive].reverse().map((s) => {
+  const ranked = prospectHistory.seasons.find((h) => String(h.season) === s.season)
+  const top = ranked?.prospects?.[0]
+  return {
+    season: s.season,
+    noSeason: s.noSeason,
+    clubs: clubsByLevel(s),
+    players: affiliatePlayerIds(s).size,
+    ranked: ranked?.prospects?.length ?? null,
+    top,
+  }
+})
+---
+<Base title="Seasons" description="Every Brewers farm season since 2006: affiliates, rosters, lines and Top 100 prospects.">
+  <h1>Past seasons</h1>
+  <p class="muted">
+    Every Brewers farm season since {archive[0]?.season}. The {org.season} season is on the <a href="/depth-chart">depth chart</a>.
+    See also <a href="/prospects">Top 100 history</a>.
+  </p>
+  <div class="grid">
+    {rows.map((r) => (
+      <a class="card" href={`/seasons/${r.season}`}>
+        <h3>{r.season}</h3>
+        {r.noSeason ? (
+          <p class="muted">No minor-league season.</p>
+        ) : (
+          <>
+            <p>{r.clubs.map((c) => levelFor(c.sportId)?.label).join(' · ')}</p>
+            <p class="muted">{r.players} players · {r.ranked ?? 0} in the Top 100</p>
+            {r.top && <p><span class="rank-chip">#{r.top.rank}</span> {r.top.name}</p>}
+          </>
+        )}
+      </a>
+    ))}
+  </div>
+</Base>
