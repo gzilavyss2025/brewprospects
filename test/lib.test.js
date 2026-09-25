@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { playerSlug, idFromSlug, slugify } from '../src/lib/slug.js'
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/color.js'
-import { accentFor, BREWERS } from '../src/lib/affiliates.js'
+import { accentFor, BREWERS, clubIdentity } from '../src/lib/affiliates.js'
 import { cardPlayerIds, linkedPlayerIds, postsForPlayer } from '../src/lib/posts.js'
 import { pickSeasonLine, lineText } from '../src/lib/card.js'
 import season from './fixtures/person-season.json' with { type: 'json' }
@@ -45,6 +45,28 @@ test('a club with no researched color falls back to Brewers navy, not a guess', 
   const a = accentFor(406)
   assert.equal(a.primary, BREWERS.navy)
   assert.equal(a.researched, false)
+})
+
+// Names from src/data/archive/*.json and org.json (2026), checked 2026-09-25.
+test('a past club under a reused team id gets no logo and no club color', () => {
+  const mudcats = clubIdentity({ id: 249, name: 'Carolina Mudcats' }, 'Wilson Warbirds')
+  assert.equal(mudcats.logo, null)
+  assert.equal(mudcats.accent.primary, BREWERS.navy)
+  assert.equal(mudcats.accent.researched, false)
+})
+
+test('a club no longer affiliated gets no logo', () => {
+  assert.equal(clubIdentity({ id: 559, name: 'Huntsville Stars' }, undefined).logo, null)
+})
+
+test('a renamed complex club gets no logo, even with the same id', () => {
+  assert.equal(clubIdentity({ id: 406, name: 'AZL Brewers' }, 'ACL Brewers').logo, null)
+})
+
+test('a club that still has its name keeps its logo and color', () => {
+  const tr = clubIdentity({ id: 572, name: 'Wisconsin Timber Rattlers' }, 'Wisconsin Timber Rattlers')
+  assert.match(tr.logo, /team-logos\/572\.svg$/)
+  assert.equal(tr.accent.researched, true)
 })
 
 test('posts link to players through the players field and through cards', () => {

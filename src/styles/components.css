@@ -47,6 +47,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
   border: 2px solid var(--navy); border-bottom: 0;
 }
 .club-head img { width: 48px; height: 48px; background: var(--card); border-radius: 50%; padding: 4px; }
+.club-head .club-logo-none { width: 48px; height: 48px; flex: none; }
 .club-head h2 { margin: 0; font-size: 24px; }
 .club-head .sub { font-size: 14px; opacity: 0.9; }
 .club-body {

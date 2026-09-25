@@ -3,12 +3,14 @@
 // for this club. Names link to a player page when one exists, else to MiLB.com.
 import { levelFor } from '../lib/levels.js'
 import { orDash } from '../lib/format.js'
-import { accentFor, teamLogoUrl } from '../lib/affiliates.js'
+import { clubIdentity } from '../lib/affiliates.js'
+import { affiliateById } from '../lib/build/data.js'
 import { playerSlug } from '../lib/slug.js'
 
 const { club, roster, pagedIds } = Astro.props
 const level = levelFor(club.sportId)
-const accent = accentFor(club.id)
+// Today's logo and color only if the club still has this season's name.
+const { logo, accent } = clubIdentity(club, affiliateById.get(club.id)?.name)
 const href = (e) => (pagedIds.has(e.id) ? `/players/${playerSlug(e.name, e.id)}` : `https://www.milb.com/player/${e.id}`)
 const byName = (a, b) => a.name.localeCompare(b.name)
 // A two-way line puts a player in both tables. Most rows hold one or the other.
@@ -18,7 +20,7 @@ const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
 ---
 <section class="club" id={`club-${club.id}`} style={`--club:${accent.primary};--club-ink:${accent.ink}`}>
   <div class="club-head">
-    <img src={teamLogoUrl(club.id)} alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" />
+    {logo ? <img src={logo} alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" /> : <span class="club-logo-none" aria-hidden="true" />}
     <div>
       <h2>{club.name}</h2>
       <div class="sub">{level?.name ?? '—'} · {club.league || '—'}</div>
