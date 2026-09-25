@@ -33,7 +33,7 @@ h3 { font-size: 20px; }
 
 .num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
-:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 2px var(--focus-halo); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
