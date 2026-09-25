@@ -29,3 +29,31 @@ test('a gold focus ring on paper fails the FOCUS line', () => {
   const css = '--gold: #ffc52f; --paper: #fbf6e9; /* PAIRS: gold/gold */ /* FOCUS: gold/paper */'
   assert.match(checkContrastLines(css).join('\n'), /FOCUS pair gold\/paper is 1\.\d\d:1/)
 })
+
+test('schemaProblems names a field only one side declares', async () => {
+  const { schemaProblems } = await import('../scripts/checks/content-config.mjs')
+  const ks = { recaps: { title: 1, period: 1, body: 1 }, notes: { player: 1 } }
+  const astro = { recaps: { title: 1 } }
+  assert.deepEqual(schemaProblems(ks, astro), [
+    'recaps.period is in Keystatic but not in src/content.config.js.',
+    'Collection "notes" is only in keystatic.config.jsx.',
+  ])
+})
+
+test('the real Keystatic and Astro content configs match', async () => {
+  const { loadContentConfigs, schemaProblems } = await import('../scripts/checks/content-config.mjs')
+  const { keystatic, astro } = await loadContentConfigs()
+  const schemas = Object.fromEntries(Object.entries(keystatic).map(([k, v]) => [k, v.schema]))
+  const shapes = Object.fromEntries(Object.entries(astro).map(([k, v]) => [k, v.schema.shape]))
+  assert.deepEqual(schemaProblems(schemas, shapes), [])
+})
+
+test('clubListProblems catches the old six-club guide list', async () => {
+  const { clubListProblems } = await import('../scripts/checks/content-config.mjs')
+  const affiliates = [{ id: 2101, name: 'DSL Brewers Gold' }, { id: 607, name: 'DSL Brewers Blue' }]
+  const options = [{ label: 'DSL Brewers (Dominican complex)', value: '2101' }]
+  assert.deepEqual(clubListProblems(options, affiliates), [
+    'Guide club 2101 is labeled "DSL Brewers (Dominican complex)"; it is DSL Brewers Gold.',
+    'Guide club list is missing DSL Brewers Blue (607).',
+  ])
+})

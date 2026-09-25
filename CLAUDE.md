@@ -59,7 +59,9 @@ deploys. The nightly data job is the one planned exception.
    record"; never fill a gap with a guess, an invented color, or a stat the API
    did not send. MiLB feeds are often thin; every reader must survive a blank.
 2. **Verify a new API field against a live response** before you use it, and
-   note which response you checked in a comment.
+   note which response you checked in a comment. A captured response goes in
+   `test/fixtures/` with its date and URL in `manifest.json`; the nightly
+   `scripts/data/drift.mjs` refetches each one and fails on a missing field.
 3. **Who counts as an org player** is defined in `src/lib/org.js` (ADR-0005).
    Change it there, with a test.
 4. **Pure logic lives in `src/lib/`** and has tests. Modules that read

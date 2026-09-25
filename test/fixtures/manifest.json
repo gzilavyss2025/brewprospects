@@ -1,0 +1,22 @@
+{
+  "people-yearbyyear.json": {
+    "capturedAt": "2026-09-24",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=815908,677941&hydrate=draft,stats(group=[hitting,pitching],type=[yearByYear],leagueListId=milb_all)",
+    "note": "gen-org's person request (scripts/data/gen-org.mjs). Two players, one per stat group."
+  },
+  "person-season.json": {
+    "capturedAt": "2026-09-24",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/815908?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],season=2026,leagueListId=milb_all)",
+    "note": "The prospect card's request (src/lib/card.js), pinned to 2026 so a finished season's content cannot change."
+  },
+  "person-season-multilevel.json": {
+    "capturedAt": "2026-09-24",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/815908?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],season=2025,leagueListId=milb_all)",
+    "note": "The prospect card's request for 2025: one split per level plus a Minors total."
+  },
+  "roster-season-2025-biloxi.json": {
+    "capturedAt": "2026-09-25",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/teams/5015/roster?rosterType=fullSeason&season=2025&hydrate=person(stats(type=season,group=[hitting,pitching],sportId=12,season=2025))",
+    "note": "gen-archive's roster request (scripts/data/gen-archive.mjs). Trimmed to six players."
+  }
+}

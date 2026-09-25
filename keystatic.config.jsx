@@ -89,6 +89,8 @@ export default config({
       ),
     }),
     guides: postCollection('guides', 'Ballpark & travel guides', {
+      // test/content-schema.test.js fails when this list and org.json's
+      // affiliates differ.
       affiliateId: fields.select({
         label: 'Club',
         options: [
@@ -96,8 +98,9 @@ export default config({
           { label: 'Biloxi Shuckers (AA)', value: '5015' },
           { label: 'Wisconsin Timber Rattlers (A+)', value: '572' },
           { label: 'Wilson Warbirds (A)', value: '249' },
-          { label: 'ACL Brewers', value: '406' },
-          { label: 'DSL Brewers (Dominican complex)', value: '2101' },
+          { label: 'ACL Brewers (Arizona complex)', value: '406' },
+          { label: 'DSL Brewers Gold (Dominican complex)', value: '2101' },
+          { label: 'DSL Brewers Blue (Dominican complex)', value: '607' },
         ],
         defaultValue: '556',
       }),

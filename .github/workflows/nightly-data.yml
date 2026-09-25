@@ -63,10 +63,15 @@ jobs:
             sleep $((attempt * 15))
           done
           exit 1
+      # CLAUDE.md rule 2 with a script behind it: every captured fixture's
+      # field paths must still be in a fresh API response.
+      - id: drift
+        continue-on-error: true
+        run: node scripts/data/drift.mjs
       # A job can succeed every night and write nothing (gen-org keeping last
       # season). This fails when the snapshots are stuck.
       - run: node scripts/data/freshness.mjs
-      - name: Fail if a generator failed
+      - name: Fail if a generator or the drift check failed
         if: always()
         env:
           RESULTS: >-
@@ -74,10 +79,11 @@ jobs:
             fetch-pipeline=${{ steps.pipeline.outcome }}
             gen-archive=${{ steps.archive.outcome }}
             gen-prospect-history=${{ steps.history.outcome }}
+            api-drift=${{ steps.drift.outcome }}
         run: |
           failed=$(echo "$RESULTS" | tr ' ' '\n' | grep -v '=success$' || true)
           if [ -n "$failed" ]; then
-            echo "These generators failed and kept their last good file:"
+            echo "These steps failed (a failed generator kept its last good file):"
             echo "$failed"
             exit 1
           fi
