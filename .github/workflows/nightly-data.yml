@@ -52,10 +52,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data
           git commit -m "data: nightly farm snapshot"
-          # A merge can land on main while the job runs. Rebase and retry
-          # rather than lose the night's data.
+          # A merge can land on the branch while the job runs. Rebase onto it
+          # and retry rather than lose the night's data. The branch is the one
+          # the job ran on: main on schedule, any branch on a manual run.
           for attempt in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
+            if git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME"; then
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
             sleep $((attempt * 15))
           done
           exit 1
