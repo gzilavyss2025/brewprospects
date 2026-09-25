@@ -1,12 +1,12 @@
 // MiLB levels, keyed by MLB Stats API sportId. Order is HIGH to LOW, the order
 // the depth chart reads top to bottom. sportId 16 holds every complex league
-// (ACL, DSL), which the API does not split by sportId.
+// (ACL, DSL, and before 2021 the Pioneer League), which the API does not split.
 export const LEVELS = [
   { sportId: 11, label: 'AAA', name: 'Triple-A' },
   { sportId: 12, label: 'AA', name: 'Double-A' },
   { sportId: 13, label: 'A+', name: 'High-A' },
   { sportId: 14, label: 'A', name: 'Single-A' },
-  { sportId: 16, label: 'CPX', name: 'Complex' },
+  { sportId: 16, label: 'ROK', name: 'Rookie' },
 ]
 
 // sportId 21 is the API's "Minor League Baseball" total row. It is a sum of

@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro'
+import SeasonClub from '../../components/SeasonClub.astro'
+import RankedList from '../../components/RankedList.astro'
+import { archive, prospectHistory, pagedIds } from '../../lib/build/archive.js'
+import { clubsByLevel } from '../../lib/archive.js'
+
+export function getStaticPaths() {
+  return archive.map((s) => ({ params: { season: s.season }, props: { data: s } }))
+}
+
+const { data } = Astro.props
+const ranked = prospectHistory.seasons.find((s) => String(s.season) === data.season)
+const clubs = clubsByLevel(data)
+const years = archive.map((s) => s.season)
+const i = years.indexOf(data.season)
+const prev = years[i - 1]
+const next = years[i + 1]
+---
+<Base title={`${data.season} farm system`} description={`Every Brewers affiliate in ${data.season}, with each player's line and the year's Top 100 prospects.`}>
+  <p>
+    <a href="/seasons">All seasons</a>
+    {prev && <> · <a href={`/seasons/${prev}`}>← {prev}</a></>}
+    {next && <> · <a href={`/seasons/${next}`}>{next} →</a></>}
+  </p>
+  <h1>{data.season} Brewers farm system</h1>
+
+  {data.noSeason ? (
+    <p class="note">{data.noSeason}</p>
+  ) : (
+    <p>
+      {clubs.map((c, n) => <>{n > 0 && ' · '}<a href={`#club-${c.id}`}>{c.name}</a></>)}
+    </p>
+  )}
+
+  <section class="section">
+    <h2>Top 100 prospects</h2>
+    {ranked ? <RankedList season={ranked} pagedIds={pagedIds} /> : <p class="muted">No list on record.</p>}
+  </section>
+
+  {clubs.map((c) => <SeasonClub club={c} roster={data.rosters[c.id] ?? []} pagedIds={pagedIds} />)}
+
+  {!data.noSeason && <p class="muted section">Lines are each player's stats for that club only, from the MLB Stats API.</p>}
+</Base>

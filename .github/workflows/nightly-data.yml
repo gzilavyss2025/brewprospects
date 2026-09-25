@@ -23,6 +23,10 @@ jobs:
       - run: npm ci
       - run: node scripts/data/gen-org.mjs
       - run: node scripts/data/fetch-pipeline.mjs
+      # Fills only archive seasons that are missing, so most nights it makes
+      # no requests beyond reading the files on disk.
+      - run: node scripts/data/gen-archive.mjs
+      - run: node scripts/data/gen-prospect-history.mjs
       - run: npm test
       - name: Commit if changed
         run: |

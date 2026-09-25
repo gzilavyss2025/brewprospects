@@ -4,15 +4,17 @@ import Base from '../../layouts/Base.astro'
 import StatTable from '../../components/StatTable.astro'
 import Headshot from '../../components/Headshot.astro'
 import { org, allPlayers, affiliateById } from '../../lib/build/data.js'
+import { pastPlayers, ranksFor, lastArchiveStop, seasonByYear } from '../../lib/build/archive.js'
 import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/org.js'
 import { levelFor } from '../../lib/levels.js'
 import { playerSlug, idFromSlug } from '../../lib/slug.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
+import { ARCHIVE_FIRST_SEASON } from '../../config/site.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
 import { postsForPlayer } from '../../lib/posts.js'
 
 export async function getStaticPaths() {
-  return allPlayers().map((p) => ({ params: { slug: playerSlug(p.name, p.id) }, props: { player: p } }))
+  return [...allPlayers(), ...pastPlayers()].map((p) => ({ params: { slug: playerSlug(p.name, p.id) }, props: { player: p } }))
 }
 
 const { player } = Astro.props
@@ -23,7 +25,13 @@ const other = group === 'hitting' ? 'pitching' : 'hitting'
 const primaryRows = statRows(player, group)
 const otherRows = statRows(player, other)
 const path = levelPath(player)
+const lastStop = player.archiveOnly ? lastArchiveStop(player.id) : null
+const lastClub = lastStop
+  ? seasonByYear.get(lastStop.season)?.affiliates.find((a) => a.id === lastStop.teamId)?.name
+  : null
+const ranks = ranksFor(player.id)
 const where = (() => {
+  if (player.archiveOnly) return lastClub ? `Last on a Brewers farm club: ${lastClub}, ${lastStop.season}` : 'Former Brewers farmhand'
   const g = player.assignment ? statusGroup(player.assignment.status) : null
   if (!club) return 'Not on a Brewers affiliate roster'
   if (g === 'gone') return `Left the org (last with ${club.name})`
@@ -69,6 +77,20 @@ const draftText = draft
       <h2>Notes</h2>
       <div class="note prose"><NoteContent /></div>
     </section>
+  )}
+
+  {ranks.length > 0 && (
+    <section class="section">
+      <h2>Top 100 history</h2>
+      <p>
+        {ranks.map((r) => <><span class="rank-chip" title={r.source === 'baseball-america' ? 'Baseball America' : 'MLB Pipeline'}>{r.season} #{r.rank}</span>{' '}</>)}
+      </p>
+      <p class="muted">Preseason Top 100 ranks from years he played in the Brewers system. <a href="/prospects">All years</a></p>
+    </section>
+  )}
+
+  {player.archiveOnly && (
+    <p class="note section">The path and tables below cover his minor-league seasons with Brewers affiliates, {ARCHIVE_FIRST_SEASON} on. Time with other clubs and in the majors is not shown.</p>
   )}
 
   <section class="section">

@@ -82,7 +82,7 @@ test('depthChart for an unknown club returns empty buckets', () => {
 test('levelPath reads a real multi-level career in order, without the total row', () => {
   assert.deepEqual(
     levelPath(made).map((s) => `${s.season} ${s.label}`),
-    ['2024 CPX', '2025 A', '2025 A+', '2025 AA', '2026 AA'],
+    ['2024 ROK', '2025 A', '2025 A+', '2025 AA', '2026 AA'],
   )
 })
 
@@ -97,4 +97,12 @@ test('primaryGroup follows position', () => {
   assert.equal(primaryGroup({ pos: 'TWP' }), 'pitching')
   assert.equal(primaryGroup({ pos: 'SS' }), 'hitting')
   assert.equal(primaryGroup(null), 'hitting')
+})
+
+test('rosterVerdict: zero players is a season not started, a few is a bad response', async () => {
+  const { rosterVerdict } = await import('../src/lib/org.js')
+  assert.equal(rosterVerdict(0), 'not-started')
+  assert.equal(rosterVerdict(1), 'thin')
+  assert.equal(rosterVerdict(99), 'thin')
+  assert.equal(rosterVerdict(100), 'ok')
 })

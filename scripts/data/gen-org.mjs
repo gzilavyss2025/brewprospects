@@ -13,7 +13,7 @@
 // Usage: node scripts/data/gen-org.mjs [season]
 import { mkdir, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
-import { orgPlayerIds } from '../../src/lib/org.js'
+import { orgPlayerIds, rosterVerdict } from '../../src/lib/org.js'
 import { slimAffiliate, slimRosterEntry, slimPerson } from './slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
@@ -47,7 +47,15 @@ async function main() {
   }
 
   const ids = orgPlayerIds(rosters)
-  if (ids.length < 100) {
+  const verdict = rosterVerdict(ids.length)
+  // Between seasons (about October to March) the new calendar year has
+  // affiliates but no rosters. Keep last season's snapshot and succeed, so
+  // the nightly job stays green. An explicit season argument still fails.
+  if (verdict === 'not-started' && !process.argv[2]) {
+    console.log(`gen-org: ${season} rosters are empty (season not started); keeping the last snapshot.`)
+    return
+  }
+  if (verdict !== 'ok') {
     throw new Error(`Only ${ids.length} org players for ${season}; expected 100 or more.`)
   }
 

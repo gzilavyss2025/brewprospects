@@ -121,3 +121,12 @@ export function statRows(player, group) {
 export function primaryGroup(player) {
   return player?.pos === 'P' || player?.pos === 'TWP' ? 'pitching' : 'hitting'
 }
+
+// What a season's roster count means to the nightly job. Zero players: the
+// season has not started (checked live: 2027 on 2026-09-25 lists all seven
+// affiliates with empty rosters), so the last snapshot stays. 1 to 99: a
+// thin or broken response, which must fail loudly (docs/adr/0003).
+export function rosterVerdict(playerCount) {
+  if (playerCount === 0) return 'not-started'
+  return playerCount < 100 ? 'thin' : 'ok'
+}
