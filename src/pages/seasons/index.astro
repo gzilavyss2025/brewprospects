@@ -4,6 +4,7 @@ import { org } from '../../lib/build/data.js'
 import { archive, prospectHistory } from '../../lib/build/archive.js'
 import { clubsByLevel, affiliatePlayerIds } from '../../lib/archive.js'
 import { levelFor } from '../../lib/levels.js'
+import { paths } from '../../lib/slug.js'
 
 // Newest first. The current season links to the live depth chart.
 const rows = [...archive].reverse().map((s) => {
@@ -27,7 +28,7 @@ const rows = [...archive].reverse().map((s) => {
   </p>
   <div class="grid">
     {rows.map((r) => (
-      <a class="card" href={`/seasons/${r.season}`}>
+      <a class="card" href={paths.season(r.season)}>
         <h3>{r.season}</h3>
         {r.noSeason ? (
           <p class="muted">No minor-league season.</p>

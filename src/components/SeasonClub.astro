@@ -5,13 +5,13 @@ import { levelFor } from '../lib/levels.js'
 import { orDash } from '../lib/format.js'
 import { clubIdentity } from '../lib/affiliates.js'
 import { affiliateById } from '../lib/build/data.js'
-import { playerSlug } from '../lib/slug.js'
+import { paths } from '../lib/slug.js'
 
 const { club, roster, pagedIds } = Astro.props
 const level = levelFor(club.sportId)
 // Today's logo and color only if the club still has this season's name.
 const { logo, accent } = clubIdentity(club, affiliateById.get(club.id)?.name)
-const href = (e) => (pagedIds.has(e.id) ? `/players/${playerSlug(e.name, e.id)}` : `https://www.milb.com/player/${e.id}`)
+const href = (e) => (pagedIds.has(e.id) ? paths.player(e.name, e.id) : `https://www.milb.com/player/${e.id}`)
 const byName = (a, b) => a.name.localeCompare(b.name)
 // A two-way line puts a player in both tables. Most rows hold one or the other.
 const hitters = roster.filter((e) => e.hitting && e.pos !== 'P').sort(byName)

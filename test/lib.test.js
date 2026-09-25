@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { playerSlug, idFromSlug, slugify } from '../src/lib/slug.js'
+import { playerSlug, idFromSlug, slugify, paths, canonicalUrl } from '../src/lib/slug.js'
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/color.js'
 import { accentFor, BREWERS, clubIdentity } from '../src/lib/affiliates.js'
@@ -104,4 +104,20 @@ test('card line: no games gives a sentence, missing fields give dashes', () => {
   assert.equal(pickSeasonLine([], 'pitching'), null)
   assert.equal(lineText(null, 'pitching'), 'No games this season.')
   assert.equal(lineText({ stat: {} }, 'pitching'), `${DASH} ERA, ${DASH} IP, ${DASH} SO`)
+})
+
+test('every public path is built one way, with no trailing slash', () => {
+  assert.equal(paths.player('Jesús Made', 815908), '/players/jesus-made-815908')
+  assert.equal(paths.club('Wilson Warbirds', 249), '/clubs/wilson-warbirds-249')
+  assert.equal(paths.season(2019), '/seasons/2019')
+  assert.equal(paths.post('features', 'welcome-to-the-farm'), '/posts/features/welcome-to-the-farm')
+})
+
+test('the canonical URL drops a trailing slash and keeps the home page', () => {
+  assert.equal(canonicalUrl('https://example.com', '/seasons/2019/'), 'https://example.com/seasons/2019')
+  assert.equal(canonicalUrl(new URL('https://example.com'), '/'), 'https://example.com/')
+})
+
+test('no site origin means no canonical URL, not a guessed one', () => {
+  assert.equal(canonicalUrl(undefined, '/players'), null)
 })

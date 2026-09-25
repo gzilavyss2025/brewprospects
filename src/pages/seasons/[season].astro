@@ -4,6 +4,7 @@ import SeasonClub from '../../components/SeasonClub.astro'
 import RankedList from '../../components/RankedList.astro'
 import { archive, prospectHistory, pagedIds } from '../../lib/build/archive.js'
 import { clubsByLevel } from '../../lib/archive.js'
+import { paths } from '../../lib/slug.js'
 
 export function getStaticPaths() {
   return archive.map((s) => ({ params: { season: s.season }, props: { data: s } }))
@@ -20,8 +21,8 @@ const next = years[i + 1]
 <Base title={`${data.season} farm system`} description={`Every Brewers affiliate in ${data.season}, with each player's line and the year's Top 100 prospects.`}>
   <p>
     <a href="/seasons">All seasons</a>
-    {prev && <> · <a href={`/seasons/${prev}`}>← {prev}</a></>}
-    {next && <> · <a href={`/seasons/${next}`}>{next} →</a></>}
+    {prev && <> · <a href={paths.season(prev)}>← {prev}</a></>}
+    {next && <> · <a href={paths.season(next)}>{next} →</a></>}
   </p>
   <h1>{data.season} Brewers farm system</h1>
 

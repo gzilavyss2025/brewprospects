@@ -7,8 +7,14 @@ import markdoc from '@astrojs/markdoc'
 import keystatic from '@keystatic/astro'
 import vercel from '@astrojs/vercel'
 
+// URL contract (docs/adr/0009): paths never end in a slash. SITE_URL is the
+// public origin (for example https://example.com). It is unset until the
+// domain is chosen, and then pages emit no canonical link rather than a
+// wrong one.
 export default defineConfig({
   output: 'static',
+  site: process.env.SITE_URL || undefined,
+  trailingSlash: 'never',
   adapter: vercel(),
   integrations: [react(), markdoc(), keystatic()],
   server: { port: 4321 },
