@@ -6,6 +6,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { checkContrastLines } from './contrast.mjs'
+import { loadContentConfigs, schemaProblems, clubListProblems } from './content-config.mjs'
 import { ROOT, relPath } from './paths.mjs'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
@@ -82,6 +83,20 @@ function checkLineEndings(files) {
     .map((f) => `${relPath(ROOT, f)} has CRLF line endings. Save it with LF.`)
 }
 
+// Keystatic and Astro declare the same fields, and the guide club list is
+// the current affiliates. This is lint, not a unit test, so a change in the
+// affiliates never blocks the nightly data job.
+async function checkContentConfig() {
+  const { keystatic, astro } = await loadContentConfigs()
+  const shape = (c) => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.schema.shape]))
+  const schemas = (c) => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.schema]))
+  const org = JSON.parse(readFileSync(join(ROOT, 'src/data/org.json'), 'utf8'))
+  return [
+    ...schemaProblems(schemas(keystatic), shape(astro)),
+    ...clubListProblems(keystatic.guides.schema.affiliateId.options, org.affiliates),
+  ]
+}
+
 const files = walk(ROOT)
 const problems = [
   ...checkClaudeMd(files),
@@ -90,6 +105,7 @@ const problems = [
   ...checkContrast(),
   ...checkRawHex(files),
   ...checkLineEndings(files),
+  ...(await checkContentConfig()),
 ]
 if (problems.length) {
   console.error(problems.map((p) => `✗ ${p}`).join('\n'))

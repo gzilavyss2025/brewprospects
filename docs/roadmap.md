@@ -104,14 +104,18 @@ Not done, on purpose:
   (decided 2026-09-25). Before protection goes on, give the job a token that
   may push to `main`, or it will fail every night.
 
-### 0.8 Tests that catch API drift
+### 0.8 Tests that catch API drift (done)
 - `test/fixtures/manifest.json`: capture date and source URL per fixture.
-- A nightly, networked check that refetches each fixture and reports shape
-  changes. This is Rule 2 of CLAUDE.md with a script behind it.
-- A test that the Keystatic fields match `src/content.config.js`. They have
-  already drifted: the guide `affiliateId` options list 6 clubs, omit DSL
-  Brewers Blue (607) and mislabel 2101. Build the options from
-  `src/lib/affiliates.js`.
+  Each URL names a finished season, so its content cannot change. A test
+  fails when a fixture has no entry.
+- `scripts/data/drift.mjs` runs in the nightly job. It refetches each source
+  URL and fails on any field path the fixture has and the API no longer
+  sends. Adapted from bbsbh's `check-feed-shape-drift.mjs`, with arrays
+  compared over every element so trimmed fixtures work.
+- Lint checks that Keystatic and `src/content.config.js` declare the same
+  fields, and that the guide club list is exactly the current affiliates. It
+  had drifted (six clubs, no DSL Brewers Blue); fixed. This is lint, not a
+  unit test, so an affiliate change never blocks the nightly data.
 
 ### 0.9 Docs that stay true
 - `CONTEXT.md`: a glossary (org player, affiliate, level, complex club,
