@@ -1,5 +1,5 @@
 // WCAG 2.x contrast math. Used at build time to pick readable text on an
-// affiliate's accent color, and by scripts/checks/check-contrast.mjs.
+// affiliate's accent color, and by scripts/checks/contrast.mjs.
 
 function channel(c) {
   const v = c / 255

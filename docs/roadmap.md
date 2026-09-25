@@ -117,17 +117,15 @@ Not done, on purpose:
   had drifted (six clubs, no DSL Brewers Blue); fixed. This is lint, not a
   unit test, so an affiliate change never blocks the nightly data.
 
-### 0.9 Docs that stay true
-- `CONTEXT.md`: a glossary (org player, affiliate, level, complex club,
-  Pipeline rank, snapshot, archive season).
-- `docs/api.md`: start from Tally's `docs/MLB_STATS_API.md`, trimmed to MiLB,
-  people and stats. Include the known quirks (listed below).
-- Checks: ADR numbers are unique, and a word list ("postseason", not
-  "playoffs").
-- Fix the stale references now: `color.js` names a missing
-  `check-contrast.mjs`; the CLAUDE.md map leaves out `src/layouts/`,
-  `RankedList` and `SeasonClub`.
-- A rule for CLAUDE.md: a convention without a check is a wish.
+### 0.9 Docs that stay true (done)
+- `CONTEXT.md`: the glossary, in bbsbh's format.
+- `docs/api.md`: every Stats API call we make, the parameters that matter,
+  sportIds and known quirks. Trimmed from bbsbh's `docs/MLB_STATS_API.md`;
+  rows checked only there are marked.
+- Lint: ADR numbers are unique, and the word list ("postseason"). Both
+  adapted from bbsbh.
+- Fixed stale references: `color.js` and the CLAUDE.md map.
+- CLAUDE.md rule 7: a convention without a check is a wish.
 
 ### 0.10 Cap pressure
 `src/lib/` has 9 of 10 files. Plan the split before the next module lands.
