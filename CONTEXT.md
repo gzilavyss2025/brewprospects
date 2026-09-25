@@ -70,6 +70,16 @@ job checks for it.
 
 ## Words
 
+**Spacing step**: one unit of the 4px spacing scale, named `--space-*`.
+Step 4 is 16px. Fractional steps keep the existing compact spacing; a hyphen
+marks the decimal (`--space-1-5` is 6px). See ADR-0011 for the full audit.
+
+**Radius token**: a shared corner radius in `tokens.css`, named `--radius-*`.
+The pill radius is 999px; the round radius is 50%.
+
+**Duration token**: a shared motion time, named `--dur-*`. The current card
+hover uses `--dur-fast` (160ms).
+
 **Postseason**: baseball's October, and every league's post-regular-season
 rounds. Lint fails on the other word.
 

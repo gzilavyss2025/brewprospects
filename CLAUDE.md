@@ -77,6 +77,11 @@ deploys. The nightly data job is the one planned exception.
    Never loosen or skip a test to get green.
 9. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
    `src/lib/slug.js`; a new kind of page adds its row to the ADR's table.
+10. **Spacing and radii use tokens** (ADR-0011). Lint rejects raw px in
+    `padding`, `gap`, `margin`, `border-radius` and their longhands, including
+    inline styles in styles, components, layouts and pages. Only 0, 1px, 2px
+    and `tokens.css` are exempt. Border widths and font sizes are outside
+    this check.
 
 ## Content
 

@@ -9,6 +9,7 @@ import { checkContrastLines } from './contrast.mjs'
 import { adrNumberProblems, wordProblems } from './docs.mjs'
 import { loadContentConfigs, schemaProblems, clubListProblems } from './content-config.mjs'
 import { ROOT, relPath } from './paths.mjs'
+import { rawValueProblems } from './raw-values.mjs'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
 
@@ -120,6 +121,7 @@ const problems = [
   ...checkFileSize(files),
   ...checkContrast(),
   ...checkRawHex(files),
+  ...files.flatMap((f) => rawValueProblems(relPath(ROOT, f), readFileSync(f, 'utf8'))),
   ...checkLineEndings(files),
   ...checkAdrNumbers(),
   ...checkWords(files),

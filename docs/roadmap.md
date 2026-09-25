@@ -163,19 +163,30 @@ For example: `src/lib/identity/` (color, affiliates, club identity) and
 5. Headshot fallback as a pure, tested function: `silo` first for players who
    reached MLB, then `milb`, then initials.
 6. The Top 100 gaps: 2025 and 2026 preseason lists (ADR-0007 source).
-7. Design tokens, then dark mode. Do the tokens first, in one PR:
-   - A spacing scale (`--space-*` on a 4px step), `--radius-*` and `--dur-*`.
-     Lint fails a raw px in `padding`, `gap`, `margin` or `border-radius`.
+7. Design tokens, then dark mode. Split into three PRs (2026-09-25), each
+   from main after the previous one merges: A = scale and lint, B = color
+   roles, theme pairs and affiliate contrast, C = naming ADR and classes.
+   - **Done (A):** a spacing scale (`--space-*` on a 4px step), `--radius-*`
+     and `--dur-*`. Lint rejects raw px in `padding`, `gap`, `margin` and
+     `border-radius`, including longhands and inline styles. It allows 0,
+     1px, 2px and tokens.css. Counts and preserved steps are in ADR-0011.
    - Every color token is a light and dark pair, and the contrast check runs
      on both themes.
    - Run the contrast check over every entry in `ACCENTS`, not only `PAIRS`
      (Tally: 15 of 67 hand-picked club pairs failed on the first run).
    - Name color roles for their job (`bar`, `accent`, `onBar`). Gold means
      "Brewers" and nothing else.
-   - A naming ADR: a class is named for its job (`.roster`), never its shape.
+   - A naming ADR (0010, reserved for C): a class is named for its job
+     (`.roster`), never its shape. Keep `.card` as the one card primitive.
 
-   Then add the dark theme toggle over the paired tokens. Do the token PR
-   earlier if the CSS grows past about 1,000 lines.
+   B uses navy-black, selected from the
+   [palette study](https://brewprospects-palette-study.gary-zilavy.chatgpt.site).
+   Keep brand navy and gold unchanged. Use `--surface-card`, omit
+   `--club-accent`, and fail lint plus fall back to Brewers navy on a failed
+   affiliate pair. Gold means Brewers only.
+
+   **Open, separate work:** the dark theme toggle. The token PRs prepare
+   for it; they do not activate a dark theme on any page.
 
 ## Phase 3: Offseason features
 
