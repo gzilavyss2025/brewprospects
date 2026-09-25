@@ -1,6 +1,10 @@
 # Refresh the farm snapshots once a day. Commits to main only when the data
-# changed, so a quiet offseason day costs no deploy. Either script failing
-# fails the job and leaves the last good files in place (docs/adr/0003).
+# changed, so a quiet offseason day costs no deploy.
+#
+# Each generator runs on its own: one failing source (say, the Pipeline
+# scrape) does not throw away another's good data. A failed generator leaves
+# its last good file in place (docs/adr/0003), and the job still fails at the
+# end so the failure is seen. Nothing is committed unless the site builds.
 name: nightly-data
 on:
   schedule:
@@ -21,13 +25,25 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: node scripts/data/gen-org.mjs
-      - run: node scripts/data/fetch-pipeline.mjs
+      - id: org
+        continue-on-error: true
+        run: node scripts/data/gen-org.mjs
+      - id: pipeline
+        continue-on-error: true
+        run: node scripts/data/fetch-pipeline.mjs
       # Fills only archive seasons that are missing, so most nights it makes
       # no requests beyond reading the files on disk.
-      - run: node scripts/data/gen-archive.mjs
-      - run: node scripts/data/gen-prospect-history.mjs
+      - id: archive
+        continue-on-error: true
+        run: node scripts/data/gen-archive.mjs
+      - id: history
+        continue-on-error: true
+        run: node scripts/data/gen-prospect-history.mjs
+      # The new data must pass the tests and build the site before it reaches
+      # main. Pushes made with GITHUB_TOKEN do not start ci.yml, so this is
+      # the only check the nightly commit gets before Vercel deploys it.
       - run: npm test
+      - run: npm run build
       - name: Commit if changed
         run: |
           # generatedAt changes every run; commit only when real data changed.
@@ -36,4 +52,28 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data
           git commit -m "data: nightly farm snapshot"
-          git push
+          # A merge can land on main while the job runs. Rebase and retry
+          # rather than lose the night's data.
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            sleep $((attempt * 15))
+          done
+          exit 1
+      # A job can succeed every night and write nothing (gen-org keeping last
+      # season). This fails when the snapshots are stuck.
+      - run: node scripts/data/freshness.mjs
+      - name: Fail if a generator failed
+        if: always()
+        env:
+          RESULTS: >-
+            gen-org=${{ steps.org.outcome }}
+            fetch-pipeline=${{ steps.pipeline.outcome }}
+            gen-archive=${{ steps.archive.outcome }}
+            gen-prospect-history=${{ steps.history.outcome }}
+        run: |
+          failed=$(echo "$RESULTS" | tr ' ' '\n' | grep -v '=success$' || true)
+          if [ -n "$failed" ]; then
+            echo "These generators failed and kept their last good file:"
+            echo "$failed"
+            exit 1
+          fi

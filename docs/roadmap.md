@@ -30,7 +30,8 @@ These block parts of Phase 1. They do not block Phase 0.
 1. **Site name and domain.** `src/config/site.js` is still a placeholder.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). This matters more once the site is public.
-3. **Protect `main`?** If yes, the nightly job needs a bot token first (0.7).
+3. **Protect `main`?** Deferred until Vercel is set up. When yes, the nightly
+   job needs a bot token first (0.7).
 4. **Analytics: none, or Vercel Analytics?** If yes, see 1.6.
 
 ## Phase 0: Set in stone now
@@ -86,18 +87,22 @@ a new one fills in. It still fails on a thin roster for the season already on
 disk. `pipeline.json` gets no `season`: it is a rolling list, and its date is
 the honest label. The freshness check in 0.7 catches a job stuck on "keep".
 
-### 0.7 Harden the nightly job
-`.github/workflows/nightly-data.yml` today can put unbuilt data on `main`.
-- Run `npm run build` before commit. Pushes made with `GITHUB_TOKEN` do not
-  start `ci.yml`, so nothing else checks it.
-- Make each source independent. A failed Pipeline scrape must not throw away
-  a good `org.json`.
-- `git pull --rebase` and one retry before push.
-- A freshness check at the end: fail if a snapshot is older than N days in
-  season.
-- Keepalive. GitHub disables a schedule after 60 days with no commits, and
-  the offseason has no data commits.
-- If `main` will be protected, set up a bot token first.
+### 0.7 Harden the nightly job (done)
+`.github/workflows/nightly-data.yml` now:
+- Runs each generator on its own. A failed source keeps its last good file,
+  the others still commit, and the job fails at the end so it is seen.
+- Runs `npm test` and `npm run build` before it commits. Pushes made with
+  `GITHUB_TOKEN` do not start `ci.yml`, so this is the only check.
+- Rebases and retries the push up to three times.
+- Runs `scripts/data/freshness.mjs`, which fails when `org.json` still holds
+  last season after May 1.
+
+Not done, on purpose:
+- **Keepalive.** GitHub disables schedules after 60 quiet days only in public
+  repos. This repo is private. Add a keepalive if it goes public.
+- **Bot token.** Protecting `main` is deferred until Vercel is set up
+  (decided 2026-09-25). Before protection goes on, give the job a token that
+  may push to `main`, or it will fail every night.
 
 ### 0.8 Tests that catch API drift
 - `test/fixtures/manifest.json`: capture date and source URL per fixture.
