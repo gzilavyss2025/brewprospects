@@ -6,6 +6,9 @@
    they were set from memory, not an official style guide. Verify before launch. */
 
 /* PAIRS: ink/paper ink-soft/paper navy/gold gold/navy ink/card ink-soft/card paper/navy link/paper */
+/* The focus ring is two-tone: a --focus outline with a --focus-halo band
+   inside it, so one of the two stands out on every surface below.
+   FOCUS: focus|focus-halo/paper focus|focus-halo/card focus|focus-halo/gold focus|focus-halo/navy */
 
 :root {
   --navy: #12284b;
@@ -17,6 +20,8 @@
   --link: #0b4f8a;
   --rule: #e6dcc3;
   --stitch: #c8102e;
+  --focus: #12284b;
+  --focus-halo: #fbf6e9;
 
   --font-display: 'Alfa Slab One', 'Rockwell', Georgia, serif;
   --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;

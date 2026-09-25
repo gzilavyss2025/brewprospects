@@ -5,7 +5,7 @@
 // do not raise the cap.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-import { contrastRatio } from '../../src/lib/color.js'
+import { checkContrastLines } from './contrast.mjs'
 import { ROOT, relPath } from './paths.mjs'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
@@ -56,18 +56,9 @@ function checkFileSize(files) {
     .map(([f, n]) => `${relPath(ROOT, f)} has ${n} lines (cap ${CAP}). Split it.`)
 }
 
-// Every token pair named on the PAIRS line of tokens.css must pass WCAG AA.
+// The PAIRS and FOCUS lines of tokens.css must pass WCAG (see contrast.mjs).
 function checkContrast() {
-  const css = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8')
-  const vars = Object.fromEntries([...css.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})\b/gi)].map((m) => [m[1], m[2]]))
-  const pairs = (/PAIRS:([^*]*)\*\//.exec(css)?.[1] ?? '').trim().split(/\s+/).filter(Boolean)
-  if (!pairs.length) return ['tokens.css has no PAIRS line to check.']
-  return pairs.flatMap((pair) => {
-    const [fg, bg] = pair.split('/')
-    const ratio = contrastRatio(vars[fg], vars[bg])
-    if (ratio === null) return [`Contrast pair ${pair}: unknown token.`]
-    return ratio < 4.5 ? [`Contrast pair ${pair} is ${ratio.toFixed(2)}:1 (needs 4.5:1).`] : []
-  })
+  return checkContrastLines(readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8'))
 }
 
 // Pages and components use tokens, not raw colors. Only the token file and

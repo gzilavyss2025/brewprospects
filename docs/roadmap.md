@@ -68,22 +68,13 @@ This is a live bug against ADR-0003. Team ids are reused:
   none, or an entry from a small override table with provenance.
 - A test for 249 in 2019 and for the Huntsville years.
 
-### 0.5 Design tokens beyond color
-Colors are tokens, but spacing is one `--gap`. Tally found 1,125 off-scale
-values and needed a month of sweeps (ADR-0023, 0084, 0085). Now:
-- A spacing scale (`--space-*` on a 4px step), `--radius-*`, `--dur-*`.
-- Extend lint: a raw px in `padding`, `gap`, `margin` or `border-radius` fails.
-- **Focus ring fails WCAG.** Gold on paper is 1.47:1, and it is invisible on
-  the gold header. Add a `--focus` token pair that passes 3:1 on every
-  surface, and put it on `PAIRS`.
-- Run the contrast check over every entry in the `ACCENTS` table, not only
-  `PAIRS`. Tally: 15 of 67 hand-picked club pairs failed on the first run.
-- Every color token is a light and dark pair, and the contrast check runs on
-  both themes. No dark theme ships yet; the pairs make it cheap later.
-- Name roles for their job: `bar`, `accent`, `onBar`. Gold means "Brewers"
-  and nothing else.
-- A short naming ADR: a class is named for its job (`.roster`, `.prospect`),
-  never its shape (`.card2`).
+### 0.5 Focus ring (done)
+The focus ring was gold: 1.47:1 on paper, and invisible on the gold header.
+It is now two-tone (`--focus` with a `--focus-halo` band), and a `FOCUS` line
+in `tokens.css` makes lint check it at 3:1 on every surface.
+
+The rest of the token work moved to Phase 2, item 7 (decided 2026-09-25). The
+CSS is small, so the sweep stays cheap for a while.
 
 ### 0.6 The season is data, not the clock
 - Store `season` inside `org.json` and `pipeline.json`.
@@ -164,7 +155,19 @@ For example: `src/lib/identity/` (color, affiliates, club identity) and
 5. Headshot fallback as a pure, tested function: `silo` first for players who
    reached MLB, then `milb`, then initials.
 6. The Top 100 gaps: 2025 and 2026 preseason lists (ADR-0007 source).
-7. Dark mode: a theme toggle over the paired tokens from 0.5.
+7. Design tokens, then dark mode. Do the tokens first, in one PR:
+   - A spacing scale (`--space-*` on a 4px step), `--radius-*` and `--dur-*`.
+     Lint fails a raw px in `padding`, `gap`, `margin` or `border-radius`.
+   - Every color token is a light and dark pair, and the contrast check runs
+     on both themes.
+   - Run the contrast check over every entry in `ACCENTS`, not only `PAIRS`
+     (Tally: 15 of 67 hand-picked club pairs failed on the first run).
+   - Name color roles for their job (`bar`, `accent`, `onBar`). Gold means
+     "Brewers" and nothing else.
+   - A naming ADR: a class is named for its job (`.roster`), never its shape.
+
+   Then add the dark theme toggle over the paired tokens. Do the token PR
+   earlier if the CSS grows past about 1,000 lines.
 
 ## Phase 3: Offseason features
 
