@@ -57,3 +57,17 @@ test('clubListProblems catches the old six-club guide list', async () => {
     'Guide club list is missing DSL Brewers Blue (607).',
   ])
 })
+
+test('two ADRs with one number are caught; gaps are fine', async () => {
+  const { adrNumberProblems } = await import('../scripts/checks/docs.mjs')
+  assert.deepEqual(adrNumberProblems(['0001-a.md', '0003-b.md']), [])
+  assert.equal(adrNumberProblems(['0008-a.md', '0008-b.md', 'README.md']).length, 1)
+})
+
+test('the word list catches the other word, and an exempt line passes', async () => {
+  const { wordProblems } = await import('../scripts/checks/docs.mjs')
+  const other = ['play', 'offs'].join('')
+  assert.deepEqual(wordProblems('a.md', `The ${other} start.`), [`a.md:1 says "${other}". Say "postseason".`])
+  assert.deepEqual(wordProblems('a.md', `Best ${other} award <!-- word-choice-exempt: a real award -->`), [])
+  assert.deepEqual(wordProblems('a.md', 'The postseason starts.'), [])
+})

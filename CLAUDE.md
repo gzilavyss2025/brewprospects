@@ -71,9 +71,11 @@ deploys. The nightly data job is the one planned exception.
    checks for WCAG AA.
 6. **Caps are enforced, not suggested**: 10 files per code folder, 300 lines
    per file. When one fails, split. Do not raise the cap.
-7. **Tests stay honest.** A bug fix ships with a test that fails without it.
+7. **A convention without a check is a wish.** When you add a rule here, add
+   the lint check or test that enforces it, in the same PR.
+8. **Tests stay honest.** A bug fix ships with a test that fails without it.
    Never loosen or skip a test to get green.
-8. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
+9. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
    `src/lib/slug.js`; a new kind of page adds its row to the ADR's table.
 
 ## Content
@@ -88,11 +90,16 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
 
 - `src/pages/` — home, `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
   `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`
-- `src/components/` — `StatTable`, `Headshot`, `ProspectCard` (+ its tag)
+- `src/layouts/Base.astro` — the one page shell: head tags, nav, footer
+- `src/components/` — `StatTable`, `Headshot`, `RankedList`, `SeasonClub`, `ProspectCard` (+ its tag)
 - `src/lib/` — pure model (`org`, `archive`, `levels`, `card`, `posts`, `slug`, `format`, `color`, `affiliates`)
+- `scripts/checks/` — lint's structural checks; `scripts/data/` — generators, drift, freshness
 - `docs/adr/` — the why behind each decision. Read before you change one.
+- `docs/api.md` — every Stats API call we make, and its quirks
+- `CONTEXT.md` — the glossary. Use its words; add a term when you add one.
+- `docs/roadmap.md` — what is next, and what was decided
 
 ## Writing style
 
-Plain, short sentences (ASD-STE100 style, as in Tally). Say "postseason", not
-"playoffs".
+Plain, short sentences (ASD-STE100 style, as in Tally). Baseball's October
+is the "postseason"; lint enforces the word list in `scripts/checks/docs.mjs`.

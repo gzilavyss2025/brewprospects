@@ -6,6 +6,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { checkContrastLines } from './contrast.mjs'
+import { adrNumberProblems, wordProblems } from './docs.mjs'
 import { loadContentConfigs, schemaProblems, clubListProblems } from './content-config.mjs'
 import { ROOT, relPath } from './paths.mjs'
 
@@ -97,6 +98,21 @@ async function checkContentConfig() {
   ]
 }
 
+function checkAdrNumbers() {
+  return adrNumberProblems(readdirSync(join(ROOT, 'docs/adr')))
+}
+
+// Our own words: code, styles, docs and posts. JSON data is left out, because
+// it carries other people's values (a real award may say the other word).
+function checkWords(files) {
+  const own = files.filter((f) => /\.(js|jsx|mjs|astro|css|md|mdoc)$/.test(f))
+  // Guard the guard: if the walk finds almost nothing, the scope moved.
+  if (own.length < 50) return [`Word check found only ${own.length} files. Fix its scope; do not delete this line.`]
+  return own
+    .filter((f) => !relPath(ROOT, f).startsWith('scripts/checks/docs.mjs'))
+    .flatMap((f) => wordProblems(relPath(ROOT, f), readFileSync(f, 'utf8')))
+}
+
 const files = walk(ROOT)
 const problems = [
   ...checkClaudeMd(files),
@@ -105,6 +121,8 @@ const problems = [
   ...checkContrast(),
   ...checkRawHex(files),
   ...checkLineEndings(files),
+  ...checkAdrNumbers(),
+  ...checkWords(files),
   ...(await checkContentConfig()),
 ]
 if (problems.length) {
