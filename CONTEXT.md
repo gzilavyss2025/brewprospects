@@ -76,6 +76,10 @@ before the current one (ADR-0006).
 **Fixture**: a captured API response in `test/fixtures/`, listed with its
 date and source URL in `manifest.json`.
 
+**RSS feed**: the site's own feed at `/rss.xml`, built by `@astrojs/rss`
+from the posts `/posts` shows. Not "feed" alone: in this repo, a bare "feed"
+means an MLB Stats API response.
+
 **Drift**: a field a fixture has and a fresh API response lacks. The nightly
 job checks for it.
 

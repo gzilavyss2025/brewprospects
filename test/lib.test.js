@@ -4,8 +4,10 @@ import { playerSlug, idFromSlug, slugify, paths, canonicalUrl, stalePlayerPath }
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/identity/color.js'
 import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/identity/affiliates.js'
-import { cardPlayerIds, linkedPlayerIds, postsForPlayer } from '../src/lib/model/posts.js'
+import { cardPlayerIds, linkedPlayerIds, postsForPlayer, isListedPost, POST_TYPES } from '../src/lib/model/posts.js'
 import { pickSeasonLine, lineText } from '../src/lib/model/card.js'
+import { feedItems } from '../src/lib/model/feed.js'
+import { feedOrigin } from '../src/config/site.js'
 import season from './fixtures/person-season.json' with { type: 'json' }
 import multi from './fixtures/person-season-multilevel.json' with { type: 'json' }
 
@@ -166,6 +168,38 @@ test('every public path is built one way, with no trailing slash', () => {
   assert.equal(paths.club('Wilson Warbirds', 249), '/clubs/wilson-warbirds-249')
   assert.equal(paths.season(2019), '/seasons/2019')
   assert.equal(paths.post('features', 'welcome-to-the-farm'), '/posts/features/welcome-to-the-farm')
+  assert.equal(paths.feed(), '/rss.xml')
+})
+
+test('the "is listed" rule keeps the four post types and drops player notes and drafts', () => {
+  for (const t of POST_TYPES) {
+    assert.equal(isListedPost({ collection: t.key, data: { draft: false } }), true, t.key)
+    assert.equal(isListedPost({ collection: t.key, data: { draft: true } }), false, `${t.key} draft`)
+  }
+  assert.equal(isListedPost({ collection: 'playerNotes', data: { draft: false } }), false)
+  assert.equal(isListedPost({ collection: 'recaps', data: {} }), true)
+})
+
+test('feed items sort newest first, build absolute links, and skip a missing summary', () => {
+  const posts = [
+    { id: 'a', type: { key: 'features' }, data: { title: 'A', date: '2026-05-01', summary: 'About A' } },
+    { id: 'b', type: { key: 'recaps' }, data: { title: 'B', date: '2026-06-01', summary: '' } },
+    { id: 'c', type: { key: 'guides' }, data: { title: 'C', date: '2026-04-01', summary: '   ' } },
+  ]
+  const items = feedItems(posts, 'https://brewprospects.vercel.app')
+  assert.deepEqual(items.map((i) => i.title), ['B', 'A', 'C'])
+  assert.equal(items[0].link, 'https://brewprospects.vercel.app/posts/recaps/b')
+  assert.equal(items[1].link, 'https://brewprospects.vercel.app/posts/features/a')
+  assert.equal('description' in items[0], false, 'empty summary leaves out description')
+  assert.equal('description' in items[2], false, 'blank summary leaves out description')
+  assert.equal(items[1].description, 'About A')
+  assert.deepEqual(items[0].pubDate, new Date('2026-06-01'))
+})
+
+test('feedOrigin uses SITE_URL when set, else the placeholder domain', () => {
+  assert.equal(feedOrigin('https://brewprospects.com'), 'https://brewprospects.com')
+  assert.equal(feedOrigin(undefined), 'https://brewprospects.vercel.app')
+  assert.equal(feedOrigin(''), 'https://brewprospects.vercel.app')
 })
 
 test('the canonical URL drops a trailing slash and keeps the home page', () => {

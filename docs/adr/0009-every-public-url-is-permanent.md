@@ -23,6 +23,7 @@ them; no page writes a path by hand.
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
 | `/about` | credits and disclaimer |
 | `/player-paths.json` | the path map: a data file for the 404 page |
+| `/rss.xml` | the RSS feed: recaps, features, lists and guides, newest first |
 
 - **Name and id.** The id makes the address unique. The name makes it
   readable. Only the trailing id is trusted. A name change makes a new
@@ -53,3 +54,12 @@ them; no page writes a path by hand.
   reason. CI fetches `main` so the check has a base.
 - A new kind of page adds its row to the table above and a builder to
   `paths`, in the same PR.
+- The RSS feed needs an absolute origin even before `SITE_URL` is set, so it
+  falls back to the placeholder domain (`feedOrigin()` in `src/config/site.js`).
+  This is the one exception to "no `SITE_URL`, no absolute link": every other
+  page still emits no canonical link and no `og:url` until the domain is
+  chosen.
+- Each feed item's GUID is its full URL, with `isPermaLink="true"`. When the
+  domain changes, every post's GUID changes with it, and subscribers see the
+  whole feed as new again. Accepted: a stable GUID needs an id that outlives
+  the domain, and the site has none today.

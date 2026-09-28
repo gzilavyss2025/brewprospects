@@ -1,15 +1,10 @@
 // Build-time access to posts across all four post collections. Drafts never
 // leave this module.
 import { getCollection } from 'astro:content'
-import { byNewest } from '../model/posts.js'
+import { byNewest, isListedPost, POST_TYPES } from '../model/posts.js'
 import { paths } from '../slug.js'
 
-export const POST_TYPES = [
-  { key: 'recaps', label: 'Recap', plural: 'Recaps' },
-  { key: 'features', label: 'Feature', plural: 'Player features' },
-  { key: 'lists', label: 'List', plural: 'Lists & rankings' },
-  { key: 'guides', label: 'Guide', plural: 'Ballpark guides' },
-]
+export { POST_TYPES }
 
 // Cached per build: every player page asks for these, and each uncached call
 // re-reads the collections (and re-warns for an empty one).
@@ -28,11 +23,9 @@ export function playerNotes() {
 
 async function loadPosts() {
   const lists = await Promise.all(
-    POST_TYPES.map(async (t) =>
-      (await getCollection(t.key, (e) => !e.data.draft)).map((e) => ({ ...e, type: t })),
-    ),
+    POST_TYPES.map(async (t) => (await getCollection(t.key)).map((e) => ({ ...e, type: t }))),
   )
-  return lists.flat().sort(byNewest)
+  return lists.flat().filter(isListedPost).sort(byNewest)
 }
 
 export function postUrl(post) {

@@ -2,6 +2,19 @@
 // author fills in, and any prospect-card block in the body. A player page lists
 // every post that names him either way.
 
+export const POST_TYPES = [
+  { key: 'recaps', label: 'Recap', plural: 'Recaps' },
+  { key: 'features', label: 'Feature', plural: 'Player features' },
+  { key: 'lists', label: 'List', plural: 'Lists & rankings' },
+  { key: 'guides', label: 'Guide', plural: 'Ballpark guides' },
+]
+
+// The one place that decides whether a post belongs on /posts and in the RSS
+// feed: one of the four post types, and not a draft. Leaves out playerNotes.
+export function isListedPost(post) {
+  return POST_TYPES.some((t) => t.key === post?.collection) && !post?.data?.draft
+}
+
 // Matches a Markdoc prospect-card tag's playerId attribute in a raw body,
 // e.g. {% prospect-card playerId=815908 /%}.
 const CARD_TAG = /\{%\s*prospect-card\b[^%]*?\bplayerId=(\d+)/g
