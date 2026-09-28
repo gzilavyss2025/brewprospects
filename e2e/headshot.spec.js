@@ -1,6 +1,6 @@
-// The headshot fallback chain on a real page: silo, then milb, then initials
-// (src/lib/identity/headshot.js). Every third-party request is blocked unless
-// a test serves a stand-in photo.
+// The headshot fallback chain on a real page: silo, then 67, then milb, then
+// initials (src/lib/identity/headshot.js). Every third-party request is
+// blocked unless a test serves a stand-in photo.
 import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -46,16 +46,24 @@ test('a player who reached MLB shows the silo shot first', async ({ page, baseUR
   expect(asked).toEqual(['silo'])
 })
 
-test('a missing silo shot falls back to the milb shot', async ({ page, baseURL }) => {
+test('a missing silo shot falls back to the 67 shot', async ({ page, baseURL }) => {
+  const asked = await routePhotos(page, baseURL, ['67', 'milb'])
+  await page.goto(pathMap[bigLeaguer.id])
+  await expect(page.locator('img.headshot')).toHaveAttribute('src', /\/headshot\/67\/current$/)
+  await expect.poll(() => page.locator('img.headshot').evaluate((img) => img.naturalWidth)).toBe(1)
+  expect(asked).toEqual(['silo', '67'])
+})
+
+test('missing silo and 67 shots fall back to the milb shot', async ({ page, baseURL }) => {
   const asked = await routePhotos(page, baseURL, ['milb'])
   await page.goto(pathMap[bigLeaguer.id])
   await expect(page.locator('img.headshot')).toHaveAttribute('src', /\/headshot\/milb\/current$/)
   await expect.poll(() => page.locator('img.headshot').evaluate((img) => img.naturalWidth)).toBe(1)
-  expect(asked).toEqual(['silo', 'milb'])
+  expect(asked).toEqual(['silo', '67', 'milb'])
 })
 
-test('a player who never reached MLB skips the silo shot', async ({ page, baseURL }) => {
-  const asked = await routePhotos(page, baseURL, ['silo', 'milb'])
+test('a player who never reached MLB skips the MLB shots', async ({ page, baseURL }) => {
+  const asked = await routePhotos(page, baseURL, ['silo', '67', 'milb'])
   await page.goto(pathMap[prospect.id])
   await expect(page.locator('img.headshot')).toHaveAttribute('src', /\/headshot\/milb\/current$/)
   expect(asked).toEqual(['milb'])
@@ -67,5 +75,5 @@ test('when every photo fails, the initials show and no image is left', async ({ 
   const initials = bigLeaguer.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('')
   await expect(page.locator('.player-head .initials')).toHaveText(initials)
   await expect(page.locator('.player-head img')).toHaveCount(0)
-  expect(asked).toEqual(['silo', 'milb'])
+  expect(asked).toEqual(['silo', '67', 'milb'])
 })

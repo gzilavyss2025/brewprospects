@@ -75,8 +75,8 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 - **LICENSE and credits** (was Phase 1, item 4; 2026-09-28). MIT for the
   code only. `/about` names each data source and who owns it.
 - **Headshot fallback** (was Phase 2, item 5; 2026-09-28). The player
-  page tries `silo` for a player with an `mlbDebutDate`, then `milb`, then
-  initials. The chain and its `onerror` handler are pure functions in
+  page tries `silo`, then `67`, for a player with an `mlbDebutDate`, then
+  `milb`, then initials. The chain and its `onerror` handler are pure functions in
   `src/lib/identity/headshot.js`; no island. The prospect card still uses
   `milb` only.
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in

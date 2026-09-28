@@ -1,5 +1,5 @@
-// The headshot fallback chain: `silo` for a player who reached MLB, then
-// `milb`, then his initials. The URLs come from affiliates.js, so a switch to
+// The headshot fallback chain: `silo`, then `67`, for a player who reached
+// MLB; then `milb`; then his initials. The URLs come from affiliates.js, so a switch to
 // self-hosted photos stays one file.
 import { headshotUrl } from './affiliates.js'
 
@@ -11,11 +11,14 @@ export function reachedMlb(person) {
   return Boolean(person?.mlbDebutDate)
 }
 
-// The photo URLs to try, in order. Empty when there is no id: the page shows
+// The photo URLs to try, in order. `67` earns its extra request: of the 622
+// players with a debut date in org.json and people.json (2026-09-28), 483
+// have silo, and 7 more (Ben Sheets, Trevor Hoffman, Mike Cameron...) have
+// only 67. For the other 132 it is one more 404 before milb or initials. Empty when there is no id: the page shows
 // initials straight away.
 export function headshotChain(person, width = 240) {
   if (!person?.id) return []
-  const kinds = reachedMlb(person) ? ['silo', 'milb'] : ['milb']
+  const kinds = reachedMlb(person) ? ['silo', '67', 'milb'] : ['milb']
   return kinds.map((kind) => headshotUrl(person.id, width, kind))
 }
 

@@ -75,13 +75,15 @@ export function clubIdentity(club, currentName) {
   }
 }
 
-// Headshots come in two kinds, keyed by person id. `silo` is the studio shot,
-// which MLB keeps for players who reached the majors; `milb` exists for many
-// prospects with no `silo`. Checked live on 2026-09-28 for 621097 (debuted
-// 2019): both 200. A person with no photo of a kind gets 404 (999999999, and
-// silo for 116034, a retired big-leaguer). The URL has no `d_` default, so a
-// miss is an error the page can catch, not a generic silhouette.
-export const HEADSHOT_KINDS = ['silo', 'milb']
+// Headshots come in three kinds, keyed by person id. `silo` is the studio
+// shot, which MLB keeps for most players who reached the majors; `67` is an
+// older MLB shot that some retired players have in place of `silo`; `milb`
+// exists for many prospects with neither. Checked live on 2026-09-28: 621097
+// (debuted 2019) has silo and milb; 116034 (Trevor Hoffman) has 67 only;
+// 460075 (Ryan Braun) has silo and 67. A person with no photo of a kind gets
+// 404 (999999999 for all three). The URL has no `d_` default, so a miss is an
+// error the page can catch, not a generic silhouette.
+export const HEADSHOT_KINDS = ['silo', '67', 'milb']
 
 export function headshotUrl(personId, width = 240, kind = 'milb') {
   return personId && HEADSHOT_KINDS.includes(kind)

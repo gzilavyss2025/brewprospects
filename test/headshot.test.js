@@ -8,7 +8,8 @@ import yby from './fixtures/people-yearbyyear.json' with { type: 'json' }
 const [made, adams] = yby.people.map(slimPerson)
 
 test('headshotUrl builds each kind and refuses an unknown kind or no id', () => {
-  assert.deepEqual(HEADSHOT_KINDS, ['silo', 'milb'])
+  assert.deepEqual(HEADSHOT_KINDS, ['silo', '67', 'milb'])
+  assert.match(headshotUrl(1, 240, '67'), /\/people\/1\/headshot\/67\/current$/)
   assert.match(headshotUrl(1, 240, 'silo'), /\/w_240,q_auto:best\/v1\/people\/1\/headshot\/silo\/current$/)
   assert.match(headshotUrl(1), /\/people\/1\/headshot\/milb\/current$/)
   assert.equal(headshotUrl(1, 240, 'generic'), null)
@@ -22,8 +23,9 @@ test('reachedMlb reads the debut date the API sends (fixture)', () => {
   assert.equal(reachedMlb(undefined), false)
 })
 
-test('headshotChain tries silo first only for a player who reached MLB', () => {
-  assert.deepEqual(headshotChain(adams, 144), [headshotUrl(adams.id, 144, 'silo'), headshotUrl(adams.id, 144, 'milb')])
+test('headshotChain tries silo, then 67, only for a player who reached MLB', () => {
+  const url = (kind) => headshotUrl(adams.id, 144, kind)
+  assert.deepEqual(headshotChain(adams, 144), [url('silo'), url('67'), url('milb')])
   assert.deepEqual(headshotChain(made), [headshotUrl(made.id, 240, 'milb')])
   assert.deepEqual(headshotChain({ name: 'No Id' }), [])
   assert.deepEqual(headshotChain(null), [])
