@@ -5,8 +5,8 @@
 // plain note instead of a broken card.
 import ProspectCard from './ProspectCard.jsx'
 import { org, affiliateById, assignments, rankById, playerUrl } from '../lib/build/data.js'
-import { primaryGroup, statRows } from '../lib/org.js'
-import { headshotUrl } from '../lib/affiliates.js'
+import { primaryGroup, statRows } from '../lib/model/org.js'
+import { headshotUrl } from '../lib/identity/affiliates.js'
 import { orDash } from '../lib/format.js'
 
 const { playerId } = Astro.props

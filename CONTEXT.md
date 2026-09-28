@@ -19,7 +19,7 @@ _Avoid_: "farm team" in code. It is fine in page copy.
 not a club: the id can pass to another club (ADR-0008).
 
 **Level**: where a club plays, by sportId: AAA (11), AA (12), High-A (13),
-Single-A (14), Rookie (16). `src/lib/levels.js` holds the names, the short
+Single-A (14), Rookie (16). `src/lib/model/levels.js` holds the names, the short
 labels for tables (AAA, AA, A+, A, ROK) and the order.
 _Avoid_: "Low-A" and "Class A Advanced". Those are the old names.
 
@@ -32,7 +32,7 @@ researched colors.
 ## Players
 
 **Org player**: a player on any affiliate's full-season roster in the current
-season, except a big-leaguer there only on a rehab assignment. `src/lib/org.js`
+season, except a big-leaguer there only on a rehab assignment. `src/lib/model/org.js`
 is the definition (ADR-0005).
 _Avoid_: "prospect" as a synonym. Not every org player is a prospect.
 
@@ -112,8 +112,10 @@ or card (`--club-bar`), with readable text on it (`--club-on-bar`). A club
 with no researched color, or one that fails 4.5:1, gets Brewers navy.
 _Avoid_: "club accent" as a token. There is no `--club-accent`.
 
-**Theme**: a set of color role values. Light (`:root`) is the live one. Dark
-(`[data-theme="dark"]`, navy-black) is defined and checked but not in use.
+**Theme**: a set of color role values, light (`:root`) or dark
+(`[data-theme="dark"]`, navy-black). The reader's stored choice picks one;
+with none, the OS setting does. Without JavaScript the page is light
+(ADR-0013).
 
 **Postseason**: baseball's October, and every league's post-regular-season
 rounds. Lint fails on the other word.

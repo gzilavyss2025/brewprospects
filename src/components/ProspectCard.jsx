@@ -3,7 +3,7 @@
 // from statsapi.mlb.com, which allows cross-origin reads. On any fetch error
 // the snapshot stays, so the card never goes blank.
 import { useEffect, useState } from 'react'
-import { cardUrl, pickSeasonLine, lineText } from '../lib/card.js'
+import { cardUrl, pickSeasonLine, lineText } from '../lib/model/card.js'
 
 export default function ProspectCard({ playerId, href, name, pos, club, group, snapshotLine, photo, rank }) {
   const [live, setLive] = useState(null)

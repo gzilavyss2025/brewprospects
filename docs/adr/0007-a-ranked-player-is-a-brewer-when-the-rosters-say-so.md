@@ -49,4 +49,4 @@ America on every list that uses them and in the footer.
 ## Consequences
 
 2006–2024: 48 ranked Brewers (plus one BA non-debut). The rule lives in
-`src/lib/archive.js` (`brewersRanked`, `otherClubs`) with tests.
+`src/lib/model/archive.js` (`brewersRanked`, `otherClubs`) with tests.

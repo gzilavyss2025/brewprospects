@@ -2,10 +2,10 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { playerSlug, idFromSlug, slugify, paths, canonicalUrl } from '../src/lib/slug.js'
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
-import { contrastRatio, pickInk } from '../src/lib/color.js'
-import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/affiliates.js'
-import { cardPlayerIds, linkedPlayerIds, postsForPlayer } from '../src/lib/posts.js'
-import { pickSeasonLine, lineText } from '../src/lib/card.js'
+import { contrastRatio, pickInk } from '../src/lib/identity/color.js'
+import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/identity/affiliates.js'
+import { cardPlayerIds, linkedPlayerIds, postsForPlayer } from '../src/lib/model/posts.js'
+import { pickSeasonLine, lineText } from '../src/lib/model/card.js'
 import season from './fixtures/person-season.json' with { type: 'json' }
 import multi from './fixtures/person-season-multilevel.json' with { type: 'json' }
 

@@ -5,13 +5,13 @@ import StatTable from '../../components/StatTable.astro'
 import Headshot from '../../components/Headshot.astro'
 import { org, allPlayers, affiliateById } from '../../lib/build/data.js'
 import { pastPlayers, ranksFor, lastArchiveStop, seasonByYear } from '../../lib/build/archive.js'
-import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/org.js'
-import { levelFor } from '../../lib/levels.js'
+import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/model/org.js'
+import { levelFor } from '../../lib/model/levels.js'
 import { playerSlug, idFromSlug } from '../../lib/slug.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
 import { ARCHIVE_FIRST_SEASON } from '../../config/site.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
-import { postsForPlayer } from '../../lib/posts.js'
+import { postsForPlayer } from '../../lib/model/posts.js'
 
 export async function getStaticPaths() {
   return [...allPlayers(), ...pastPlayers()].map((p) => ({ params: { slug: playerSlug(p.name, p.id) }, props: { player: p } }))

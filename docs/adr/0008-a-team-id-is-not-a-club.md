@@ -18,7 +18,7 @@ color on every Mudcats season. That breaks ADR-0003.
 
 - A past club gets today's logo and accent only when its name that season, as
   stored in `src/data/archive/{season}.json`, equals its current name in
-  `org.json`. `clubIdentity()` in `src/lib/affiliates.js` holds this rule.
+  `org.json`. `clubIdentity()` in `src/lib/identity/affiliates.js` holds this rule.
 - Otherwise the club gets no logo and the Brewers fallback accent.
 - A club that is no longer an affiliate never gets a logo.
 - Exact name match, no fuzzy match. "AZL Brewers" and "ACL Brewers" may be the

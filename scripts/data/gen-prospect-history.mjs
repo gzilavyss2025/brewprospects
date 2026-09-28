@@ -7,13 +7,13 @@
 // 2009-2024 and Baseball America 2005-2008. The rows name the player by MLB id
 // only, with no team, so a ranked player counts as a Brewer for a season when
 // the archive shows him in the Brewers system that season (docs/adr/0007,
-// src/lib/archive.js brewersRanked). Runs offline except for names the
+// src/lib/model/archive.js brewersRanked). Runs offline except for names the
 // archive does not know (2020 invitees), fetched from the Stats API.
 //
 // Usage: node scripts/data/gen-prospect-history.mjs
 import { readFile, writeFile, rename } from 'node:fs/promises'
 import { ARCHIVE_FIRST_SEASON, NO_MILB_SEASONS } from '../../src/config/site.js'
-import { brewersRanked, brewersClubIds, otherClubs } from '../../src/lib/archive.js'
+import { brewersRanked, brewersClubIds, otherClubs } from '../../src/lib/model/archive.js'
 
 const SRC = new URL('../../data/sources/top-prospects-history/', import.meta.url)
 const ARCHIVE = new URL('../../src/data/archive/', import.meta.url)

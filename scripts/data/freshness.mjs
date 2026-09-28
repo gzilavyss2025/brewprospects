@@ -2,7 +2,7 @@
 // The nightly job's last step: fail when the snapshots are stuck. A job can
 // succeed every night and still write nothing, for example gen-org keeping
 // last season because the new season's rosters never reach 100 players
-// (snapshotAction in src/lib/org.js). The job alone would stay green.
+// (snapshotAction in src/lib/model/org.js). The job alone would stay green.
 //
 // The rule: from STUCK_AFTER on, org.json must hold this year's season.
 // Full-season MiLB rosters are set by mid-April. A generator that throws

@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro'
 import SeasonClub from '../../components/SeasonClub.astro'
 import RankedList from '../../components/RankedList.astro'
 import { archive, prospectHistory, pagedIds } from '../../lib/build/archive.js'
-import { clubsByLevel } from '../../lib/archive.js'
+import { clubsByLevel } from '../../lib/model/archive.js'
 import { paths } from '../../lib/slug.js'
 
 export function getStaticPaths() {

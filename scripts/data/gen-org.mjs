@@ -13,7 +13,7 @@
 // Usage: node scripts/data/gen-org.mjs [season]
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
-import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/org.js'
+import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/model/org.js'
 import { slimAffiliate, slimRosterEntry, slimPerson } from './slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'

@@ -23,7 +23,7 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | `gen-archive` | `/teams/158/roster?rosterType={fullSeason,nonRosterInvitees}&season={y}` | Milwaukee's roster (ADR-0007) |
 | `gen-archive` | `/people?personIds={40 ids}&hydrate=draft` | Bios for past players |
 | `gen-prospect-history` | `/people?personIds={ids}` | Names the archive does not know |
-| `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/card.js`) |
+| `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/model/card.js`) |
 
 Not the Stats API:
 

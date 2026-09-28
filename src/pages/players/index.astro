@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { org, allPlayers, affiliates, playerUrl } from '../../lib/build/data.js'
-import { levelFor } from '../../lib/levels.js'
+import { levelFor } from '../../lib/model/levels.js'
 
 // Grouped by where each player is now; players who left the org come last.
 const players = allPlayers()
