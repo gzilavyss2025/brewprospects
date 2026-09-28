@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T15:17:27.231Z",
+  "generatedAt": "2026-09-28T18:15:34.903Z",
   "source": "https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1",
   "prospects": [
     {
@@ -180,7 +180,7 @@
       "position": "LHP",
       "levelRaw": "ALL (3)",
       "statLine": "61.0 IP, 3.98 ERA, 80 SO",
-      "age": 22
+      "age": 23
     },
     {
       "orgRank": 19,
