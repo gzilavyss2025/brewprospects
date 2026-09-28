@@ -2,7 +2,8 @@
 // be carried only by the one class the ADR names as its owner; every other
 // class that carries one is drift, the `.pcard`/`.rank-chip` kind this check
 // exists to catch. Adapted from raw-values.mjs's comment masking and
-// style-block scanning; scope matches rawValueProblems exactly.
+// style-block scanning; scope matches rawValueProblems, plus `src/lib/` JS,
+// where the headshot onerror handler builds its `className:` string.
 //
 // Blind spot, recorded in ADR-0010 ("What C3 does not cover"): a class name
 // assembled by string interpolation or Object.assign is invisible here. This
@@ -23,7 +24,7 @@ export const SHAPE_WORDS = {
   sheet: null,
 }
 
-const SCOPE = /^src\/(?:styles|components|layouts|pages)\/.*\.(?:css|astro|jsx|tsx|html)$/
+const SCOPE = /^src\/(?:(?:styles|components|layouts|pages)\/.*\.(?:css|astro|jsx|tsx|html)|lib\/.*\.js)$/
 
 const blank = (s) => s.replace(/[^\n]/g, ' ')
 const maskComments = (s) => s.replace(/\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->/g, blank)
@@ -59,7 +60,7 @@ function selectorClasses(text) {
   return found
 }
 
-// class=, className= and className: (Headshot's onerror string) literal
+// class=, className= and className: (the headshot onerror string) literal
 // values, read from the whole masked source, frontmatter included — but
 // frontmatter never carries one of these three patterns, so `p.data.title`
 // is never mistaken for a class.

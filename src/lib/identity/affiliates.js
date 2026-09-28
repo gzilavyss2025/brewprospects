@@ -75,10 +75,16 @@ export function clubIdentity(club, currentName) {
   }
 }
 
-// The `milb` headshot exists for many prospects whose studio `silo` shot does
-// not. A player with no photo 404s, and the page falls back to initials.
-export function headshotUrl(personId, width = 240) {
-  return personId
-    ? `https://img.mlbstatic.com/mlb-photos/image/upload/w_${width},q_auto:best/v1/people/${personId}/headshot/milb/current`
+// Headshots come in two kinds, keyed by person id. `silo` is the studio shot,
+// which MLB keeps for players who reached the majors; `milb` exists for many
+// prospects with no `silo`. Checked live on 2026-09-28 for 621097 (debuted
+// 2019): both 200. A person with no photo of a kind gets 404 (999999999, and
+// silo for 116034, a retired big-leaguer). The URL has no `d_` default, so a
+// miss is an error the page can catch, not a generic silhouette.
+export const HEADSHOT_KINDS = ['silo', 'milb']
+
+export function headshotUrl(personId, width = 240, kind = 'milb') {
+  return personId && HEADSHOT_KINDS.includes(kind)
+    ? `https://img.mlbstatic.com/mlb-photos/image/upload/w_${width},q_auto:best/v1/people/${personId}/headshot/${kind}/current`
     : null
 }

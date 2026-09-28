@@ -195,8 +195,9 @@ done and there is nothing left it would have to allow.
 C3's lint check (`classShapeProblems`) is a text check over `.css` files and
 `<style>` blocks for CSS selectors, and `class=`, `className=` and
 `className:` literal strings elsewhere — the same scope `rawValueProblems`
-scans. It cannot see a class name assembled at runtime: `Headshot.astro`'s
-`onerror` handler builds `className: 'initials'` as a literal inside a
+scans, plus `src/lib/` JS. It cannot see a class name assembled at runtime:
+the headshot `onerror` handler (`src/lib/identity/headshot.js` since Phase 2
+item 5; it was in `Headshot.astro`) builds `className: 'initials'` as a literal inside a
 template-literal string, which the guard does read, but a class name built by
 string interpolation or `Object.assign` with a non-literal value would not
 be. The census above found `.initials` by reading the string by hand; the
