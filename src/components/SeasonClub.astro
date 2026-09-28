@@ -23,7 +23,7 @@ const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
     {logo ? <img src={logo} alt="" width="48" height="48" loading="lazy" onerror="this.style.visibility='hidden'" /> : <span class="club-logo-none" aria-hidden="true" />}
     <div>
       <h2>{club.name}</h2>
-      <div class="sub">{level?.name ?? '—'} · {club.league || '—'}</div>
+      <div class="club-meta">{level?.name ?? '—'} · {club.league || '—'}</div>
     </div>
   </div>
   <div class="club-body">

@@ -13,7 +13,7 @@ const href = (p) => (pagedIds.has(p.playerId) ? paths.player(p.name, p.playerId)
   <p class="muted">{season.missing}</p>
 ) : (
   <>
-    {season.incomplete && <p class="note">{season.incomplete}</p>}
+    {season.incomplete && <p class="coverage">{season.incomplete}</p>}
     {season.prospects.length === 0 && season.unlinked.length === 0 ? (
       <p class="muted">No Brewers on the {season.sourceLabel} {listName(season.depth)} this year.</p>
     ) : (
@@ -22,7 +22,7 @@ const href = (p) => (pagedIds.has(p.playerId) ? paths.player(p.name, p.playerId)
           .sort((a, b) => a.rank - b.rank)
           .map((p) => (
             <li>
-              <span class="rank-chip">#{p.rank}</span>
+              <span class="rank">#{p.rank}</span>
               {p.linked ? <a href={href(p)}>{p.name}</a> : <span>{p.name}</span>}
               {p.pos && <span class="muted"> {p.pos}</span>}
               {!p.linked && <span class="muted"> · never reached the majors; club per Baseball America</span>}

@@ -26,11 +26,11 @@ export default function ProspectCard({ playerId, href, name, pos, club, group, s
   }, [playerId, group, club])
 
   return (
-    <a className="card pcard" href={href}>
+    <a className="card spotlight" href={href}>
       <img src={photo} alt="" width="72" height="96" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
       <div>
         <strong>{name}</strong> <span className="muted">{pos}</span>
-        {rank ? <> <span className="rank-chip">#{rank}</span></> : null}
+        {rank ? <> <span className="rank">#{rank}</span></> : null}
         <div className="muted">{live?.club ?? club}</div>
         <div className="line">{live?.line ?? snapshotLine}</div>
       </div>

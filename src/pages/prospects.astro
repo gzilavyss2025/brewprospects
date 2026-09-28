@@ -25,7 +25,7 @@ const ranked100 = pipeline.prospects.filter((p) => p.topRank).sort((a, b) => a.t
       <ol class="ranked">
         {ranked100.map((p) => (
           <li>
-            <span class="rank-chip">#{p.topRank}</span>
+            <span class="rank">#{p.topRank}</span>
             {urlFor(p.playerId) ? <a href={urlFor(p.playerId)}>{p.name}</a> : p.name}
             <span class="muted"> {p.position}</span>
           </li>

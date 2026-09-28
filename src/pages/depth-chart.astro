@@ -31,7 +31,7 @@ const urlOf = (e) => (org.players[e.id] ? playerUrl(org.players[e.id]) : null)
         <img src={teamLogoUrl(c.id)} alt="" width="48" height="48" loading="lazy" />
         <div>
           <h2>{c.name}</h2>
-          <div class="sub">{c.level?.name} · {c.league || '—'} · {c.venue || '—'}</div>
+          <div class="club-meta">{c.level?.name} · {c.league || '—'} · {c.venue || '—'}</div>
         </div>
       </div>
       <div class="club-body">
@@ -48,7 +48,7 @@ const urlOf = (e) => (org.players[e.id] ? playerUrl(org.players[e.id]) : null)
                       <span class="jersey">{e.jersey ?? ''}</span>
                       {urlOf(e) ? <a href={urlOf(e)}>{nameOf(e)}</a> : <span>{nameOf(e)}</span>}
                       <span class="muted">{e.pos}</span>
-                      {rankById.get(e.id) && <span class="rank-chip" title="MLB Pipeline org rank">#{rankById.get(e.id).orgRank}</span>}
+                      {rankById.get(e.id) && <span class="rank" title="MLB Pipeline org rank">#{rankById.get(e.id).orgRank}</span>}
                     </li>
                   ))}
                 </ul>

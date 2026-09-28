@@ -25,7 +25,7 @@ const gone = players.filter((p) => p.assignment?.group === 'gone').sort((x, y) =
         {g.players.map((p) => (
           <a class="card" href={playerUrl(p)}>
             <strong>{p.name}</strong> <span class="muted">{p.pos}</span>
-            {p.rank && <> <span class="rank-chip">#{p.rank.orgRank}</span></>}
+            {p.rank && <> <span class="rank">#{p.rank.orgRank}</span></>}
             {p.assignment?.group === 'injured' && <div class="muted">Injured list</div>}
           </a>
         ))}

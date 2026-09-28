@@ -34,5 +34,5 @@ const club = p ? affiliateById.get(assignments.get(p.id)?.teamId)?.name ?? '' : 
     rank={rankById.get(p.id)?.orgRank ?? null}
   />
 ) : (
-  <p class="note">Player {playerId} is not in the Brewers farm snapshot.</p>
+  <p class="coverage">Player {playerId} is not in the Brewers farm snapshot.</p>
 )}
