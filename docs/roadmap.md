@@ -36,38 +36,31 @@ These block parts of Phase 1. They do not block Phase 0.
 
 ## Phase 0: Set in stone now
 
-### 0.1 Make local lint tell the truth
-`scripts/checks/run-all.mjs` crashes on Windows. `new URL().pathname` gives
-`C:\C:\...`, and `relative()` returns backslashes, so the `src/` tests would
-fail silently. Only CI on Ubuntu enforces the caps today. Use `fileURLToPath`
-and normalize separators. Add a test that runs the checks on this machine.
+### 0.1 Make local lint tell the truth (done)
+`scripts/checks/run-all.mjs` crashed on Windows, and even when it ran, the
+folder cap skipped every file there. `scripts/checks/paths.mjs` now builds
+`ROOT` with `fileURLToPath` and gives forward-slash paths, and a test checks
+that a Windows path resolves. Lint now tells the truth on this machine (PR #4).
 
-### 0.2 Repo hygiene that Windows needs
-- `.gitattributes` with `* text=auto eol=lf`, and a lint check for CRLF. Tally
-  lost a day to one CRLF file (a 2-line edit became a 684-line conflict).
-- `.nvmrc` with the Node version CI uses.
-- `npm test` fails when it finds zero tests.
+### 0.2 Repo hygiene that Windows needs (done)
+- `.gitattributes` sets `* text=auto eol=lf`, and lint fails on a CRLF file.
+- `.nvmrc` pins Node 22 for both workflows.
+- `npm test` runs `scripts/test.mjs`, which fails when it finds no tests.
 
-### 0.3 URL contract (new ADR)
-Every public URL is permanent once shared. Write down, in one ADR:
-- `/players/{name-id}` (exists), `/clubs/{name-id}` (before any club page
-  ships), `/seasons/{year}`, `/posts/{type}/{slug}`.
-- A URL reads loosely (trailing id wins) and renders one canonical form.
-- Set `site` in `astro.config.mjs` and emit `<link rel="canonical">` in
-  `Base.astro`.
-Tally lesson: ADR-0057 came after bare-id links were public.
+### 0.3 URL contract (done)
+ADR-0009 lists every public path in one table (PR #6). `paths` in
+`src/lib/slug.js` builds all of them, there is no trailing slash, and
+`Base.astro` emits a canonical link once `SITE_URL` is set.
 
-### 0.4 Club identity is keyed on (id, season)
-This is a live bug against ADR-0003. Team ids are reused:
-- 249 was the Carolina Mudcats (2017 to 2025). It is the Wilson Warbirds now.
-- Also 406, 607, 2101 and 5430. In Tally's data, 559 was the Brewers'
-  Huntsville Stars through 2014.
-`SeasonClub.astro` shows today's logo and accent on every past season. Fix:
-- Each archive file stores the season's own club name (check this).
-- A pure `clubIdentity(id, season)` in `src/lib/` returns the logo and accent
-  only when the season's name matches the current name. Otherwise it returns
-  none, or an entry from a small override table with provenance.
-- A test for 249 in 2019 and for the Huntsville years.
+Not done, on purpose: reading a stale `{name-id}` loosely needs the 404 page
+(Phase 1). No check yet keeps a published post on its path.
+
+### 0.4 Club identity is keyed on (id, season) (done)
+Team ids are reused: 249 was the Carolina Mudcats and is the Wilson Warbirds
+now. `clubIdentity()` in `src/lib/affiliates.js` gives today's logo and
+accent only when the season's club name matches the current name. Any other
+club gets no logo and Brewers navy (ADR-0008, PR #5). Past logos can come
+back later through a sourced table keyed on (id, season).
 
 ### 0.5 Focus ring (done)
 The focus ring was gold: 1.47:1 on paper, and invisible on the gold header.

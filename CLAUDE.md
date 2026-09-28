@@ -1,7 +1,9 @@
 # CLAUDE.md
 
-Guidance for Claude Code in this repo. Keep it lean: `scripts/checks/run-all.mjs`
-caps every `CLAUDE.md` at 150 lines. Put detail in `docs/` and leave a pointer here.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+Keep it lean: `scripts/checks/run-all.mjs` caps every `CLAUDE.md` at 150 lines.
+Put detail in `docs/` and leave a pointer here.
 
 ## What this is
 
@@ -26,12 +28,27 @@ npm run build    # static pages + the Keystatic function, via the Vercel adapter
 npm run data     # refresh src/data/*.json from the live sources
 npm run lint     # eslint + structural checks
 npm test         # node:test unit suite, no network
+npm run preview  # serve the built site on :4322
+
+node --test test/org.test.js                                       # one test file
+node --test --test-name-pattern="snapshotAction" test/org.test.js  # matching tests only
+node scripts/checks/run-all.mjs                                    # structural checks, no eslint
+node scripts/data/gen-archive.mjs --season 2015                    # rebuild one past season (--refetch: all)
 ```
+
+`npm test` runs `scripts/test.mjs`, which collects `test/**/*.test.js` itself
+and fails when it finds none. Do not replace it with a shell glob.
 
 ## Workflow
 
 Work on a branch and open a PR. Never push to `main`: every merge to `main`
 deploys. The nightly data job is the one planned exception.
+
+CI (`.github/workflows/ci.yml`) runs lint, test and build on every PR. Run
+all three before you push. The nightly job (`nightly-data.yml`) runs each
+generator on its own, then test and build, and commits `src/data/` only when
+`scripts/data/changed.mjs` finds a real change (it ignores `generatedAt`).
+It also runs `drift.mjs` and `freshness.mjs`, which need the network.
 
 ## Data
 
@@ -46,7 +63,8 @@ deploys. The nightly data job is the one planned exception.
 - `scripts/data/gen-prospect-history.mjs` writes `src/data/prospect-history.json`
   from the bbsbh Top 100 rows in `data/sources/` (ADR-0007). Never edit
   `data/sources/` by hand; see its PROVENANCE.md.
-- Both **fail loudly and keep the last good file** when a response looks wrong.
+- Every generator **fails loudly and keeps the last good file** when a response
+  looks wrong.
 - Pages read the snapshots only through `src/lib/build/data.js` and
   `src/lib/build/archive.js`.
 - The one live read is the prospect-card island (`src/components/ProspectCard.jsx`),
@@ -82,12 +100,21 @@ deploys. The nightly data job is the one planned exception.
     inline styles in styles, components, layouts and pages. Only 0, 1px, 2px
     and `tokens.css` are exempt. Border widths and font sizes are outside
     this check.
+11. **Every text file uses LF.** Lint fails on a CRLF file. This checkout is
+    on Windows, so check a new file's line endings before you commit.
+12. **One number per ADR.** Lint fails when two files in `docs/adr/` share a
+    number. Gaps are fine. A number the roadmap reserves stays reserved.
 
 ## Content
 
 Keystatic collections (`keystatic.config.jsx`) must match the Astro schemas in
-`src/content.config.js` field for field. Post types: `recaps`, `features`,
-`lists`, `guides`, plus `playerNotes`. The `prospect-card` block is a Markdoc
+`src/content.config.js` field for field, and the guide club list must match the
+affiliates in `org.json`. Lint checks both. In dev, Keystatic writes to this
+checkout (`src/content/`); on Vercel it commits to `post/*` branches
+(`PUBLIC_KEYSTATIC_STORAGE=github`, see `.env.example`).
+
+Post types: `recaps`, `features`, `lists`, `guides`, plus `playerNotes`.
+The `prospect-card` block is a Markdoc
 tag (`markdoc.config.mjs`); a player page lists every post that names him in
 `players` or in a card.
 
@@ -108,3 +135,5 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
 
 Plain, short sentences (ASD-STE100 style, as in Tally). Baseball's October
 is the "postseason"; lint enforces the word list in `scripts/checks/docs.mjs`.
+A line may carry `word-choice-exempt` only for a name we do not own (an award
+or a product title).
