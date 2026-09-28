@@ -128,7 +128,7 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
 
 ## Map
 
-- `src/pages/` — home, `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
+- `src/pages/` — home, 404 (stale player paths), `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
   `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`
 - `src/layouts/Base.astro` — the one page shell: head tags, nav, footer
 - `src/components/` — `StatTable`, `Headshot`, `RankedList`, `SeasonClub`, `ProspectCard` (+ its tag)

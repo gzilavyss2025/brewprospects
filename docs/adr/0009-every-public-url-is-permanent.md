@@ -21,6 +21,7 @@ them; no page writes a path by hand.
 | `/seasons/{year}` | `/seasons/2019` |
 | `/posts/{type}/{slug}` | `/posts/features/welcome-to-the-farm` |
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
+| `/player-paths.json` | the path map: a data file for the 404 page |
 
 - **Name and id.** The id makes the address unique. The name makes it
   readable. Only the trailing id is trusted. A name change makes a new
@@ -38,8 +39,11 @@ them; no page writes a path by hand.
 ## Consequences
 
 - A static site cannot read a stale `{name-id}` by itself. The 404 page
-  (roadmap Phase 1) will read the trailing id and send the reader to the
-  current path. Until then, a renamed player's old link breaks.
+  (`src/pages/404.astro`, 2026-09-28) reads the trailing id, looks it up
+  in the path map, and sends the reader to the current path. That also
+  covers a wrong case, a trailing slash and a bare id. It needs
+  JavaScript; without it, the reader gets the 404 page and its links.
+  The map and the player pages come from one list, `playerPages()`.
 - Lint checks that a published post keeps its path
   (`scripts/checks/post-paths.mjs`, 2026-09-28). A post that is on
   `origin/main` and not a draft is published. A branch that deletes it,
