@@ -71,6 +71,18 @@ for (const route of ROUTES) {
   }
 }
 
+// At phone width every stat table overflows. A scroll box must then take
+// keyboard focus, or a keyboard reader cannot see the hidden columns. CI
+// caught this only on Linux, where the fonts make the tables wider.
+test('a scrolling table can be reached by keyboard at phone width', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 })
+  for (const route of ['/', topProspect, '/seasons/2019']) {
+    await page.goto(route)
+    const axe = await new AxeBuilder({ page }).withRules(['scrollable-region-focusable']).analyze()
+    expect(axe.violations.map((v) => `${route} ${v.id}: ${v.nodes.length}`)).toEqual([])
+  }
+})
+
 test('an unknown path gets the 404 page with status 404', async ({ page }) => {
   const res = await page.goto('/no-such-page')
   expect(res.status()).toBe(404)

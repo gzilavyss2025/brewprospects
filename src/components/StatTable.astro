@@ -16,7 +16,7 @@ const COLS = {
   ],
 }[group]
 ---
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label={`${group === 'hitting' ? 'Hitting' : 'Pitching'} stats by year`}>
   <table class="stats">
     <thead>
       <tr>
