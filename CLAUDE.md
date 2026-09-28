@@ -98,6 +98,7 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
    Never loosen or skip a test to get green.
 9. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
    `src/lib/slug.js`; a new kind of page adds its row to the ADR's table.
+   Lint fails when a post published on `main` loses its path.
 10. **Spacing and radii use tokens** (ADR-0011). Lint rejects raw px in
     `padding`, `gap`, `margin`, `border-radius` and their longhands, including
     inline styles in styles, components, layouts and pages. Only 0, 1px, 2px

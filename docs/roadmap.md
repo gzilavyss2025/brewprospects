@@ -38,11 +38,11 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 ## Decisions still open
 
 1. **Site name and domain.** Deferred (2026-09-28). `src/config/site.js` is
-   still a placeholder. Blocks Phase 1 item 6 and the canonical parts of 5.
+   still a placeholder. Blocks Phase 1 item 5 and the canonical parts of 4.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
-3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 8.
+3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 7.
 
 ## Done
 
@@ -63,36 +63,38 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 - **Keystatic in production** (was Phase 1, item 1; 2026-09-28). The
   GitHub App `brewprospects-keystatic`, its Vercel env vars, and one post
   saved from the live editor end to end. README has the steps.
+- **Post paths are checked** (was Phase 1, item 2; 2026-09-28). Lint fails
+  when a post published on `main` loses its path (ADR-0009).
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in
   under a minute. `pastPlayers()` runs once per build. No cache needed.
 
 ## Phase 1: Ready to go public
 
 The site is live at the placeholder URL. This phase makes it safe to share.
-Items 1 to 4 do not need a name.
+Items 1 to 3 do not need a name.
 
 1. **`404.astro`.** It also reads the trailing id of a stale `{name-id}` and
    sends the reader to the current path (ADR-0009).
-2. **A check that keeps a published post on its path.** Do it before the
-   first real post (Phase 2, item 1).
-3. **A Playwright smoke test over `dist/`**: a few routes load, no broken
+2. **A Playwright smoke test over `dist/`**: a few routes load, no broken
    internal links, and axe finds no violations. Screenshot baselines later.
-4. **LICENSE** for the code, and a clear credits and disclaimer page.
-5. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
+3. **LICENSE** for the code, and a clear credits and disclaimer page.
+4. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
    `og-image.png`, `og:url`, a Twitter card, and `Person` / `Article` JSON-LD
    on player and post pages. Never render OG images in a function (Tally
    went over the Vercel CPU limit this way). The sitemap and `og:url` need
    `SITE_URL`.
-6. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
+5. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.
-7. **`@astrojs/rss`** for posts.
-8. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
+6. **`@astrojs/rss`** for posts.
+7. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
    test (Tally ADR-0028).
 
 ## Phase 2: Content and finding things
 
-1. Real posts. Delete the sample post. Start with a guide per affiliate.
+1. Real posts. Delete the sample post: it is published, so list its path in
+   `RETIRED` in `scripts/checks/post-paths.mjs`. Start with a guide per
+   affiliate.
 2. Club pages at `/clubs/{name-id}`, with the affiliate accent.
 3. Find any player: an A to Z index of all ~2,200 players, then search. Today
    about 1,700 past players are reachable only through season pages.
