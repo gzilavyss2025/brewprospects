@@ -170,8 +170,10 @@ For example: `src/lib/identity/` (color, affiliates, club identity) and
      in both themes. Every `ACCENTS` primary is checked with its ink at
      4.5:1; a failure fails lint and the club renders Brewers navy. Brand
      navy and gold are unchanged, and gold means Brewers only. See ADR-0012.
-   - **Open (C):** a naming ADR (0010, reserved): a class is named for its
-     job (`.roster`), never its shape. Keep `.card` as the one card primitive.
+   - **Done (C):** a naming ADR (0010): a class is named for its job
+     (`.roster`), never its shape. `.card` and `.pennant` stay the two shape
+     primitives; `.pcard` and `.rank-chip` were renamed to `.spotlight` and
+     `.rank`. Lint checks every class against the ADR's shape-word table.
 
    **Open, separate work:** the dark theme toggle. The token PRs prepare
    for it; they do not activate a dark theme on any page.

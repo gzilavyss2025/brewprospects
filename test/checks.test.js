@@ -6,6 +6,7 @@ import { join, posix, win32 } from 'node:path'
 import { ROOT, relPath } from '../scripts/checks/paths.mjs'
 import { checkContrastLines } from '../scripts/checks/contrast.mjs'
 import { rawValueProblems } from '../scripts/checks/raw-values.mjs'
+import { classShapeProblems } from '../scripts/checks/class-shape.mjs'
 
 test('raw spacing and radius values fail in sheets and embedded styles', () => {
   const css = '.roster { padding: 6px 12px; gap: var(--space-2, 8px); margin-inline: -4px; border-start-start-radius: 14px; }'
@@ -41,6 +42,59 @@ test('the lint runner rejects a raw value in a nested source folder', () => {
     const run = spawnSync(process.execPath, ['scripts/checks/run-all.mjs'], { cwd: ROOT, encoding: 'utf8' })
     assert.equal(run.status, 1)
     assert.match(run.stderr, /fixture\.css:1 padding has raw px \(7px\)/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('a shape word matches a class as a whole name', () => {
+  const problems = classShapeProblems('src/components/Example.astro', '<div class="notice" />')
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /class "notice" carries the shape word "notice" \(no class may carry it yet\)/)
+})
+
+test('a shape word matches a class as a hyphen segment', () => {
+  const problems = classShapeProblems('src/components/Example.astro', '<div class="club-notice" />')
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /class "club-notice" carries the shape word "notice"/)
+})
+
+test('a shape word matches a class as a suffix, even when another class owns it', () => {
+  const problems = classShapeProblems('src/styles/example.css', '.eventcard { color: red; }')
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /class "eventcard" carries the shape word "card" \(only \.card may carry it\)/)
+})
+
+test('a shape word inside an unrelated word does not match', () => {
+  assert.deepEqual(classShapeProblems('src/styles/example.css', '.pillar { color: red; }'), [])
+  assert.deepEqual(classShapeProblems('src/components/Example.astro', '<p class="postage">x</p>'), [])
+})
+
+test('the owners of card and pennant pass, as a selector or an attribute', () => {
+  assert.deepEqual(classShapeProblems('src/styles/example.css', '.card { } .pennant { }'), [])
+  assert.deepEqual(classShapeProblems('src/components/Example.astro', '<a class="card pennant" />'), [])
+})
+
+test('a comment and Astro frontmatter are ignored', () => {
+  assert.deepEqual(classShapeProblems('src/styles/example.css', '/* .notice { color: red; } */'), [])
+  const astro = '---\nconst label = p.data.notice;\n---\n<p>{label}</p>'
+  assert.deepEqual(classShapeProblems('src/components/Example.astro', astro), [])
+})
+
+test('a className: string is read', () => {
+  const onerror = "onerror={`this.replaceWith(Object.assign(document.createElement('div'),{className:'club-notice'}))`}"
+  const problems = classShapeProblems('src/components/Example.astro', `<img ${onerror} />`)
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /class "club-notice" carries the shape word "notice"/)
+})
+
+test('the lint runner rejects a shape-word class in a nested source folder', () => {
+  const dir = mkdtempSync(join(ROOT, 'src/styles/class-shape-test-'))
+  try {
+    writeFileSync(join(dir, 'fixture.css'), '.stat-card { color: red; }\n')
+    const run = spawnSync(process.execPath, ['scripts/checks/run-all.mjs'], { cwd: ROOT, encoding: 'utf8' })
+    assert.equal(run.status, 1)
+    assert.match(run.stderr, /fixture\.css:1 class "stat-card" carries the shape word "card"/)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
