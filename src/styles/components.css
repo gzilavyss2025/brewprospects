@@ -49,7 +49,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 .club-head img { width: 48px; height: 48px; background: var(--surface-logo); border-radius: var(--radius-round); padding: var(--space-1); }
 .club-head .club-logo-none { width: 48px; height: 48px; flex: none; }
 .club-head h2 { margin: 0; font-size: 24px; }
-.club-head .sub { font-size: 14px; opacity: 0.9; }
+.club-head .club-meta { font-size: 14px; opacity: 0.9; }
 .club-body {
   border: 2px solid var(--line-edge); border-radius: 0 0 var(--radius-md) var(--radius-md);
   background: var(--surface-card); padding: var(--space-4); box-shadow: var(--shadow);
@@ -59,7 +59,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 .bucket ul { list-style: none; margin: 0; padding: 0; }
 .bucket li { padding: var(--space-0-75) 0; border-bottom: 1px dotted var(--line-rule); display: flex; gap: var(--space-2); align-items: baseline; }
 .bucket .jersey { font-family: var(--font-num); color: var(--text-ink-soft); min-width: 2ch; text-align: right; }
-.rank-chip {
+.rank {
   margin-left: auto; font-family: var(--font-num); font-weight: 700; font-size: 13px;
   background: var(--brand-gold); color: var(--brand-navy); border-radius: var(--radius-pill); padding: 0 var(--space-2);
 }
@@ -74,8 +74,8 @@ table.stats th:nth-child(3), table.stats td:nth-child(3) { text-align: left; }
 table.stats thead th { background: var(--brand-navy); color: var(--text-on-navy); position: sticky; top: 0; }
 table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 
-/* Player hero. */
-.hero { display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap; }
+/* Player head. */
+.player-head { display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap; }
 .headshot {
   width: 132px; height: 176px; object-fit: cover; object-position: top center;
   border: 3px solid var(--line-edge); border-radius: var(--radius-md); background: var(--brand-gold); box-shadow: var(--shadow);
@@ -93,12 +93,12 @@ table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 .path li { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-0-5); font-size: 14px; }
 
 .section { margin-top: var(--space-9); }
-.note { background: var(--surface-card); border-left: 6px solid var(--brand-gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
+.coverage, .player-note { background: var(--surface-card); border-left: 6px solid var(--brand-gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 
 /* Live prospect card (island) inside posts. */
-.pcard { display: flex; gap: var(--space-3-5); align-items: center; margin: var(--space-5) 0; }
-.pcard img { width: 72px; height: 96px; object-fit: cover; object-position: top; border-radius: var(--radius-sm); border: 2px solid var(--line-edge); background: var(--brand-gold); }
-.pcard .line { font-family: var(--font-num); font-size: 18px; }
+.spotlight { display: flex; gap: var(--space-3-5); align-items: center; margin: var(--space-5) 0; }
+.spotlight img { width: 72px; height: 96px; object-fit: cover; object-position: top; border-radius: var(--radius-sm); border: 2px solid var(--line-edge); background: var(--brand-gold); }
+.spotlight .line { font-family: var(--font-num); font-size: 18px; }
 
 .prose { max-width: 70ch; }
 .prose p, .prose li { font-size: 18px; }
@@ -106,5 +106,5 @@ table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 /* Ranked prospect lists (Top 100 history, season pages). */
 .ranked { list-style: none; padding: 0; margin: 0 0 var(--space-2); }
 .ranked li { padding: var(--space-1) 0; border-bottom: 1px dotted var(--line-rule); }
-.ranked .rank-chip { margin-right: var(--space-1-5); }
+.ranked .rank { margin-right: var(--space-1-5); }
 .club-body h3 { font-size: 16px; font-family: var(--font-body); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }

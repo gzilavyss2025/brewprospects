@@ -27,7 +27,7 @@ const next = years[i + 1]
   <h1>{data.season} Brewers farm system</h1>
 
   {data.noSeason ? (
-    <p class="note">{data.noSeason}</p>
+    <p class="coverage">{data.noSeason}</p>
   ) : (
     <p>
       {clubs.map((c, n) => <>{n > 0 && ' · '}<a href={`#club-${c.id}`}>{c.name}</a></>)}

@@ -36,7 +36,7 @@ const rows = [...archive].reverse().map((s) => {
           <>
             <p>{r.clubs.map((c) => levelFor(c.sportId)?.label).join(' · ')}</p>
             <p class="muted">{r.players} players · {r.ranked ?? 0} in the Top 100</p>
-            {r.top && <p><span class="rank-chip">#{r.top.rank}</span> {r.top.name}</p>}
+            {r.top && <p><span class="rank">#{r.top.rank}</span> {r.top.name}</p>}
           </>
         )}
       </a>

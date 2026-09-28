@@ -50,7 +50,7 @@ const draftText = draft
   : null
 ---
 <Base title={player.name} description={`${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}>
-  <div class="hero">
+  <div class="player-head">
     <Headshot id={player.id} name={player.name} />
     <div>
       {level && <span class="pennant">{level.label}</span>}
@@ -58,8 +58,8 @@ const draftText = draft
       <p><strong>{orDash(player.pos)}</strong> · {where}</p>
       {player.rank && (
         <p>
-          <span class="rank-chip">MLB Pipeline Brewers #{player.rank.orgRank}</span>
-          {player.rank.topRank && <> <span class="rank-chip">Top 100 #{player.rank.topRank}</span></>}
+          <span class="rank">MLB Pipeline Brewers #{player.rank.orgRank}</span>
+          {player.rank.topRank && <> <span class="rank">Top 100 #{player.rank.topRank}</span></>}
         </p>
       )}
       <dl class="facts">
@@ -75,7 +75,7 @@ const draftText = draft
   {note && (
     <section class="section">
       <h2>Notes</h2>
-      <div class="note prose"><NoteContent /></div>
+      <div class="player-note prose"><NoteContent /></div>
     </section>
   )}
 
@@ -83,14 +83,14 @@ const draftText = draft
     <section class="section">
       <h2>Top 100 history</h2>
       <p>
-        {ranks.map((r) => <><span class="rank-chip" title={r.source === 'baseball-america' ? 'Baseball America' : 'MLB Pipeline'}>{r.season} #{r.rank}</span>{' '}</>)}
+        {ranks.map((r) => <><span class="rank" title={r.source === 'baseball-america' ? 'Baseball America' : 'MLB Pipeline'}>{r.season} #{r.rank}</span>{' '}</>)}
       </p>
       <p class="muted">Preseason Top 100 ranks from years he played in the Brewers system. <a href="/prospects">All years</a></p>
     </section>
   )}
 
   {player.archiveOnly && (
-    <p class="note section">The path and tables below cover his minor-league seasons with Brewers affiliates, {ARCHIVE_FIRST_SEASON} on. Time with other clubs and in the majors is not shown.</p>
+    <p class="coverage section">The path and tables below cover his minor-league seasons with Brewers affiliates, {ARCHIVE_FIRST_SEASON} on. Time with other clubs and in the majors is not shown.</p>
   )}
 
   <section class="section">
