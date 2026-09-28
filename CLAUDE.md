@@ -42,7 +42,8 @@ and fails when it finds none. Do not replace it with a shell glob.
 ## Workflow
 
 Work on a branch and open a PR. Never push to `main`: every merge to `main`
-deploys. The nightly data job is the one planned exception.
+deploys. A GitHub ruleset enforces this, with no admin bypass. The one actor
+it lets push is the nightly job's deploy key (`NIGHTLY_DEPLOY_KEY`).
 
 CI (`.github/workflows/ci.yml`) runs lint, test and build on every PR. Run
 all three before you push. The nightly job (`nightly-data.yml`) runs each
@@ -116,7 +117,8 @@ Keystatic collections (`keystatic.config.jsx`) must match the Astro schemas in
 `src/content.config.js` field for field, and the guide club list must match the
 affiliates in `org.json`. Lint checks both. In dev, Keystatic writes to this
 checkout (`src/content/`); on Vercel it commits to `post/*` branches
-(`PUBLIC_KEYSTATIC_STORAGE=github`, see `.env.example`).
+(`PUBLIC_KEYSTATIC_STORAGE=github`, see `.env.example`). The ruleset is what
+makes it: `branchPrefix` alone lets Keystatic save straight to `main`.
 
 Post types: `recaps`, `features`, `lists`, `guides`, plus `playerNotes`.
 The `prospect-card` block is a Markdoc

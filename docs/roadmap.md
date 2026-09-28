@@ -30,18 +30,19 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   linked to this repo. Every merge to `main` deploys to
   `https://brewprospects.vercel.app`, a placeholder until the domain is
   chosen. `SITE_URL` stays unset until then (ADR-0009).
+- **The repo is public, and `main` is protected** (2026-09-28). A ruleset
+  requires a PR and the `ci` check, with no admin bypass. That is what sends
+  Keystatic saves to `post/*` branches (ADR-0002). The nightly job pushes
+  with a deploy key, the one bypass. Drafts on `post/*` branches are public.
 
 ## Decisions still open
 
 1. **Site name and domain.** Deferred (2026-09-28). `src/config/site.js` is
-   still a placeholder. Blocks Phase 1 item 7 and the canonical parts of 6.
+   still a placeholder. Blocks Phase 1 item 6 and the canonical parts of 5.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
-3. **Protect `main`?** Vercel is set up, so this can be decided. When yes,
-   the nightly job needs a token that may push to `main` first, or it fails
-   every night.
-4. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 9.
+3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 8.
 
 ## Done
 
@@ -59,34 +60,34 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   B: color roles in light and dark pairs, checked in both themes (ADR-0012).
   C: classes named for their job, and the shape-word lint (ADR-0010). Then
   the theme toggle (ADR-0013).
+- **Keystatic in production** (was Phase 1, item 1; 2026-09-28). The
+  GitHub App `brewprospects-keystatic`, its Vercel env vars, and one post
+  saved from the live editor end to end. README has the steps.
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in
   under a minute. `pastPlayers()` runs once per build. No cache needed.
 
 ## Phase 1: Ready to go public
 
 The site is live at the placeholder URL. This phase makes it safe to share.
-Items 1 to 5 do not need a name.
+Items 1 to 4 do not need a name.
 
-1. **Keystatic in production.** `/keystatic` loads on the live site today in
-   local mode, where saves fail. Create the GitHub App, set the env vars
-   (README steps), and save one real post end to end.
-2. **`404.astro`.** It also reads the trailing id of a stale `{name-id}` and
+1. **`404.astro`.** It also reads the trailing id of a stale `{name-id}` and
    sends the reader to the current path (ADR-0009).
-3. **A check that keeps a published post on its path.** Do it before the
+2. **A check that keeps a published post on its path.** Do it before the
    first real post (Phase 2, item 1).
-4. **A Playwright smoke test over `dist/`**: a few routes load, no broken
+3. **A Playwright smoke test over `dist/`**: a few routes load, no broken
    internal links, and axe finds no violations. Screenshot baselines later.
-5. **LICENSE** for the code, and a clear credits and disclaimer page.
-6. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
+4. **LICENSE** for the code, and a clear credits and disclaimer page.
+5. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
    `og-image.png`, `og:url`, a Twitter card, and `Person` / `Article` JSON-LD
    on player and post pages. Never render OG images in a function (Tally
    went over the Vercel CPU limit this way). The sitemap and `og:url` need
    `SITE_URL`.
-7. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
+6. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.
-8. **`@astrojs/rss`** for posts.
-9. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
+7. **`@astrojs/rss`** for posts.
+8. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
    test (Tally ADR-0028).
 
 ## Phase 2: Content and finding things
@@ -133,8 +134,6 @@ Dates are approximate. Check each one every year.
 - A byte budget for data shipped to islands.
 - `people/changes?updatedSince=` to cut nightly fetches.
 - Past club logos from a sourced table keyed on (id, season) (ADR-0008).
-- A keepalive for the nightly schedule, if the repo goes public. GitHub
-  disables schedules after 60 quiet days only in public repos.
 
 ## Do not copy from Tally
 

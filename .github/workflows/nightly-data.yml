@@ -10,8 +10,11 @@ on:
   schedule:
     - cron: '41 10 * * *' # 10:41 UTC = 5:41 AM Central (CDT)
   workflow_dispatch:
+# contents: write for a manual run on a branch; actions: write for the
+# keepalive step. Pushes to main go through the deploy key below.
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: nightly-data
   cancel-in-progress: false
@@ -19,7 +22,12 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
+      # main only changes through a PR (the repo's ruleset). This deploy key is
+      # the one actor the ruleset lets push to main, so the job checks out and
+      # pushes with it. Its private half is the NIGHTLY_DEPLOY_KEY secret.
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.NIGHTLY_DEPLOY_KEY }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -40,8 +48,8 @@ jobs:
         continue-on-error: true
         run: node scripts/data/gen-prospect-history.mjs
       # The new data must pass the tests and build the site before it reaches
-      # main. Pushes made with GITHUB_TOKEN do not start ci.yml, so this is
-      # the only check the nightly commit gets before Vercel deploys it.
+      # main. The push does start ci.yml, but Vercel deploys at the same time,
+      # so this is the check that counts.
       - run: npm test
       - run: npm run build
       - name: Commit if changed
@@ -63,6 +71,15 @@ jobs:
             sleep $((attempt * 15))
           done
           exit 1
+      # GitHub turns off a public repo's schedule after 60 days with no
+      # activity, and a quiet offseason commits nothing. Enabling the workflow
+      # through the API counts as activity (the keepalive-workflow action's
+      # API mode does the same).
+      - name: Keepalive
+        if: always() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable nightly-data.yml --repo "$GITHUB_REPOSITORY"
       # CLAUDE.md rule 2 with a script behind it: every captured fixture's
       # field paths must still be in a fresh API response.
       - id: drift
