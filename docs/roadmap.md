@@ -1,150 +1,93 @@
 # Roadmap
 
-Written 2026-09-25, after PR #2 (archive and Top 100 history). Update it when a
-phase ends or a decision changes. Each item names the file or rule it changes.
+Written 2026-09-25, after PR #2. Reviewed 2026-09-28, after PR #18. Update it
+when a phase ends or a decision changes. Each item names the file or rule it
+changes.
 
-The order matters more than the dates. Phase 0 is the work that is cheap now
-and costly later. Most of it is a lesson that Tally (`bbsbh`) paid for in weeks
-4 to 11 of its life. Do Phase 0 before new features.
-
-Timing: the MiLB regular season is over. Rosters and stats are quiet until
-spring. October to February is the best time to fix foundations.
+The order matters more than the dates. **Foundations come first** (decided
+2026-09-28): finish the work that is cheap now and costly later before new
+features, even when a feature is timely. Most of it is a lesson that Tally
+(`bbsbh`) paid for in weeks 4 to 11 of its life.
 
 ## Decisions made
 
-Settled 2026-09-25. Write an ADR when one of these shapes code.
+Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 - **Brewers only, forever.** Org 158 is a constant. URLs carry no org prefix.
   Covering another org would be a new site.
-- **Dark mode is planned.** New tokens are light and dark pairs from the start,
-  and lint checks contrast in both themes (0.5). Shipping it is Phase 2.
+- **Dark mode shipped** (2026-09-28). Every color token is a light and dark
+  pair, and lint checks contrast in both themes (ADR-0012). The reader picks
+  the theme (ADR-0013).
 - **A pure fan site, for now.** No ads and no email list at launch. This may
-  change, so keep every MLB asset URL (logos, headshots) behind one function
-  in `src/lib/`. A switch to self-hosted assets is then one edit.
+  change, so keep every MLB asset URL (logos, headshots) in one module,
+  `src/lib/identity/affiliates.js`. A switch to self-hosted assets is then
+  one file.
 - **One author.** No author model. One byline in `src/config/site.js`.
+- **Foundations first** (2026-09-28). This offseason goes to Phase 1 and the
+  foundation items of Phase 2. The 2026 Arizona Fall League and Rule 5 dates
+  may pass without a feature. That is accepted.
+- **Vercel project** (2026-09-28): `brewprospects` in the `gareedge` team,
+  linked to this repo. Every merge to `main` deploys to
+  `https://brewprospects.vercel.app`, a placeholder until the domain is
+  chosen. `SITE_URL` stays unset until then (ADR-0009).
 
 ## Decisions still open
 
-These block parts of Phase 1. They do not block Phase 0.
-
-1. **Site name and domain.** `src/config/site.js` is still a placeholder.
+1. **Site name and domain.** Deferred (2026-09-28). `src/config/site.js` is
+   still a placeholder. Blocks Phase 1 item 7 and the canonical parts of 6.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
-   Pipeline scrape (ADR-0004). This matters more once the site is public.
-3. **Protect `main`?** Deferred until Vercel is set up. When yes, the nightly
-   job needs a bot token first (0.7).
-4. **Analytics: none, or Vercel Analytics?** If yes, see 1.6.
+   Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
+   matters now.
+3. **Protect `main`?** Vercel is set up, so this can be decided. When yes,
+   the nightly job needs a token that may push to `main` first, or it fails
+   every night.
+4. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 9.
 
-## Phase 0: Set in stone now
+## Done
 
-### 0.1 Make local lint tell the truth (done)
-`scripts/checks/run-all.mjs` crashed on Windows, and even when it ran, the
-folder cap skipped every file there. `scripts/checks/paths.mjs` now builds
-`ROOT` with `fileURLToPath` and gives forward-slash paths, and a test checks
-that a Windows path resolves. Lint now tells the truth on this machine (PR #4).
-
-### 0.2 Repo hygiene that Windows needs (done)
-- `.gitattributes` sets `* text=auto eol=lf`, and lint fails on a CRLF file.
-- `.nvmrc` pins Node 22 for both workflows.
-- `npm test` runs `scripts/test.mjs`, which fails when it finds no tests.
-
-### 0.3 URL contract (done)
-ADR-0009 lists every public path in one table (PR #6). `paths` in
-`src/lib/slug.js` builds all of them, there is no trailing slash, and
-`Base.astro` emits a canonical link once `SITE_URL` is set.
-
-Not done, on purpose: reading a stale `{name-id}` loosely needs the 404 page
-(Phase 1). No check yet keeps a published post on its path.
-
-### 0.4 Club identity is keyed on (id, season) (done)
-Team ids are reused: 249 was the Carolina Mudcats and is the Wilson Warbirds
-now. `clubIdentity()` in `src/lib/identity/affiliates.js` gives today's logo and
-accent only when the season's club name matches the current name. Any other
-club gets no logo and Brewers navy (ADR-0008, PR #5). Past logos can come
-back later through a sourced table keyed on (id, season).
-
-### 0.5 Focus ring (done)
-The focus ring was gold: 1.47:1 on paper, and invisible on the gold header.
-It is now two-tone (`--focus` with a `--focus-halo` band), and a `FOCUS` line
-in `tokens.css` makes lint check it at 3:1 on every surface.
-
-The rest of the token work moved to Phase 2, item 7 (decided 2026-09-25). The
-CSS is small, so the sweep stays cheap for a while.
-
-### 0.6 The season is data, not the clock (done)
-Most of this was already true. `org.json` stores `season`, the archive takes
-its last season from `org.json`, and pages never read the clock for a season.
-The gap was spring. A new season's rosters fill in a few players at a time,
-and any count from 1 to 99 threw, so the nightly job would have been red for
-weeks. `snapshotAction()` in `src/lib/model/org.js` now keeps the last season while
-a new one fills in. It still fails on a thin roster for the season already on
-disk. `pipeline.json` gets no `season`: it is a rolling list, and its date is
-the honest label. The freshness check in 0.7 catches a job stuck on "keep".
-
-### 0.7 Harden the nightly job (done)
-`.github/workflows/nightly-data.yml` now:
-- Runs each generator on its own. A failed source keeps its last good file,
-  the others still commit, and the job fails at the end so it is seen.
-- Runs `npm test` and `npm run build` before it commits. Pushes made with
-  `GITHUB_TOKEN` do not start `ci.yml`, so this is the only check.
-- Rebases and retries the push up to three times.
-- Runs `scripts/data/freshness.mjs`, which fails when `org.json` still holds
-  last season after May 1.
-
-Not done, on purpose:
-- **Keepalive.** GitHub disables schedules after 60 quiet days only in public
-  repos. This repo is private. Add a keepalive if it goes public.
-- **Bot token.** Protecting `main` is deferred until Vercel is set up
-  (decided 2026-09-25). Before protection goes on, give the job a token that
-  may push to `main`, or it will fail every night.
-
-### 0.8 Tests that catch API drift (done)
-- `test/fixtures/manifest.json`: capture date and source URL per fixture.
-  Each URL names a finished season, so its content cannot change. A test
-  fails when a fixture has no entry.
-- `scripts/data/drift.mjs` runs in the nightly job. It refetches each source
-  URL and fails on any field path the fixture has and the API no longer
-  sends. Adapted from bbsbh's `check-feed-shape-drift.mjs`, with arrays
-  compared over every element so trimmed fixtures work.
-- Lint checks that Keystatic and `src/content.config.js` declare the same
-  fields, and that the guide club list is exactly the current affiliates. It
-  had drifted (six clubs, no DSL Brewers Blue); fixed. This is lint, not a
-  unit test, so an affiliate change never blocks the nightly data.
-
-### 0.9 Docs that stay true (done)
-- `CONTEXT.md`: the glossary, in bbsbh's format.
-- `docs/api.md`: every Stats API call we make, the parameters that matter,
-  sportIds and known quirks. Trimmed from bbsbh's `docs/MLB_STATS_API.md`;
-  rows checked only there are marked.
-- Lint: ADR numbers are unique, and the word list ("postseason"). Both
-  adapted from bbsbh.
-- Fixed stale references: `color.js` and the CLAUDE.md map.
-- CLAUDE.md rule 7: a convention without a check is a wish.
-
-### 0.10 Cap pressure (done)
-`src/lib/` had 9 of 10 files. It is now split: `src/lib/model/` (org,
-archive, levels, card, posts) and `src/lib/identity/` (color, affiliates).
-`slug`, `format` and `theme` stay at the top, beside `build/`. Each folder
-has room for new modules.
+- **Phase 0** (PRs #4 to #11, #18). Lint runs true on Windows (0.1). LF
+  line endings, `.nvmrc`, and a test runner that fails on no tests (0.2).
+  The URL contract, ADR-0009 (0.3). Club identity keyed on (id, season),
+  ADR-0008 (0.4). A two-tone focus ring checked at 3:1 (0.5). The season is
+  data, not the clock: `snapshotAction()` keeps last season while spring
+  rosters fill in (0.6). A hardened nightly job with a freshness check
+  (0.7). Fixture drift checks and content schema lint (0.8). `CONTEXT.md`,
+  `docs/api.md` and doc lint (0.9). `src/lib/` split into `model/` and
+  `identity/` (0.10).
+- **Design tokens and dark mode** (was Phase 2, item 7; PRs #12 to #18).
+  A: spacing, radius and duration tokens, and raw-px lint (ADR-0011).
+  B: color roles in light and dark pairs, checked in both themes (ADR-0012).
+  C: classes named for their job, and the shape-word lint (ADR-0010). Then
+  the theme toggle (ADR-0013).
+- **Build time** (was Phase 1, item 9). CI runs lint, test and build in
+  under a minute. `pastPlayers()` runs once per build. No cache needed.
 
 ## Phase 1: Ready to go public
 
-1. Name, domain, `site` config, favicon and logo in `public/`. Stop hotlinking
-   the Brewers logo for the site's own mark.
-2. Keystatic in production: the GitHub App, env vars and the Vercel project
-   (README steps). Save one real post end to end.
-3. SEO pack, static only: `@astrojs/sitemap`, `robots.txt`, one static
+The site is live at the placeholder URL. This phase makes it safe to share.
+Items 1 to 5 do not need a name.
+
+1. **Keystatic in production.** `/keystatic` loads on the live site today in
+   local mode, where saves fail. Create the GitHub App, set the env vars
+   (README steps), and save one real post end to end.
+2. **`404.astro`.** It also reads the trailing id of a stale `{name-id}` and
+   sends the reader to the current path (ADR-0009).
+3. **A check that keeps a published post on its path.** Do it before the
+   first real post (Phase 2, item 1).
+4. **A Playwright smoke test over `dist/`**: a few routes load, no broken
+   internal links, and axe finds no violations. Screenshot baselines later.
+5. **LICENSE** for the code, and a clear credits and disclaimer page.
+6. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
    `og-image.png`, `og:url`, a Twitter card, and `Person` / `Article` JSON-LD
    on player and post pages. Never render OG images in a function (Tally
-   went over the Vercel CPU limit this way).
-4. `@astrojs/rss` for posts.
-5. `404.astro`.
-6. Analytics, if chosen: one `track()` wrapper with an allowlist and a test
-   (Tally ADR-0028).
-7. A Playwright smoke test over `dist/`: a few routes load, no broken internal
-   links, and axe finds no violations. Screenshot baselines later.
-8. LICENSE for the code, and a clear credits and disclaimer page.
-9. Confirm the build time is acceptable. `pastPlayers()` rebuilds the archive
-   index on each call (about 1,700 players). Cache it if the build is slow.
+   went over the Vercel CPU limit this way). The sitemap and `og:url` need
+   `SITE_URL`.
+7. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
+   hotlinking the Brewers logo for the site's own mark. Blocked on open
+   decision 1.
+8. **`@astrojs/rss`** for posts.
+9. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
+   test (Tally ADR-0028).
 
 ## Phase 2: Content and finding things
 
@@ -156,38 +99,32 @@ has room for new modules.
    `org.json`.
 5. Headshot fallback as a pure, tested function: `silo` first for players who
    reached MLB, then `milb`, then initials.
-6. The Top 100 gaps: 2025 and 2026 preseason lists (ADR-0007 source).
-7. Design tokens, then dark mode. Split into three PRs (2026-09-25), each
-   from main after the previous one merges: A = scale and lint, B = color
-   roles, theme pairs and affiliate contrast, C = naming ADR and classes.
-   - **Done (A):** a spacing scale (`--space-*` on a 4px step), `--radius-*`
-     and `--dur-*`. Lint rejects raw px in `padding`, `gap`, `margin` and
-     `border-radius`, including longhands and inline styles. It allows 0,
-     1px, 2px and tokens.css. Counts and preserved steps are in ADR-0011.
-   - **Done (B):** color roles named for their job (`--{role}-{name}`), each
-     a light and dark pair. The dark values are navy-black, from the
-     [palette study](https://brewprospects-palette-study.gary-zilavy.chatgpt.site);
-     the ones the study did not set are provisional. `PAIRS` and `FOCUS` run
-     in both themes. Every `ACCENTS` primary is checked with its ink at
-     4.5:1; a failure fails lint and the club renders Brewers navy. Brand
-     navy and gold are unchanged, and gold means Brewers only. See ADR-0012.
-   - **Done (C):** a naming ADR (0010): a class is named for its job
-     (`.roster`), never its shape. `.card` and `.pennant` stay the two shape
-     primitives; `.pcard` and `.rank-chip` were renamed to `.spotlight` and
-     `.rank`. Lint checks every class against the ADR's shape-word table.
-
-   **Done:** the dark theme toggle (ADR-0013). The reader's stored choice
-   wins; with none, the OS setting decides. An inline head script sets
-   `data-theme` before first paint.
+6. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
+   and 2026 is missing (ADR-0007 source). Add each new year's list as it
+   comes out (see the calendar).
 
 ## Phase 3: Offseason features
 
-These fit the calendar.
+Timely, but after the foundations (decided 2026-09-28).
 - **Arizona Fall League** (October to November, sportId 17). A full-season
-  roster call gives players with their real affiliate. Timely content now.
+  roster call gives players with their real affiliate.
 - **40-man and Rule 5 protection** (November). Which prospects are eligible.
 - **Transactions**: promotions, trades, releases. Sort feed rows by id before
   grouping; the feed order is not stable (Tally ADR-0064).
+
+## Calendar
+
+Dates are approximate. Check each one every year.
+
+- **October to mid-November:** Arizona Fall League.
+- **About November 20:** 40-man protection deadline.
+- **December:** Rule 5 draft.
+- **January to February:** new Top 100 and Pipeline Top 30 lists. Refresh
+  `pipeline.json` and add the year to the Top 100 history.
+- **March:** spring rosters fill in. This is the first real run of the
+  "keep last season" path in `snapshotAction()`. Watch the nightly job.
+- **May 1:** `freshness.mjs` starts to fail if `org.json` still holds last
+  season.
 
 ## Later, maybe
 
@@ -195,6 +132,9 @@ These fit the calendar.
 - Per-player share images, rendered at build time only.
 - A byte budget for data shipped to islands.
 - `people/changes?updatedSince=` to cut nightly fetches.
+- Past club logos from a sourced table keyed on (id, season) (ADR-0008).
+- A keepalive for the nightly schedule, if the repo goes public. GitHub
+  disables schedules after 60 quiet days only in public repos.
 
 ## Do not copy from Tally
 
