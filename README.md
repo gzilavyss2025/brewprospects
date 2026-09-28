@@ -15,6 +15,8 @@ npm run data       # refresh src/data/*.json (runs nightly in Actions)
 node scripts/data/gen-archive.mjs --season 2015   # rebuild one past season
 node scripts/data/gen-archive.mjs --refetch       # rebuild every past season
 npm run lint && npm test && npm run build
+npx playwright install chromium                  # once
+npm run e2e        # smoke tests over the build: routes, links, axe
 ```
 
 ## Pages
@@ -29,6 +31,7 @@ npm run lint && npm test && npm run build
 | `/seasons/{year}` | That year's affiliates, each player's line for his club, and the Brewers on that year's Top 100 |
 | `/prospects` | Top 100 history: every Brewer on a preseason list since 2006 |
 | `/posts` | All posts by type |
+| `/about` | Credits, sources and the disclaimer |
 
 ## Writing a post
 
@@ -77,3 +80,9 @@ player page (e.g. `jesus-made-815908`).
 
 - `CLAUDE.md` — rules for agents working here
 - `docs/adr/` — why each decision was made
+
+## License
+
+The code is MIT (`LICENSE`). The license covers the code only: not the
+posts, and not the data, logos or photos, which belong to their owners
+(see `/about`).

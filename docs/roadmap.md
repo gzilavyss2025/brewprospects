@@ -38,11 +38,11 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 ## Decisions still open
 
 1. **Site name and domain.** Deferred (2026-09-28). `src/config/site.js` is
-   still a placeholder. Blocks Phase 1 item 4 and the canonical parts of 3.
+   still a placeholder. Blocks Phase 1 item 2 and the canonical parts of 1.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
-3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 6.
+3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 4.
 
 ## Done
 
@@ -67,27 +67,31 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   when a post published on `main` loses its path (ADR-0009).
 - **The 404 page** (was Phase 1, item 1; 2026-09-28). It sends a stale
   player path to the current one through the path map (ADR-0009).
+- **Smoke tests** (was Phase 1, item 3; 2026-09-28). `npm run e2e` serves
+  the build the way Vercel does. It checks every internal link in every
+  page, loads eleven routes in both themes with third-party requests blocked,
+  runs axe on each, and checks the 404 page and its redirect. Screenshot
+  baselines later.
+- **LICENSE and credits** (was Phase 1, item 4; 2026-09-28). MIT for the
+  code only. `/about` names each data source and who owns it.
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in
   under a minute. `pastPlayers()` runs once per build. No cache needed.
 
 ## Phase 1: Ready to go public
 
 The site is live at the placeholder URL. This phase makes it safe to share.
-Items 1 and 2 do not need a name.
+Most of what is left needs the site name (open decision 1).
 
-1. **A Playwright smoke test over `dist/`**: a few routes load, no broken
-   internal links, and axe finds no violations. Screenshot baselines later.
-2. **LICENSE** for the code, and a clear credits and disclaimer page.
-3. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
+1. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
    `og-image.png`, `og:url`, a Twitter card, and `Person` / `Article` JSON-LD
    on player and post pages. Never render OG images in a function (Tally
    went over the Vercel CPU limit this way). The sitemap and `og:url` need
    `SITE_URL`.
-4. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
+2. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.
-5. **`@astrojs/rss`** for posts.
-6. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
+3. **`@astrojs/rss`** for posts.
+4. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
    test (Tally ADR-0028).
 
 ## Phase 2: Content and finding things

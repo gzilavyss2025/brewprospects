@@ -21,6 +21,7 @@ them; no page writes a path by hand.
 | `/seasons/{year}` | `/seasons/2019` |
 | `/posts/{type}/{slug}` | `/posts/features/welcome-to-the-farm` |
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
+| `/about` | credits and disclaimer |
 | `/player-paths.json` | the path map: a data file for the 404 page |
 
 - **Name and id.** The id makes the address unique. The name makes it
