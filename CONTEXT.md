@@ -39,6 +39,9 @@ _Avoid_: "prospect" as a synonym. Not every org player is a prospect.
 **Prospect**: a player on a ranked list: the MLB Pipeline Brewers list, or
 the Top 100.
 
+**Spotlight**: a player featured in a post's live prospect card (`.spotlight`,
+ADR-0010). Not "prospect": not every spotlighted player is on a ranked list.
+
 **Pipeline rank**: a player's place on the MLB Pipeline Brewers list (org
 rank, about 30 names) or on its overall Top 100 (top rank) (ADR-0004).
 
@@ -79,6 +82,20 @@ The pill radius is 999px; the round radius is 50%.
 
 **Duration token**: a shared motion time, named `--dur-*`. The current card
 hover uses `--dur-fast` (160ms).
+
+**Primitive**: a class that owns the base rule for a drawn shape — the one
+place its CSS lives. `.card` and `.pennant` are today's primitives
+(ADR-0010).
+
+**Shape word**: a word in a class name that names a drawn shape (`card`,
+`pill`, `notice`, `pennant`) instead of a job. Reserved for whichever class
+owns that shape (ADR-0010).
+_Avoid_: giving a class a shape word it does not own.
+
+**Coverage note**: the site's own caveat about what a page's data does or
+does not cover ("no season on record," "seasons since 2006 only"), styled
+`.coverage`. Not a player note: an author's own words about a player, from
+the `playerNotes` collection, styled `.player-note`.
 
 **Color role**: a color token named for its job, `--{role}-{name}`, in
 `tokens.css`. The roles are `surface` (paper, card, logo plate), `text` (ink,
