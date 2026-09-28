@@ -45,7 +45,8 @@ player page (e.g. `jesus-made-815908`).
 
 1. **Vercel**: import this repo as a new project. Framework: Astro. The build
    uses `@astrojs/vercel`. Done 2026-09-28: project `brewprospects`,
-   https://brewprospects.vercel.app.
+   https://brewprospects.vercel.app. Preview deployments are off, so only
+   `main` deploys; a PR or a `post/*` branch gets no preview link.
 2. **Keystatic in production**: Keystatic creates its GitHub App only from a
    dev server, never from the live site.
    1. Run `PUBLIC_KEYSTATIC_STORAGE=github npm run dev` and open
