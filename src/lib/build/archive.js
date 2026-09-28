@@ -2,9 +2,10 @@
 // import from here, not from the JSON files.
 import people from '../../data/archive/people.json' with { type: 'json' }
 import prospectHistory from '../../data/prospect-history.json' with { type: 'json' }
-import { org } from './data.js'
+import { org, allPlayers } from './data.js'
 import { archiveIndex, pastPlayer, rankHistory, archiveLines } from '../model/archive.js'
 import { orgPlayerIds } from '../model/org.js'
+import { paths } from '../slug.js'
 
 const modules = import.meta.glob('../../data/archive/[0-9][0-9][0-9][0-9].json', { eager: true, import: 'default' })
 
@@ -24,6 +25,20 @@ export function pastPlayers() {
     .filter((id) => !current.has(id))
     .map((id) => pastPlayer(id, archive, people))
     .filter(Boolean)
+}
+
+// Every player with a page, current then past. The player pages and the 404
+// page's path map both read this list, so a page and its map entry cannot
+// drift apart. Cached: pastPlayers() walks every archive season.
+let playerPagesCache = null
+export function playerPages() {
+  playerPagesCache ??= [...allPlayers(), ...pastPlayers()]
+  return playerPagesCache
+}
+
+// Player id to current path, for the 404 page (ADR-0009).
+export function playerPathMap() {
+  return Object.fromEntries(playerPages().map((p) => [p.id, paths.player(p.name, p.id)]))
 }
 
 // Every page-bearing player id, current and past, for links from season pages.

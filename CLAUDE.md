@@ -29,6 +29,7 @@ npm run data     # refresh src/data/*.json from the live sources
 npm run lint     # eslint + structural checks
 npm test         # node:test unit suite, no network
 npm run preview  # serve the built site on :4322
+npm run e2e      # Playwright smoke tests over the build (after npm run build)
 
 node --test test/org.test.js                                       # one test file
 node --test --test-name-pattern="snapshotAction" test/org.test.js  # matching tests only
@@ -45,8 +46,8 @@ Work on a branch and open a PR. Never push to `main`: every merge to `main`
 deploys. A GitHub ruleset enforces this, with no admin bypass. The one actor
 it lets push is the nightly job's deploy key (`NIGHTLY_DEPLOY_KEY`).
 
-CI (`.github/workflows/ci.yml`) runs lint, test and build on every PR. Run
-all three before you push. The nightly job (`nightly-data.yml`) runs each
+CI (`.github/workflows/ci.yml`) runs lint, test, build and `e2e` on every
+PR. Run them before you push. The nightly job (`nightly-data.yml`) runs each
 generator on its own, then test and build, and commits `src/data/` only when
 `scripts/data/changed.mjs` finds a real change (it ignores `generatedAt`).
 It also runs `drift.mjs` and `freshness.mjs`, which need the network.
@@ -98,6 +99,7 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
    Never loosen or skip a test to get green.
 9. **Public URLs are permanent** (ADR-0009). Build every path with `paths` in
    `src/lib/slug.js`; a new kind of page adds its row to the ADR's table.
+   Lint fails when a post published on `main` loses its path.
 10. **Spacing and radii use tokens** (ADR-0011). Lint rejects raw px in
     `padding`, `gap`, `margin`, `border-radius` and their longhands, including
     inline styles in styles, components, layouts and pages. Only 0, 1px, 2px
@@ -127,8 +129,8 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
 
 ## Map
 
-- `src/pages/` — home, `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
-  `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`
+- `src/pages/` — home, 404 (stale player paths), `/depth-chart`, `/players`, `/players/{name-id}`, `/seasons`,
+  `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`, `/about`
 - `src/layouts/Base.astro` — the one page shell: head tags, nav, footer
 - `src/components/` — `StatTable`, `Headshot`, `RankedList`, `SeasonClub`, `ProspectCard` (+ its tag)
 - `src/lib/` — pure logic: `slug`, `format`, `theme`; `model/` (`org`, `archive`,

@@ -21,6 +21,8 @@ them; no page writes a path by hand.
 | `/seasons/{year}` | `/seasons/2019` |
 | `/posts/{type}/{slug}` | `/posts/features/welcome-to-the-farm` |
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
+| `/about` | credits and disclaimer |
+| `/player-paths.json` | the path map: a data file for the 404 page |
 
 - **Name and id.** The id makes the address unique. The name makes it
   readable. Only the trailing id is trusted. A name change makes a new
@@ -38,9 +40,16 @@ them; no page writes a path by hand.
 ## Consequences
 
 - A static site cannot read a stale `{name-id}` by itself. The 404 page
-  (roadmap Phase 1) will read the trailing id and send the reader to the
-  current path. Until then, a renamed player's old link breaks.
-- Nothing yet checks that a published post keeps its path. Add a check when
-  the first real post ships.
+  (`src/pages/404.astro`, 2026-09-28) reads the trailing id, looks it up
+  in the path map, and sends the reader to the current path. That also
+  covers a wrong case, a trailing slash and a bare id. It needs
+  JavaScript; without it, the reader gets the 404 page and its links.
+  The map and the player pages come from one list, `playerPages()`.
+- Lint checks that a published post keeps its path
+  (`scripts/checks/post-paths.mjs`, 2026-09-28). A post that is on
+  `origin/main` and not a draft is published. A branch that deletes it,
+  renames its file, moves it to another type or sets it back to a draft
+  fails. A post may leave only through that file's `RETIRED` list, with a
+  reason. CI fetches `main` so the check has a base.
 - A new kind of page adds its row to the table above and a builder to
   `paths`, in the same PR.

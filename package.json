@@ -12,7 +12,8 @@
     "preview": "astro preview --port 4322",
     "data": "node scripts/data/gen-org.mjs && node scripts/data/fetch-pipeline.mjs && node scripts/data/gen-archive.mjs && node scripts/data/gen-prospect-history.mjs",
     "lint": "eslint . && node scripts/checks/run-all.mjs",
-    "test": "node scripts/test.mjs"
+    "test": "node scripts/test.mjs",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.9",
@@ -25,10 +26,13 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "esbuild": "^0.28.2",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.12.0"
-  }
+  },
+  "license": "MIT"
 }

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { playerSlug, idFromSlug, slugify, paths, canonicalUrl } from '../src/lib/slug.js'
+import { playerSlug, idFromSlug, slugify, paths, canonicalUrl, stalePlayerPath } from '../src/lib/slug.js'
 import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/identity/color.js'
 import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/identity/affiliates.js'
@@ -16,6 +16,26 @@ test('player slugs carry a readable name and a trusted id', () => {
   assert.equal(idFromSlug('jesus-made-815908'), 815908)
   assert.equal(idFromSlug('no-id'), null)
   assert.equal(slugify(null), '')
+})
+
+test('a stale player path leads to the current one by its id', () => {
+  const map = { 815908: '/players/jesus-made-815908', 5: '/players/5' }
+  assert.equal(stalePlayerPath('/players/jesus-made-lugo-815908', map), '/players/jesus-made-815908')
+  assert.equal(stalePlayerPath('/players/Jesus-Made-815908', map), '/players/jesus-made-815908')
+  assert.equal(stalePlayerPath('/players/jesus-made-815908/', map), '/players/jesus-made-815908')
+  assert.equal(stalePlayerPath('/players/815908', map), '/players/jesus-made-815908')
+  assert.equal(stalePlayerPath('/players/any-name-5', map), '/players/5')
+})
+
+test('a player path with no page, no id or no change leads nowhere', () => {
+  const map = { 815908: '/players/jesus-made-815908' }
+  assert.equal(stalePlayerPath('/players/jesus-made-815908', map), null, 'no redirect loop')
+  assert.equal(stalePlayerPath('/players/someone-else-123', map), null)
+  assert.equal(stalePlayerPath('/players/no-id', map), null)
+  assert.equal(stalePlayerPath('/players/jesus-made-815908/stats', map), null)
+  assert.equal(stalePlayerPath('/clubs/wilson-warbirds-815908', map), null)
+  assert.equal(stalePlayerPath('/players/jesus-made-815908', null), null)
+  assert.equal(paths.playerPathMap(), '/player-paths.json')
 })
 
 test('format helpers show a dash for anything missing', () => {

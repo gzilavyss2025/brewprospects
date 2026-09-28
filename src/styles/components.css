@@ -70,6 +70,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 }
 
 /* Stat tables scroll inside themselves; the page never scrolls sideways. */
+/* A scroll box takes keyboard focus (tabindex="0"), so the keyboard can
+   reach columns past the edge (axe scrollable-region-focusable). */
 .table-scroll { overflow-x: auto; border: 2px solid var(--line-edge); border-radius: var(--radius-sm); background: var(--surface-card); }
 table.stats { border-collapse: collapse; width: 100%; font-family: var(--font-num); font-size: 16px; }
 table.stats th, table.stats td { padding: var(--space-1-5) var(--space-2-5); text-align: right; white-space: nowrap; }

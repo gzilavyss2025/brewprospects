@@ -29,7 +29,7 @@ const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
   <div class="club-body">
     <h3>Hitters</h3>
     {hitters.length === 0 ? <p class="muted">No hitting lines on record.</p> : (
-      <div class="table-scroll">
+      <div class="table-scroll" tabindex="0" role="region" aria-label={`${club.name} hitters`}>
         <table class="stats">
           <thead><tr><th>Player</th><th>Pos</th><th>Age</th><th>G</th><th>PA</th><th>HR</th><th>SB</th><th>AVG</th><th>OBP</th><th>SLG</th></tr></thead>
           <tbody>
@@ -53,7 +53,7 @@ const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
     )}
     <h3 class="section">Pitchers</h3>
     {pitchers.length === 0 ? <p class="muted">No pitching lines on record.</p> : (
-      <div class="table-scroll">
+      <div class="table-scroll" tabindex="0" role="region" aria-label={`${club.name} pitchers`}>
         <table class="stats">
           <thead><tr><th>Player</th><th>Age</th><th>G</th><th>GS</th><th>IP</th><th>ERA</th><th>WHIP</th><th>SO</th><th>BB</th></tr></thead>
           <tbody>

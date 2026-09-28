@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # The post path check (ADR-0009) compares this branch with main.
+      - run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -16,3 +18,6 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # Smoke tests over the build (roadmap Phase 1): routes, links, axe.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e

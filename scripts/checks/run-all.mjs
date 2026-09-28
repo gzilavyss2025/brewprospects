@@ -11,6 +11,7 @@ import { loadContentConfigs, schemaProblems, clubListProblems } from './content-
 import { ROOT, relPath } from './paths.mjs'
 import { rawValueProblems } from './raw-values.mjs'
 import { classShapeProblems } from './class-shape.mjs'
+import { postPathProblems } from './post-paths.mjs'
 import { accentProblems } from '../../src/lib/identity/affiliates.js'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
@@ -134,6 +135,8 @@ const problems = [
   ...checkAdrNumbers(),
   ...checkWords(files),
   ...(await checkContentConfig()),
+  // ADR-0009: a post published on main keeps its path.
+  ...postPathProblems(),
 ]
 if (problems.length) {
   console.error(problems.map((p) => `✗ ${p}`).join('\n'))

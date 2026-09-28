@@ -1,0 +1,24 @@
+---
+// A static site cannot read a stale player path by itself (ADR-0009). This
+// page asks the path map for the id at the end of the address and, when the
+// player has a page, sends the reader there.
+import Base from '../layouts/Base.astro'
+---
+<Base title="Page not found">
+  <h1>Page not found</h1>
+  <p>There is no page at this address.</p>
+  <p><a href="/players">Every player in the org</a> · <a href="/seasons">Past seasons</a> · <a href="/">Home</a></p>
+</Base>
+
+<script>
+  import { paths, stalePlayerPath } from '../lib/slug.js'
+  if (location.pathname.startsWith('/players/')) {
+    fetch(paths.playerPathMap())
+      .then((r) => (r.ok ? r.json() : null))
+      .then((pathById) => {
+        const to = stalePlayerPath(location.pathname, pathById)
+        if (to) location.replace(to + location.search + location.hash)
+      })
+      .catch(() => { /* the reader keeps this page and its links */ })
+  }
+</script>

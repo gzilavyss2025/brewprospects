@@ -52,6 +52,14 @@ the rosters show him in the system that season.
 **Past player**: a player who appears only in the archive. His page shows
 only his seasons with Brewers affiliates, and says so.
 
+**Player pages**: every org player and every past player. Each has a page
+at `/players/{name-id}`. `playerPages()` in `src/lib/build/archive.js` is
+the one list.
+
+**Path map**: `/player-paths.json`, player id to current path, for every
+player page. The 404 page reads it to send a stale `{name-id}` to the
+current path (ADR-0009).
+
 ## Data
 
 **Snapshot**: a JSON file in `src/data/` written by a generator. Pages read
