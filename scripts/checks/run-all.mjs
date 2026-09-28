@@ -10,6 +10,7 @@ import { adrNumberProblems, wordProblems } from './docs.mjs'
 import { loadContentConfigs, schemaProblems, clubListProblems } from './content-config.mjs'
 import { ROOT, relPath } from './paths.mjs'
 import { rawValueProblems } from './raw-values.mjs'
+import { classShapeProblems } from './class-shape.mjs'
 import { accentProblems } from '../../src/lib/affiliates.js'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
@@ -127,6 +128,8 @@ const problems = [
   ...accentProblems(),
   ...checkRawHex(files),
   ...files.flatMap((f) => rawValueProblems(relPath(ROOT, f), readFileSync(f, 'utf8'))),
+  // ADR-0010: a class is named for its job, never its shape.
+  ...files.flatMap((f) => classShapeProblems(relPath(ROOT, f), readFileSync(f, 'utf8'))),
   ...checkLineEndings(files),
   ...checkAdrNumbers(),
   ...checkWords(files),

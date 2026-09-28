@@ -1,12 +1,15 @@
 # A class is named for its job, never its shape
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-09-28
 
 ADR-0011 and ADR-0012 reserved this number for the naming decision in the
-third token PR (roadmap Phase 2, item 7C). This is C1, docs only: the rule,
-the census and the ledger. C2 renames the classes; C3 adds the lint check.
-Nothing here changes CSS, markup or a check.
+third token PR (roadmap Phase 2, item 7C). C1 was docs only: the rule, the
+census and the ledger. C2 renamed the five classes the ledger called out. C3
+adds the lint check, `classShapeProblems` in `scripts/checks/class-shape.mjs`,
+wired into `run-all.mjs`: it reads `SHAPE_WORDS` (this ADR's shape-word table)
+against every class name in `class=`, `className=`, `className:` and a CSS
+selector, and fails when one outside its owner carries a shape word.
 
 ## Context
 
@@ -189,16 +192,18 @@ done and there is nothing left it would have to allow.
 
 ## What C3 does not cover
 
-C3's lint check is a text check over `src/styles/*.css`, `class=` and
-`className=`. It cannot see a class name assembled at runtime. This site
-has exactly one such case today: `Headshot.astro`'s `onerror` handler
-builds `className: 'initials'` inside a JS string bound to a DOM API call,
-not JSX or Astro markup. The census above found it by reading the string by
-hand, not by the pattern C3's guard will use. `.initials` is not renamed by
-this ADR, so the gap costs nothing today — but C3 should say, the way
-ADR-0011's raw-value check does, exactly which patterns it reads and which
-it cannot: a class name built by string interpolation or `Object.assign`
-is invisible to it.
+C3's lint check (`classShapeProblems`) is a text check over `.css` files and
+`<style>` blocks for CSS selectors, and `class=`, `className=` and
+`className:` literal strings elsewhere — the same scope `rawValueProblems`
+scans. It cannot see a class name assembled at runtime: `Headshot.astro`'s
+`onerror` handler builds `className: 'initials'` as a literal inside a
+template-literal string, which the guard does read, but a class name built by
+string interpolation or `Object.assign` with a non-literal value would not
+be. The census above found `.initials` by reading the string by hand; the
+guard's own scan happens to catch that one case too, since it is a plain
+quoted literal, but a computed one (`className: base + '-card'`) stays
+invisible to it, the same blind spot ADR-0011's raw-value check documents for
+its own patterns.
 
 ## Consequences
 
@@ -215,6 +220,6 @@ is invisible to it.
 - **The shape count is future work, not this PR's job.** It needs the
   collapse follow-ups done first, or it starts by failing four classes this
   ADR just decided not to rename.
-- **The lint check is C3's, and it has a known blind spot.** A class name
-  built at runtime — today, only `.initials` — will not be seen by a guard
-  that reads `class=` and `className=` in source text.
+- **The lint check has a known blind spot.** A class name built by string
+  interpolation or a computed property, rather than a literal `class=`,
+  `className=` or `className:` value, will not be seen by `classShapeProblems`.

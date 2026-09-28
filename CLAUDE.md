@@ -106,6 +106,9 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
     on Windows, so check a new file's line endings before you commit.
 12. **One number per ADR.** Lint fails when two files in `docs/adr/` share a
     number. Gaps are fine. A number the roadmap reserves stays reserved.
+13. **A class is named for its job, never its shape** (ADR-0010). Lint checks
+    every shape word in `scripts/checks/class-shape.mjs`'s `SHAPE_WORDS`
+    against `class=`, `className=` and CSS selectors; only the listed owner may carry one.
 
 ## Content
 
