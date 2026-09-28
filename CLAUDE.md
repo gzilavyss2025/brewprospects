@@ -66,9 +66,11 @@ deploys. The nightly data job is the one planned exception.
    Change it there, with a test.
 4. **Pure logic lives in `src/lib/`** and has tests. Modules that read
    `astro:content` or the JSON snapshots live in `src/lib/build/`.
-5. **Colors are tokens** in `src/styles/tokens.css`. A raw hex in a page or
-   component fails lint. New token pairs go on the `PAIRS` line, which lint
-   checks for WCAG AA.
+5. **Colors are role tokens** (`--{role}-{name}`, ADR-0012) in
+   `src/styles/tokens.css`, set in `:root` and the dormant `[data-theme="dark"]`
+   block. A raw hex in a page or component fails lint. Lint checks the `PAIRS`
+   line at 4.5:1 and the `FOCUS` line at 3:1 in both themes, and every
+   `ACCENTS` primary with its ink at 4.5:1. A failed club renders Brewers navy.
 6. **Caps are enforced, not suggested**: 10 files per code folder, 300 lines
    per file. When one fails, split. Do not raise the cap.
 7. **A convention without a check is a wish.** When you add a rule here, add

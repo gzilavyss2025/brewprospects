@@ -26,7 +26,7 @@ const urlOf = (e) => (org.players[e.id] ? playerUrl(org.players[e.id]) : null)
   </p>
 
   {clubs.map((c) => (
-    <section class="club" id={`club-${c.id}`} style={`--club:${c.accent.primary};--club-ink:${c.accent.ink}`}>
+    <section class="club" id={`club-${c.id}`} style={`--club-bar:${c.accent.primary};--club-on-bar:${c.accent.ink}`}>
       <div class="club-head">
         <img src={teamLogoUrl(c.id)} alt="" width="48" height="48" loading="lazy" />
         <div>

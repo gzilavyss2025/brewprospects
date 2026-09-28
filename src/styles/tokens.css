@@ -1,27 +1,36 @@
 /* Design tokens. Use these names in rules, never a raw hex.
    Brewers navy and gold lead; minor-league fun comes from type, shape and
-   motion, not from more colors. scripts/checks/run-all.mjs reads the PAIRS comment
-   below and fails lint when a pair drops under WCAG AA (4.5:1).
-   --navy and --gold are the Brewers' navy and gold as commonly published;
-   they were set from memory, not an official style guide. Verify before launch. */
+   motion, not from more colors. Color tokens are named for their job
+   (--{role}-{name}, ADR-0012). scripts/checks/contrast.mjs reads the PAIRS
+   and FOCUS comments below and checks each pair in both theme blocks.
+   --brand-navy and --brand-gold match the Brewers primary and secondary in
+   bbsbh/src/lib/data/mlb-team-colors.json. That match is not proof of an
+   official style guide. */
 
-/* PAIRS: ink/paper ink-soft/paper navy/gold gold/navy ink/card ink-soft/card paper/navy link/paper */
-/* The focus ring is two-tone: a --focus outline with a --focus-halo band
+/* PAIRS: text-ink/surface-paper text-ink-soft/surface-paper text-link/surface-paper text-ink/surface-card text-ink-soft/surface-card text-link/surface-card text-on-navy/brand-navy brand-navy/brand-gold club-on-bar/club-bar */
+/* The focus ring is two-tone: a --focus-ring outline with a --focus-halo band
    inside it, so one of the two stands out on every surface below.
-   FOCUS: focus|focus-halo/paper focus|focus-halo/card focus|focus-halo/gold focus|focus-halo/navy */
+   FOCUS: focus-ring|focus-halo/surface-paper focus-ring|focus-halo/surface-card focus-ring|focus-halo/brand-gold focus-ring|focus-halo/brand-navy */
 
 :root {
-  --navy: #12284b;
-  --gold: #ffc52f;
-  --paper: #fbf6e9;
-  --card: #ffffff;
-  --ink: #12284b;
-  --ink-soft: #4a5670;
-  --link: #0b4f8a;
-  --rule: #e6dcc3;
-  --stitch: #c8102e;
-  --focus: #12284b;
-  --focus-halo: #fbf6e9;
+  --surface-paper: #fbf6e9;
+  --surface-card: #ffffff;
+  --surface-logo: #ffffff;
+  --text-ink: #12284b;
+  --text-ink-soft: #4a5670;
+  --text-link: #0b4f8a;
+  --text-on-navy: #fbf6e9;
+  --line-rule: #e6dcc3;
+  --line-stitch: #c8102e;
+  --line-edge: var(--brand-navy);
+  --focus-ring: #12284b;
+  --focus-halo: var(--surface-paper);
+  --brand-navy: #12284b;
+  --brand-gold: #ffc52f;
+  /* Defaults for a section with no club color. An inline style on the
+     section sets both from accentFor(), and wins over these. */
+  --club-bar: var(--brand-navy);
+  --club-on-bar: #ffffff;
 
   --font-display: 'Alfa Slab One', 'Rockwell', Georgia, serif;
   --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -53,7 +62,33 @@
   --radius-round: 50%;
   --dur-none: 0ms;
   --dur-fast: 160ms;
-  --shadow: 0 2px 0 var(--navy);
-  --shadow-lift: 0 5px 0 var(--navy);
+  --shadow: 0 2px 0 var(--line-edge);
+  --shadow-lift: 0 5px 0 var(--line-edge);
   --max: 1080px;
+}
+
+/* Dormant navy-black theme (ADR-0012). No page sets data-theme yet, and the
+   site does not follow the OS setting. Paper, card, ink and link come from
+   the approved palette study; the other values are provisional. Brand and
+   club values match the light theme: they are identity, not theme. */
+[data-theme="dark"] {
+  --surface-paper: #080f1b;
+  --surface-card: #121e30;
+  --surface-logo: #ffffff;
+  --text-ink: #fbf6e9;
+  --text-ink-soft: #a9b4c8;
+  --text-link: #a8ceff;
+  --text-on-navy: #fbf6e9;
+  --line-rule: #2c3b54;
+  --line-stitch: #c8102e;
+  --line-edge: #5a78a8;
+  --focus-ring: #fbf6e9;
+  --focus-halo: var(--surface-paper);
+  --brand-navy: #12284b;
+  --brand-gold: #ffc52f;
+  --club-bar: var(--brand-navy);
+  --club-on-bar: #ffffff;
+  /* Restated so they pick up this block's edge color wherever it applies. */
+  --shadow: 0 2px 0 var(--line-edge);
+  --shadow-lift: 0 5px 0 var(--line-edge);
 }
