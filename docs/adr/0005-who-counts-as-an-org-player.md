@@ -26,4 +26,4 @@ Status codes seen live on 2026 Brewers rosters: `A`, `ASG`, `D7`, `D60`,
 
 ## Consequences
 
-2026: 7 affiliates, 253 players. The rule lives in `src/lib/org.js` with tests.
+2026: 7 affiliates, 253 players. The rule lives in `src/lib/model/org.js` with tests.

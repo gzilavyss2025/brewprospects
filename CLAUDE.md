@@ -80,13 +80,13 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
    note which response you checked in a comment. A captured response goes in
    `test/fixtures/` with its date and URL in `manifest.json`; the nightly
    `scripts/data/drift.mjs` refetches each one and fails on a missing field.
-3. **Who counts as an org player** is defined in `src/lib/org.js` (ADR-0005).
+3. **Who counts as an org player** is defined in `src/lib/model/org.js` (ADR-0005).
    Change it there, with a test.
 4. **Pure logic lives in `src/lib/`** and has tests. Modules that read
    `astro:content` or the JSON snapshots live in `src/lib/build/`.
 5. **Colors are role tokens** (`--{role}-{name}`, ADR-0012) in
-   `src/styles/tokens.css`, set in `:root` and the dormant `[data-theme="dark"]`
-   block. A raw hex in a page or component fails lint. Lint checks the `PAIRS`
+   `src/styles/tokens.css`, set in `:root` and the `[data-theme="dark"]`
+   block (the reader picks it, ADR-0013). A raw hex in a page or component fails lint. Lint checks the `PAIRS`
    line at 4.5:1 and the `FOCUS` line at 3:1 in both themes, and every
    `ACCENTS` primary with its ink at 4.5:1. A failed club renders Brewers navy.
 6. **Caps are enforced, not suggested**: 10 files per code folder, 300 lines
@@ -129,7 +129,8 @@ tag (`markdoc.config.mjs`); a player page lists every post that names him in
   `/seasons/{year}`, `/prospects` (Top 100 history), `/posts`
 - `src/layouts/Base.astro` — the one page shell: head tags, nav, footer
 - `src/components/` — `StatTable`, `Headshot`, `RankedList`, `SeasonClub`, `ProspectCard` (+ its tag)
-- `src/lib/` — pure model (`org`, `archive`, `levels`, `card`, `posts`, `slug`, `format`, `color`, `affiliates`)
+- `src/lib/` — pure logic: `slug`, `format`, `theme`; `model/` (`org`, `archive`,
+  `levels`, `card`, `posts`); `identity/` (`color`, `affiliates`); `build/` reads data
 - `scripts/checks/` — lint's structural checks; `scripts/data/` — generators, drift, freshness
 - `docs/adr/` — the why behind each decision. Read before you change one.
 - `docs/api.md` — every Stats API call we make, and its quirks

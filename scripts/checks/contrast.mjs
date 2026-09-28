@@ -8,7 +8,7 @@
 // map, so a dark value never stands in for a light one. A token defined as
 // var(--other) resolves inside its own theme. A token that does not resolve
 // to a six-digit hex fails; it is never skipped (ADR-0012).
-import { contrastRatio } from '../../src/lib/color.js'
+import { contrastRatio } from '../../src/lib/identity/color.js'
 
 export const LINES = [
   { label: 'PAIRS', min: 4.5 },

@@ -1,7 +1,7 @@
 ---
 // One player's MiLB year-by-year table for one stat group. A missing value
 // shows a dash; the table never computes a stat the API did not send.
-import { levelFor } from '../lib/levels.js'
+import { levelFor } from '../lib/model/levels.js'
 import { orDash } from '../lib/format.js'
 
 const { rows, group } = Astro.props

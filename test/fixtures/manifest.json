@@ -7,7 +7,7 @@
   "person-season.json": {
     "capturedAt": "2026-09-24",
     "sourceUrl": "https://statsapi.mlb.com/api/v1/people/815908?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],season=2026,leagueListId=milb_all)",
-    "note": "The prospect card's request (src/lib/card.js), pinned to 2026 so a finished season's content cannot change."
+    "note": "The prospect card's request (src/lib/model/card.js), pinned to 2026 so a finished season's content cannot change."
   },
   "person-season-multilevel.json": {
     "capturedAt": "2026-09-24",

@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   statusGroup, currentAssignments, orgPlayerIds, isStarter, depthChart, levelPath, statRows, primaryGroup,
-} from '../src/lib/org.js'
+} from '../src/lib/model/org.js'
 import { slimPerson } from '../scripts/data/slim.mjs'
 import people from './fixtures/people-yearbyyear.json' with { type: 'json' }
 
@@ -100,7 +100,7 @@ test('primaryGroup follows position', () => {
 })
 
 test('rosterVerdict: zero players is a season not started, a few is a bad response', async () => {
-  const { rosterVerdict } = await import('../src/lib/org.js')
+  const { rosterVerdict } = await import('../src/lib/model/org.js')
   assert.equal(rosterVerdict(0), 'not-started')
   assert.equal(rosterVerdict(1), 'thin')
   assert.equal(rosterVerdict(99), 'thin')
@@ -108,35 +108,35 @@ test('rosterVerdict: zero players is a season not started, a few is a bad respon
 })
 
 test('snapshotAction: a complete roster is written', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   assert.equal(snapshotAction('ok', { season: '2027', onDisk: '2026' }), 'write')
 })
 
 test('snapshotAction: the offseason keeps the last season', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   // Jan 1 2027: the 2027 affiliates exist with empty rosters.
   assert.equal(snapshotAction('not-started', { season: '2027', onDisk: '2026' }), 'keep')
 })
 
 test('snapshotAction: a new season filling in during spring keeps the last season', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   // Without this, the nightly job failed every day until 100 players arrived.
   assert.equal(snapshotAction('thin', { season: '2027', onDisk: '2026' }), 'keep')
 })
 
 test('snapshotAction: a thin roster for the season on disk is a bad response', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   assert.equal(snapshotAction('thin', { season: '2026', onDisk: '2026' }), 'fail')
 })
 
 test('snapshotAction: with no org.json on disk there is nothing to keep', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   assert.equal(snapshotAction('thin', { season: '2027', onDisk: null }), 'fail')
   assert.equal(snapshotAction('not-started', { season: '2027', onDisk: null }), 'fail')
 })
 
 test('snapshotAction: a season named by hand must be complete', async () => {
-  const { snapshotAction } = await import('../src/lib/org.js')
+  const { snapshotAction } = await import('../src/lib/model/org.js')
   assert.equal(snapshotAction('thin', { season: '2027', onDisk: '2026', explicit: true }), 'fail')
   assert.equal(snapshotAction('not-started', { season: '2027', onDisk: '2026', explicit: true }), 'fail')
 })

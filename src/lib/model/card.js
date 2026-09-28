@@ -2,7 +2,7 @@
 // this season's MiLB splits (leagueListId=milb_all) and these functions pick
 // the line to show. Checked live: person 815908, 2026.
 import { MILB_TOTAL_SPORT_ID, levelFor, levelRank } from './levels.js'
-import { DASH } from './format.js'
+import { DASH } from '../format.js'
 
 export function cardUrl(playerId) {
   return `https://statsapi.mlb.com/api/v1/people/${playerId}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)`

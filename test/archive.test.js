@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   brewersRanked, brewersClubIds, otherClubs, archiveLines, archiveIndex, pastPlayer, clubsByLevel, rankHistory,
-} from '../src/lib/archive.js'
+} from '../src/lib/model/archive.js'
 import { slimArchiveEntry } from '../scripts/data/slim.mjs'
 import roster from './fixtures/roster-season-2025-biloxi.json' with { type: 'json' }
 

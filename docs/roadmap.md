@@ -57,7 +57,7 @@ Not done, on purpose: reading a stale `{name-id}` loosely needs the 404 page
 
 ### 0.4 Club identity is keyed on (id, season) (done)
 Team ids are reused: 249 was the Carolina Mudcats and is the Wilson Warbirds
-now. `clubIdentity()` in `src/lib/affiliates.js` gives today's logo and
+now. `clubIdentity()` in `src/lib/identity/affiliates.js` gives today's logo and
 accent only when the season's club name matches the current name. Any other
 club gets no logo and Brewers navy (ADR-0008, PR #5). Past logos can come
 back later through a sourced table keyed on (id, season).
@@ -75,7 +75,7 @@ Most of this was already true. `org.json` stores `season`, the archive takes
 its last season from `org.json`, and pages never read the clock for a season.
 The gap was spring. A new season's rosters fill in a few players at a time,
 and any count from 1 to 99 threw, so the nightly job would have been red for
-weeks. `snapshotAction()` in `src/lib/org.js` now keeps the last season while
+weeks. `snapshotAction()` in `src/lib/model/org.js` now keeps the last season while
 a new one fills in. It still fails on a thin roster for the season already on
 disk. `pipeline.json` gets no `season`: it is a rolling list, and its date is
 the honest label. The freshness check in 0.7 catches a job stuck on "keep".
@@ -120,10 +120,11 @@ Not done, on purpose:
 - Fixed stale references: `color.js` and the CLAUDE.md map.
 - CLAUDE.md rule 7: a convention without a check is a wish.
 
-### 0.10 Cap pressure
-`src/lib/` has 9 of 10 files. Plan the split before the next module lands.
-For example: `src/lib/identity/` (color, affiliates, club identity) and
-`src/lib/model/`.
+### 0.10 Cap pressure (done)
+`src/lib/` had 9 of 10 files. It is now split: `src/lib/model/` (org,
+archive, levels, card, posts) and `src/lib/identity/` (color, affiliates).
+`slug`, `format` and `theme` stay at the top, beside `build/`. Each folder
+has room for new modules.
 
 ## Phase 1: Ready to go public
 
@@ -175,8 +176,9 @@ For example: `src/lib/identity/` (color, affiliates, club identity) and
      primitives; `.pcard` and `.rank-chip` were renamed to `.spotlight` and
      `.rank`. Lint checks every class against the ADR's shape-word table.
 
-   **Open, separate work:** the dark theme toggle. The token PRs prepare
-   for it; they do not activate a dark theme on any page.
+   **Done:** the dark theme toggle (ADR-0013). The reader's stored choice
+   wins; with none, the OS setting decides. An inline head script sets
+   `data-theme` before first paint.
 
 ## Phase 3: Offseason features
 

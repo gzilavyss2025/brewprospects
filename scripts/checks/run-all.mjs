@@ -11,7 +11,7 @@ import { loadContentConfigs, schemaProblems, clubListProblems } from './content-
 import { ROOT, relPath } from './paths.mjs'
 import { rawValueProblems } from './raw-values.mjs'
 import { classShapeProblems } from './class-shape.mjs'
-import { accentProblems } from '../../src/lib/affiliates.js'
+import { accentProblems } from '../../src/lib/identity/affiliates.js'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
 
@@ -70,7 +70,7 @@ function checkContrast() {
 // Pages and components use tokens, not raw colors. Only the token file and
 // the two color modules may hold a hex value.
 function checkRawHex(files) {
-  const ALLOWED = ['src/styles/tokens.css', 'src/lib/affiliates.js', 'src/lib/color.js']
+  const ALLOWED = ['src/styles/tokens.css', 'src/lib/identity/affiliates.js', 'src/lib/identity/color.js']
   return files
     .filter((f) => /\.(astro|css|jsx)$/.test(f))
     .filter((f) => !ALLOWED.includes(relPath(ROOT, f)))

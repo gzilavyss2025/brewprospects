@@ -23,7 +23,8 @@ One unit test checked seven ids.
 ## Decision
 
 Color tokens are `--{role}-{name}`. Each one is set in `:root` (light, live)
-and in `[data-theme="dark"]` (navy-black, dormant: no page sets it, and the
+and in `[data-theme="dark"]` (navy-black; dormant when accepted, live since
+ADR-0013, which lets the reader pick it; before that no page set it, and the
 site does not follow the OS setting).
 
 | Token | Job | Light | Dark |
@@ -47,7 +48,7 @@ site does not follow the OS setting).
 
 Dark paper, card, ink and link come from the approved palette study. The
 study set no other dark values; \* marks the values this PR chose. They pass
-every check and are provisional until the dark theme ships.
+every check. They were provisional until the dark theme shipped (ADR-0013).
 
 Three roles are new, each for a foreground or edge job the old names hid:
 
@@ -92,7 +93,7 @@ inline `--club-bar`. The rendered light pages are unchanged.
 - `PAIRS` now matches the real uses: `text-link/surface-card` (links in
   tables and cards) and `club-on-bar/club-bar` were added. `gold/navy` was
   dropped: no rule sets gold text on navy.
-- `accentProblems()` in `src/lib/affiliates.js` checks every `ACCENTS`
+- `accentProblems()` in `src/lib/identity/affiliates.js` checks every `ACCENTS`
   primary with its `pickInk()` ink at 4.5:1, and reports a missing or
   malformed color. Lint prints each failure. `accentFor()` uses the same
   test and paints Brewers navy with white for a failed entry. The entry stays

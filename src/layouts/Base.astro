@@ -3,8 +3,9 @@ import '../styles/tokens.css'
 import '../styles/base.css'
 import '../styles/components.css'
 import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
-import { teamLogoUrl } from '../lib/affiliates.js'
+import { teamLogoUrl } from '../lib/identity/affiliates.js'
 import { canonicalUrl } from '../lib/slug.js'
+import { THEME_BOOT } from '../lib/theme.js'
 
 const { title, description = SITE_TAGLINE } = Astro.props
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME
@@ -25,6 +26,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={THEME_BOOT} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={fullTitle} />
@@ -49,6 +51,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
         <nav class="site-nav" aria-label="Main">
           {nav.map((n) => <a href={n.href} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a>)}
         </nav>
+        <button class="theme-toggle" type="button" aria-pressed="false" hidden>Dark mode</button>
       </div>
     </header>
     <main class="wrap">
@@ -59,5 +62,19 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
         <p>{DISCLAIMER}</p>
       </div>
     </footer>
+    <script>
+      // The toggle needs JavaScript, so it stays hidden until this runs.
+      import { THEME_KEY, nextTheme } from '../lib/theme.js'
+      const root = document.documentElement
+      const button = document.querySelector('.theme-toggle')
+      const show = () => button.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'))
+      button.addEventListener('click', () => {
+        root.dataset.theme = nextTheme(root.dataset.theme)
+        try { localStorage.setItem(THEME_KEY, root.dataset.theme) } catch { /* the choice lasts this page only */ }
+        show()
+      })
+      show()
+      button.hidden = false
+    </script>
   </body>
 </html>

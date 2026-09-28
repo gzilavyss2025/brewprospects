@@ -3,8 +3,8 @@
 import people from '../../data/archive/people.json' with { type: 'json' }
 import prospectHistory from '../../data/prospect-history.json' with { type: 'json' }
 import { org } from './data.js'
-import { archiveIndex, pastPlayer, rankHistory, archiveLines } from '../archive.js'
-import { orgPlayerIds } from '../org.js'
+import { archiveIndex, pastPlayer, rankHistory, archiveLines } from '../model/archive.js'
+import { orgPlayerIds } from '../model/org.js'
 
 const modules = import.meta.glob('../../data/archive/[0-9][0-9][0-9][0-9].json', { eager: true, import: 'default' })
 

@@ -2,8 +2,8 @@
 // from the JSON files, so a file shape change touches one module.
 import org from '../../data/org.json' with { type: 'json' }
 import pipeline from '../../data/pipeline.json' with { type: 'json' }
-import { levelRank } from '../levels.js'
-import { currentAssignments, orgPlayerIds } from '../org.js'
+import { levelRank } from '../model/levels.js'
+import { currentAssignments, orgPlayerIds } from '../model/org.js'
 import { paths } from '../slug.js'
 
 export { org, pipeline }

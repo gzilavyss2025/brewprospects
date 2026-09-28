@@ -1,9 +1,9 @@
 ---
 import Base from '../layouts/Base.astro'
 import { org, affiliates, rankById, playerUrl } from '../lib/build/data.js'
-import { BUCKETS, depthChart } from '../lib/org.js'
-import { levelFor } from '../lib/levels.js'
-import { accentFor, teamLogoUrl } from '../lib/affiliates.js'
+import { BUCKETS, depthChart } from '../lib/model/org.js'
+import { levelFor } from '../lib/model/levels.js'
+import { accentFor, teamLogoUrl } from '../lib/identity/affiliates.js'
 
 const season = org.season
 const clubs = affiliates.map((a) => ({

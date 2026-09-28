@@ -13,6 +13,7 @@
    FOCUS: focus-ring|focus-halo/surface-paper focus-ring|focus-halo/surface-card focus-ring|focus-halo/brand-gold focus-ring|focus-halo/brand-navy */
 
 :root {
+  color-scheme: light;
   --surface-paper: #fbf6e9;
   --surface-card: #ffffff;
   --surface-logo: #ffffff;
@@ -67,11 +68,13 @@
   --max: 1080px;
 }
 
-/* Dormant navy-black theme (ADR-0012). No page sets data-theme yet, and the
-   site does not follow the OS setting. Paper, card, ink and link come from
-   the approved palette study; the other values are provisional. Brand and
-   club values match the light theme: they are identity, not theme. */
+/* Navy-black theme (ADR-0012). The head script in Base.astro sets
+   data-theme on <html> from the reader's choice or the OS setting
+   (ADR-0013). Paper, card, ink and link come from the approved palette
+   study; the other values were chosen in ADR-0012. Brand and club values
+   match the light theme: they are identity, not theme. */
 [data-theme="dark"] {
+  color-scheme: dark;
   --surface-paper: #080f1b;
   --surface-card: #121e30;
   --surface-logo: #ffffff;

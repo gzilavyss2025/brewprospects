@@ -1,7 +1,7 @@
 // Build-time access to posts across all four post collections. Drafts never
 // leave this module.
 import { getCollection } from 'astro:content'
-import { byNewest } from '../posts.js'
+import { byNewest } from '../model/posts.js'
 import { paths } from '../slug.js'
 
 export const POST_TYPES = [

@@ -15,6 +15,11 @@
   padding: var(--space-1-5) var(--space-3); border-radius: var(--radius-pill); border: 2px solid var(--brand-navy);
 }
 .site-nav a[aria-current='page'] { background: var(--brand-navy); color: var(--text-on-navy); }
+.theme-toggle {
+  font: inherit; font-weight: 700; cursor: pointer; color: var(--brand-navy); background: transparent;
+  padding: var(--space-1-5) var(--space-3); border-radius: var(--radius-pill); border: 2px dashed var(--brand-navy);
+}
+.theme-toggle[aria-pressed='true'] { background: var(--brand-navy); color: var(--text-on-navy); border-style: solid; }
 
 .site-footer { margin-top: var(--space-16); background: var(--brand-navy); color: var(--text-on-navy); padding: var(--space-6) 0 var(--space-10); font-size: 14px; }
 .site-footer a { color: var(--text-on-navy); }
