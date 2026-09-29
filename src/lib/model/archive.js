@@ -78,14 +78,25 @@ export function archiveIndex(archive) {
   return index
 }
 
-// A past-only player's page model: bio from people.json, stats from the
-// archive. `archiveOnly` tells the page to say the lines cover his Brewers
-// seasons, not his whole career.
-export function pastPlayer(id, archive, people) {
+// A past-only player's page model: bio from people.json, stats from his
+// careers.json entry (his whole MiLB career, any club). A player with no entry
+// falls back to his archive roster lines, Brewers clubs only. An entry
+// replaces those lines rather than adding to them: his Brewers seasons are
+// already in it, under the club name the archive has for that season
+// (ADR-0008; the career feed can name a club by its current name).
+// `careerThrough` is the season the entry runs through, or null when the
+// page has only roster lines to show.
+export function pastPlayer(id, archive, people, careers) {
   const known = archiveIndex(archive).get(id)
   if (!known) return null
   const bio = people?.[id] ?? {}
-  const { hitting, pitching } = archiveLines(archive, id)
+  const career = careers?.players?.[id]
+  const lines = archiveLines(archive, id)
+  const named = (group) => (career?.[group] ?? []).map((r) => {
+    const own = lines[group].find((l) => l.season === r.season && l.sportId === r.sportId && l.teamId === r.teamId)
+    return own ? { ...r, team: own.team, league: own.league } : r
+  })
+  const { hitting, pitching } = career ? { hitting: named('hitting'), pitching: named('pitching') } : lines
   return {
     ...bio,
     id,
@@ -94,6 +105,7 @@ export function pastPlayer(id, archive, people) {
     hitting,
     pitching,
     archiveOnly: true,
+    careerThrough: career ? careers.throughSeason : null,
   }
 }
 

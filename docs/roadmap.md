@@ -47,6 +47,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Done
 
+- **Full careers for past players** (2026-09-29). A past player's page
+  shows his whole minor-league career, with any club, from `careers.json`
+  (ADR-0006). MLB rows are unchanged (ADR-0014).
 - **Phase 0** (PRs #4 to #11, #18). Lint runs true on Windows (0.1). LF
   line endings, `.nvmrc`, and a test runner that fails on no tests (0.2).
   The URL contract, ADR-0009 (0.3). Club identity keyed on (id, season),

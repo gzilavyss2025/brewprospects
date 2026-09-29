@@ -22,6 +22,7 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | `gen-archive` | `/teams/{id}/roster?rosterType=fullSeason&season={y}&hydrate=person(stats(type=season,group=[hitting,pitching],sportId={s},season={y}))` | A past roster with each line |
 | `gen-archive` | `/teams/158/roster?rosterType={fullSeason,nonRosterInvitees}&season={y}` | Milwaukee's roster (ADR-0007) |
 | `gen-archive` | `/people?personIds={40 ids}&hydrate=draft` | Bios for past players |
+| `gen-careers` | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[yearByYear],leagueListId=milb_all)` | A past player's whole MiLB career (ADR-0006) |
 | `gen-prospect-history` | `/people?personIds={ids}` | Names the archive does not know |
 | `gen-mlb` | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)` | Every MLB season (ADR-0014) |
 | `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/model/card.js`) |
@@ -53,6 +54,9 @@ nightly `scripts/data/drift.mjs` refetches them and fails on a missing field.
 - **`leagueListId=milb_all`** puts every MiLB level into one stats block.
   Without it, a stats hydrate returns MLB rows only. Checked 2026-09-25:
   person 815908's `yearByYear` has no rows without it, and six with it.
+- **Club names in `yearByYear`** can be today's name, not the season's.
+  Checked 2026-09-29: team 406 is "ACL Brewers" in 2016 to 2018, and the
+  roster feed says "AZL Brewers". A Brewers line keeps the archive's name.
 - **`sportId=1`** in the same hydrate returns MLB rows only. A player with
   none has no stats block. Checked 2026-09-29: person 111904 has 19 hitting
   rows, and 815908 has none. A traded season has a split per club plus one

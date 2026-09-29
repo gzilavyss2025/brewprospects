@@ -51,8 +51,9 @@ rank, about 30 names) or on its overall Top 100 (top rank) (ADR-0004).
 the rosters show him in the system that season.
 
 **Past player**: a player who appears only in the archive. His page shows
-only his seasons with Brewers affiliates, and says so. His major-league
-rows show every club.
+his whole minor-league career when `careers.json` has him, and says
+"through {season}". With no entry it shows only his seasons with Brewers
+affiliates, and says so. His major-league rows show every club.
 
 **Player pages**: every org player and every past player. Each has a page
 at `/players/{name-id}`. `playerPages()` in `src/lib/build/archive.js` is
@@ -87,6 +88,11 @@ _Avoid_: reading the season from the clock.
 
 **Archive season**: one frozen file in `src/data/archive/`, for a season
 before the current one (ADR-0006).
+
+**Careers file**: `src/data/archive/careers.json`. The whole minor-league
+career of every past player, with any club (ADR-0006). It is packed: each
+club is stored once and each row is an array. `throughSeason` is the season
+it was fetched for. Not a season file.
 
 **Fixture**: a captured API response in `test/fixtures/`, listed with its
 date and source URL in `manifest.json`.

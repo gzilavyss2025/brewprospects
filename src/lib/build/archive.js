@@ -1,10 +1,12 @@
 // Build-time access to the archive snapshots (docs/adr/0006, 0007). Pages
 // import from here, not from the JSON files.
 import people from '../../data/archive/people.json' with { type: 'json' }
+import careersFile from '../../data/archive/careers.json' with { type: 'json' }
 import prospectHistory from '../../data/prospect-history.json' with { type: 'json' }
 import { org, allPlayers } from './data.js'
 import { archiveIndex, pastPlayer, rankHistory, archiveLines } from '../model/archive.js'
 import { orgPlayerIds } from '../model/org.js'
+import { unpackCareers } from '../model/careers.js'
 import { paths } from '../slug.js'
 
 const modules = import.meta.glob('../../data/archive/[0-9][0-9][0-9][0-9].json', { eager: true, import: 'default' })
@@ -16,14 +18,18 @@ export const seasonByYear = new Map(archive.map((s) => [s.season, s]))
 
 export { prospectHistory }
 
+// Whole MiLB careers of the past players, unpacked (docs/adr/0006).
+const careers = unpackCareers(careersFile)
+
 const current = new Set(orgPlayerIds(org.rosters))
 
 // Past players only: in the archive, not in this season's org. Each gets a
-// page built from his Brewers-system seasons.
+// page: his whole MiLB career when careers.json has him, else his
+// Brewers-system seasons from the archive.
 export function pastPlayers() {
   return [...archiveIndex(archive).keys()]
     .filter((id) => !current.has(id))
-    .map((id) => pastPlayer(id, archive, people))
+    .map((id) => pastPlayer(id, archive, people, careers))
     .filter(Boolean)
 }
 

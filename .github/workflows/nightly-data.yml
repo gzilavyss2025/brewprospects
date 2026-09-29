@@ -44,6 +44,11 @@ jobs:
       - id: archive
         continue-on-error: true
         run: node scripts/data/gen-archive.mjs
+      # Runs after gen-org and gen-archive: it reads the archive. Fetches only
+      # past players with no entry, unless gen-org moved to a new season.
+      - id: careers
+        continue-on-error: true
+        run: node scripts/data/gen-careers.mjs
       - id: history
         continue-on-error: true
         run: node scripts/data/gen-prospect-history.mjs
@@ -99,6 +104,7 @@ jobs:
             gen-org=${{ steps.org.outcome }}
             fetch-pipeline=${{ steps.pipeline.outcome }}
             gen-archive=${{ steps.archive.outcome }}
+            gen-careers=${{ steps.careers.outcome }}
             gen-prospect-history=${{ steps.history.outcome }}
             gen-mlb=${{ steps.mlb.outcome }}
             api-drift=${{ steps.drift.outcome }}

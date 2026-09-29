@@ -41,3 +41,41 @@ rosters). 2006–2025 holds 20 seasons, 1,956 players, and 3.1 MB of JSON.
   majors. That is stated on the page rather than filled from another source.
 - 1988–2005 can be added by lowering `ARCHIVE_FIRST_SEASON` and running the
   generator; the guards apply to each added season.
+
+## Amended 2026-09-29: careers.json, a second kind of file
+
+A season file holds each player's line for the Brewers club only. A past
+player's page could not show his other minor-league clubs. It now can.
+
+- `scripts/data/gen-careers.mjs` writes `src/data/archive/careers.json`. It
+  holds the whole minor-league career (`leagueListId=milb_all`, the hydrate
+  gen-org uses) of every past player: an archive player who is not in this
+  season's org. The rows are the rows gen-org stores, with any club, and
+  no-team totals kept as the API sent them (ADR-0003).
+- It is not a season file. It is one file that changes, not a frozen one, so
+  `src/lib/build/archive.js` still loads only `[0-9]{4}.json` as seasons and
+  reads `careers.json` on its own.
+- **Refresh.** The file stores `throughSeason`, the season `org.json` held.
+  A run fetches only past players with no entry. When gen-org moves to a new
+  season, every entry is fetched again, because a past player can still play.
+  A player who joins the org drops out of the file. Both rules are
+  `careerTargets()` and `mergeCareers()` in `src/lib/model/careers.js`.
+- **Guards.** More than 5% of the requested players missing, or most of a batch
+  with no MiLB rows, throws and keeps the last good file.
+- **An entry replaces the roster lines.** It does not add to them. Checked on
+  2026-09-29: all 6,580 archive lines are in the entries, matched on season,
+  level and club. A Brewers line keeps the club name the archive has for that
+  season (ADR-0008): the career feed names team 406 "ACL Brewers" for 2016 to
+  2018, and the roster feed says "AZL Brewers". A player with no entry keeps
+  his roster lines, and the page says so.
+- **Size.** 1,786 past players and 21,991 rows came to 5.3 MB as objects.
+  That was too big, so the file is packed: each club (696 of them) is stored
+  once, and each row is an array with its columns named in the file. It is
+  1.7 MB, and `unpackCareers()` gives back the exact rows. A test checks the
+  round trip on a captured response. A field with no column throws, so a new
+  field cannot be dropped in silence. The season files stay as objects.
+- The page says "through {season}" when it has an entry.
+
+This replaces two lines above: a past-only player's page now says it shows
+his minor-league seasons with any club when he has an entry, and the
+Consequences line about other clubs holds only for a player with no entry.
