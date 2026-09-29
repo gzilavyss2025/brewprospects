@@ -28,6 +28,22 @@ test('slimPerson keeps the draft record of a drafted player', () => {
   assert.equal(adams.draft.round, '1')
 })
 
+// Checked live 2026-09-29 (/people/596307?hydrate=draft): `drafts` lists
+// every draft a player was taken in, Rule 5 picks and unsigned amateur picks
+// included, in no set order. Skyler Ewing's 2017 Rule 5 pick came first.
+test('slimPerson keeps the draft from his draftYear, not the first one listed', () => {
+  const draft = (year, code, round, pick, team, school) =>
+    ({ year, draftType: { code }, pickRound: round, pickNumber: pick, team: { name: team }, school: school ? { name: school } : {} })
+  const ewing = slimPerson({
+    id: 596307, draftYear: 2014,
+    drafts: [draft('2017', 'RA', '1', 6, 'Atlanta Braves'), draft('2014', 'JR', '6', 178, 'San Francisco Giants', 'Arlington (TX) HS')],
+  })
+  assert.deepEqual(ewing.draft, { year: 2014, round: '6', pick: 178, team: 'San Francisco Giants', school: 'Arlington (TX) HS' })
+  // Two drafts and no draftYear: we cannot tell which one signed him.
+  const unsure = slimPerson({ id: 1, drafts: [draft('2008', 'JR', '40', 1218, 'A'), draft('2012', 'JR', '22', 695, 'B')] })
+  assert.equal(unsure.draft, null)
+})
+
 test('slimPerson survives a person with no stats and no bio', () => {
   const p = slimPerson({ id: 1 })
   assert.deepEqual(p.hitting, [])

@@ -72,13 +72,23 @@ export function slimPitching(split) {
   }
 }
 
+// The draft he signed from: the one in his draftYear. `drafts` lists every
+// draft he was taken in, Rule 5 picks and unsigned amateur picks too, in no
+// set order (checked live 2026-09-29: Skyler Ewing, 596307, lists his 2017
+// Rule 5 pick first). With no draftYear, only a lone draft is safe to keep.
+function signingDraft(p) {
+  const drafts = p.drafts ?? []
+  if (p.draftYear == null) return drafts.length === 1 ? drafts[0] : null
+  return drafts.find((d) => String(d.year) === String(p.draftYear)) ?? null
+}
+
 // One person, with every MiLB yearByYear split. The API returns one stats
 // block per group; a missing block means the player has no rows in it.
 export function slimPerson(p) {
   const splitsFor = (group) =>
     (p.stats ?? []).find((s) => s.group?.displayName === group && s.type?.displayName === 'yearByYear')
       ?.splits ?? []
-  const draft = (p.drafts ?? [])[0]
+  const draft = signingDraft(p)
   return {
     id: p.id,
     name: p.fullName ?? '',
