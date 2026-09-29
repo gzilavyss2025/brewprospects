@@ -4,6 +4,8 @@ import Base from '../../../layouts/Base.astro'
 import ProspectCardTag from '../../../components/ProspectCardTag.astro'
 import { allPosts } from '../../../lib/build/content.js'
 import { affiliateById } from '../../../lib/build/data.js'
+import { canonicalUrl, paths } from '../../../lib/slug.js'
+import { articleLd } from '../../../lib/jsonld.js'
 
 export async function getStaticPaths() {
   return (await allPosts()).map((post) => ({ params: { type: post.type.key, id: post.id }, props: { post } }))
@@ -13,7 +15,17 @@ const { post } = Astro.props
 const { Content } = await render(post)
 const club = post.data.affiliateId ? affiliateById.get(Number(post.data.affiliateId)) : null
 ---
-<Base title={post.data.title} description={post.data.summary || undefined}>
+<Base
+  title={post.data.title}
+  description={post.data.summary || undefined}
+  jsonLd={articleLd({
+    headline: post.data.title,
+    description: post.data.summary,
+    datePublished: post.data.date,
+    dateModified: post.data.updated,
+    url: canonicalUrl(Astro.site, paths.post(post.type.key, post.id)),
+  })}
+>
   <article class="prose">
     <span class="pennant">{post.type.label}</span>
     <h1>{post.data.title}</h1>

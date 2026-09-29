@@ -6,12 +6,14 @@ import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
 import { teamLogoUrl } from '../lib/identity/affiliates.js'
 import { paths } from '../lib/slug.js'
 import { headMeta } from '../lib/seo.js'
+import { jsonLdScript } from '../lib/jsonld.js'
 import { THEME_BOOT } from '../lib/theme.js'
 
-const { title, description = SITE_TAGLINE, type = 'website' } = Astro.props
+const { title, description = SITE_TAGLINE, type = 'website', jsonLd } = Astro.props
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME
 const path = Astro.url.pathname
 const head = headMeta({ site: Astro.site, path, title: fullTitle, description, type })
+const jsonLdBlocks = [jsonLd].flat().filter(Boolean)
 const nav = [
   { href: '/', label: 'Home' },
   { href: '/depth-chart', label: 'Depth chart' },
@@ -31,6 +33,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <title>{fullTitle}</title>
     {head.meta.map((m) => <meta {...m} />)}
     {head.links.map((l) => <link {...l} />)}
+    {jsonLdBlocks.map((block) => <script type="application/ld+json" set:html={jsonLdScript(block)} />)}
     <link rel="icon" href={teamLogoUrl(ORG_ID)} type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={paths.feed()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

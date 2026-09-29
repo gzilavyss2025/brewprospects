@@ -83,3 +83,39 @@ test('the sitemap exists only when the site is set, and follows ADR-0009', () =>
   expect(urls).toContain(`${SITE}/`)
   expect(urls).toContain(`${SITE}/depth-chart`)
 })
+
+// JSON-LD: every block parses; a player page has a Person and a post page an
+// Article. The Article has an author only when BYLINE is set.
+const ldBlocks = (file) =>
+  [...readFileSync(file, 'utf8').matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) =>
+    JSON.parse(m[1]),
+  )
+const byType = (blocks, type) => blocks.find((b) => b['@type'] === type)
+
+for (const file of files) {
+  const name = relative(STATIC, file).split(sep).join('/')
+  test(`${name} has JSON-LD that parses`, () => {
+    for (const block of ldBlocks(file)) expect(block['@context']).toBe('https://schema.org')
+  })
+}
+
+const pageMatching = (re) => files.find((f) => re.test(relative(STATIC, f).split(sep).join('/')))
+
+test('a player page has a Person with a name', () => {
+  const file = pageMatching(/^players\/[^/]+\/index\.html$/)
+  const person = byType(ldBlocks(file), 'Person')
+  expect(person?.name).toBeTruthy()
+  for (const key of ['image', 'birthDate', 'height']) expect(person, key).not.toHaveProperty(key)
+  if (SITE) expect(person.url.startsWith(`${SITE}/players/`)).toBe(true)
+  else expect(person).not.toHaveProperty('url')
+})
+
+test('a post page has an Article with a headline, and an author only when BYLINE is set', () => {
+  const file = pageMatching(/^posts\/[^/]+\/[^/]+\/index\.html$/)
+  const article = byType(ldBlocks(file), 'Article')
+  expect(article?.headline).toBeTruthy()
+  const byline = /export const BYLINE = '([^']*)'/.exec(readFileSync('src/config/site.js', 'utf8'))[1]
+  if (byline) expect(article.author).toEqual({ '@type': 'Person', name: byline })
+  else expect(article).not.toHaveProperty('author')
+  if (!SITE) expect(article).not.toHaveProperty('url')
+})

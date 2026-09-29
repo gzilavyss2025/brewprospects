@@ -23,6 +23,7 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   `src/lib/identity/affiliates.js`. A switch to self-hosted assets is then
   one file.
 - **One author.** No author model. One byline in `src/config/site.js`.
+  The byline stays empty (2026-09-29), so post JSON-LD has no `author`.
 - **Foundations first** (2026-09-28). This offseason goes to Phase 1 and the
   foundation items of Phase 2. The 2026 Arizona Fall League and Rule 5 dates
   may pass without a feature. That is accepted.
@@ -84,19 +85,21 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 - **RSS feed** (was Phase 1, item 3; 2026-09-28). `/rss.xml`, built with
   `@astrojs/rss`, lists the same posts as `/posts`: recaps, features, lists
   and guides, newest first, with no post body (ADR-0009).
+- **SEO pack** (was Phase 1, item 1; 2026-09-29). Head tags, `robots.txt`,
+  the sitemap, one static `og-image.png`, and `Person` / `Article` JSON-LD on
+  player and post pages. Nothing renders in a function. These wait for
+  `SITE_URL`: the sitemap, the robots `Sitemap` line, canonical, `og:url`,
+  `og:image`, `twitter:card` and the JSON-LD `url`. `public/og-image.png`
+  carries the placeholder site name. Run `npm run og-image` again when the
+  name is chosen (open decision 1). The Article has no `author`: `BYLINE`
+  in `src/config/site.js` stays empty by choice. It has no `dateModified`
+  until posts have an `updated` field.
 
 ## Phase 1: Ready to go public
 
 The site is live at the placeholder URL. This phase makes it safe to share.
 Most of what is left needs the site name (open decision 1).
 
-1. **SEO pack, static only**: `@astrojs/sitemap`, `robots.txt`, one static
-   `og-image.png`, `og:url`, a Twitter card, and `Person` / `Article` JSON-LD
-   on player and post pages. Never render OG images in a function (Tally
-   went over the Vercel CPU limit this way). The sitemap and `og:url` need
-   `SITE_URL`.
-   Head tags, robots, sitemap and OG image are done (2026-09-29). JSON-LD is
-   next.
 2. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.
