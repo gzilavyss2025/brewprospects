@@ -66,9 +66,7 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
   from the bbsbh Top 100 rows in `data/sources/` (ADR-0007). Never edit
   `data/sources/` by hand; see its PROVENANCE.md.
 - Every generator **fails loudly and keeps the last good file** when a response
-  looks wrong.
-- Pages read the snapshots only through `src/lib/build/data.js` and
-  `src/lib/build/archive.js`.
+  looks wrong. Pages read snapshots only through `src/lib/build/`.
 - The one live read is the prospect-card island (`src/components/ProspectCard.jsx`),
   which calls `statsapi.mlb.com` from the browser (CORS is open) and keeps the
   snapshot on any error.
@@ -112,6 +110,8 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
 13. **A class is named for its job, never its shape** (ADR-0010). Lint checks
     every shape word in `scripts/checks/class-shape.mjs`'s `SHAPE_WORDS`
     against `class=`, `className=` and CSS selectors; only the listed owner may carry one.
+14. **Snapshots are packed and store counts, never rates** (ADR-0015). Rates come
+    from `src/lib/model/player/rates.js`. Lint checks every file in `src/data/`.
 
 ## Content
 

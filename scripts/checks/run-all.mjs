@@ -12,6 +12,7 @@ import { ROOT, relPath } from './paths.mjs'
 import { rawValueProblems } from './raw-values.mjs'
 import { classShapeProblems } from './class-shape.mjs'
 import { postPathProblems } from './post-paths.mjs'
+import { snapshotProblems } from './snapshots.mjs'
 import { accentProblems } from '../../src/lib/identity/affiliates.js'
 
 const SKIP = new Set(['node_modules', '.git', 'dist', '.astro', '.vercel', 'fixtures', 'data'])
@@ -137,6 +138,8 @@ const problems = [
   ...(await checkContentConfig()),
   // ADR-0009: a post published on main keeps its path.
   ...postPathProblems(),
+  // ADR-0015: snapshots are packed and store counts only.
+  ...snapshotProblems(ROOT),
 ]
 if (problems.length) {
   console.error(problems.map((p) => `✗ ${p}`).join('\n'))

@@ -22,6 +22,7 @@ Triple-A, and the card could pair a MiLB total with an "AAA/MLB" label.
 - The file covers every player with a page: org players and past players.
   It keeps only players who have MLB rows.
 - `src/lib/model/mlb.js` orders the rows. It sums nothing and derives nothing.
+  (ADR-0015 changes this: it adds each row's rates from that row's counts.)
 - A player page shows them in a "Major leagues" section, after the MiLB
   tables. The level path and the MiLB tables never read the file.
 - A traded player's total row (no team, `numTeams` set) is kept and labeled

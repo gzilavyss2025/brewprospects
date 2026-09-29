@@ -1,9 +1,10 @@
 // MLB rows stay apart from MiLB rows (docs/adr/0014): shaped by slimMlbPerson,
 // ordered by mlbRows, and never seen by the level path or the MiLB tables.
+// On disk they are packed, counts only (docs/adr/0015).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { slimMlbPerson, slimPerson } from '../scripts/data/lib/slim.mjs'
-import { mlbRows } from '../src/lib/model/mlb.js'
+import { mlbRows, packMlb, unpackMlb } from '../src/lib/model/mlb.js'
 import { levelPath, statRows } from '../src/lib/model/org.js'
 import { LEVELS, levelFor } from '../src/lib/model/levels.js'
 import mlbPeople from './fixtures/people-mlb-yearbyyear.json' with { type: 'json' }
@@ -19,7 +20,31 @@ test('slimMlbPerson keeps hitting and pitching splits, each with its club', () =
   assert.equal(g.pitching.length, 2)
   assert.equal(g.pitching[0].team, 'Milwaukee Brewers')
   assert.equal(g.pitching[0].sportId, 1)
-  assert.equal(g.hitting[0].avg, '.250')
+  assert.equal(g.hitting[0].avg, undefined, 'a rate is computed, not stored')
+  assert.equal(mlbRows(g, 'hitting')[0].avg, '.250')
+})
+
+test('slimMlbPerson keeps the counts the rates need, and no rate', () => {
+  const g = slimMlbPerson(person(GALLARDO))
+  const RATES = ['avg', 'obp', 'slg', 'ops', 'ip', 'era', 'whip', 'k9', 'bb9']
+  for (const r of [...g.hitting, ...g.pitching]) {
+    assert.deepEqual(RATES.filter((k) => k in r), [])
+  }
+  for (const k of ['hbp', 'sf']) assert.ok(Number.isInteger(g.hitting[0][k]), k)
+  for (const k of ['outs', 'er']) assert.ok(Number.isInteger(g.pitching[0][k]), k)
+})
+
+test('packMlb and unpackMlb give back the exact rows', () => {
+  const players = { [CAMERON]: slimMlbPerson(person(CAMERON)), [GALLARDO]: slimMlbPerson(person(GALLARDO)) }
+  const file = JSON.parse(JSON.stringify(packMlb({ generatedAt: 'x', players })))
+  assert.deepEqual(unpackMlb(file), { generatedAt: 'x', players })
+  assert.ok(Array.isArray(file.players[CAMERON].hitting[0]), 'a row is an array')
+  assert.equal(typeof file.players[CAMERON].hitting[0][0], 'number', 'the season is a number on disk')
+})
+
+test('packMlb throws on a field with no column, so nothing is dropped', () => {
+  const row = { ...slimMlbPerson(person(GALLARDO)).pitching[0], era: '3.67' }
+  assert.throws(() => packMlb({ generatedAt: 'x', players: { 1: { hitting: [], pitching: [row] } } }), /"era"/)
 })
 
 test('slimMlbPerson keeps the traded-player total with its team count', () => {
