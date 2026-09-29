@@ -27,6 +27,20 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | `gen-prospect-history` | `/people?personIds={ids}` | Names the archive does not know |
 | `gen-mlb` | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)` | Every MLB season (ADR-0014) |
 | `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/model/card.js`) |
+| `gen-gamelog` (planned, #35) | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[gameLog],season={y},leagueListId=milb_all)` | Every game of the current season, for `src/data/gamelog.json` |
+| `gen-org` (planned, #40) | Its `/people` request above, with `fielding` added: `stats(group=[hitting,pitching,fielding],...)` | Fielding by position, each MiLB season |
+| splits generator (planned, #41) | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[statSplits],sitCodes=[vl,vr,r0,ron,risp,h,a],season={y},sportId={s})` | Situational splits for one level, for `src/data/splits.json`. One request per 40 players per level |
+
+The planned rows were checked live on 2026-09-29. The one-player forms
+(`/people/{id}/stats?stats=gameLog&group=hitting&season={y}&leagueListId=milb_all`
+and `/people/{id}/stats?stats=statSplits&group=hitting&season={y}&sportId={s}&sitCodes=...`)
+return the same rows and are in the fixtures too. `sitCodes` come from
+`/situationCodes`: `vl` and `vr` (against a left or right pitcher, or batter
+for a pitcher), `r0` (bases empty), `ron` (runners on), `risp` (runners in
+scoring position), `h` and `a` (home and away). A hydrate with both groups
+sends an empty block (`splits: []`) for the group a player has no line in.
+`curl` needs `-g` for the
+brackets in a hydrate.
 
 Not the Stats API:
 
@@ -124,6 +138,36 @@ Checked on this site unless marked.
 - **A game log is regular season** unless you name the type. For the
   postseason use `gameType=F,D,L,W`, not `P`: with `P`, the pitching log
   writes `P` into every row **(bbsbh, ADR-0069 there)**.
+- **A MiLB game log needs `leagueListId=milb_all` or a `sportId`.** With
+  neither, it returns zero rows. `sportId` gives one level only. Checked
+  2026-09-29, person 682633: 115 rows with `milb_all`, 0 with neither, 52
+  with `sportId=12` (his Double-A games).
+- **A game log has a row only for a game the player played.** A game his club
+  played without him has no row. A hitter row can have `plateAppearances: 0`
+  (a pinch runner or a defensive sub). A doubleheader gives two rows with one
+  `date`, so key a row on `game.gamePk`. Checked 2026-09-29: person 682633 on
+  2026-06-04 (gamePks 818188 and 818201).
+- **A game log, fielding line or split can name a club outside the system.**
+  A player who joined in a trade keeps his rows for the old club (676467 at
+  Sugar Land, an Astros club, until 2026-07-10). Checked 2026-09-29.
+- **Fielding `.000` is a placeholder for zero chances.** Every DH row has
+  `innings "0.0"`, `chances 0` and `fielding ".000"`, and so does a real
+  position with no chances (828824, LF at Biloxi 2026: 10 innings). Do not
+  keep `fielding`: it is `(putOuts + assists) / (putOuts + assists + errors)`
+  to three places, and with zero chances it is missing (ADR-0003). All 8
+  fixture rows with chances match that formula. Fielding rows have the same
+  no-`team` totals as hitting rows. Checked 2026-09-29.
+- **Fielding `innings` is a string** (`"10.0"`, where `.1` is one out).
+  Unlike a pitching line, a fielding line has no `outs` field. Checked
+  2026-09-29 on the fielding fixture.
+- **A pitcher's `statSplits` line has no `earnedRuns`.** It is the batting
+  line against him (hits, walks, `outs`, HBP, SF), so a split can show
+  opponent AVG, OBP and SLG but not ERA. Checked 2026-09-29 on
+  `people-splits-pitching-2026.json`.
+- **`statSplits` needs `sportId` for a per-level split.** With
+  `leagueListId=milb_all` instead, the splits merge every level. A player
+  who changed clubs at one level gets each split per club plus a no-`team`
+  total (828824 at sportId 12, 2026: 21 rows). Checked 2026-09-29.
 - **Not in the API:** club colors, historical logos, MiLB uniforms, and
   Statcast data at most MiLB parks.
 

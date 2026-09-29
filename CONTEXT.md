@@ -105,6 +105,15 @@ career of every past player, with any club (ADR-0006). It is packed: each
 club is stored once and each row is an array. `throughSeason` is the season
 it was fetched for. Not a season file.
 
+**Packed snapshot**: a file in `src/data/` whose rows are arrays, with the
+column names stored once in `columns` and each club stored once in `clubs`
+(ADR-0015). It stores counts, not rates. `mlb.json` and `careers.json` are
+packed.
+
+**Rate stat**: a stat computed from counts, such as AVG, OPS, IP or ERA. It
+is computed in `src/lib/model/player/rates.js` and never stored.
+_Avoid_: "derived field" in docs; say rate stat.
+
 **Club record**: one club's regular-season wins, losses, win percentage,
 division rank, runs scored and runs allowed in one season. It lives in the
 `standings` block of a season file and of `org.json`, keyed by team id, and is

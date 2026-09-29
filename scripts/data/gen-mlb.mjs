@@ -8,12 +8,17 @@
 // players. It is a separate file from org.json on purpose: no MiLB reader
 // ever sees an MLB row (docs/adr/0014).
 //
+// The file is packed, counts only (docs/adr/0015), one player per line so a
+// nightly diff shows only the players whose rows changed.
+//
 // Guards: throws, and leaves the last good file in place, when players come
 // back missing or no one at all has a big-league row (docs/adr/0003).
 //
 // Usage: node scripts/data/gen-mlb.mjs
 import { readFile, writeFile, rename } from 'node:fs/promises'
 import { slimMlbPerson } from './lib/slim.mjs'
+import { stringifyByLine } from './lib/by-line.mjs'
+import { packMlb } from '../../src/lib/model/mlb.js'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const OUT = new URL('../../src/data/mlb.json', import.meta.url)
@@ -48,9 +53,10 @@ async function main() {
     throw new Error(`Only ${Object.keys(players).length} players with MLB rows; expected 50 or more.`)
   }
 
-  const snapshot = { generatedAt: new Date().toISOString(), players }
+  // packMlb throws on a field with no column, before anything is written.
+  const snapshot = packMlb({ generatedAt: new Date().toISOString(), players })
   const tmp = new URL('mlb.json.tmp', OUT)
-  await writeFile(tmp, JSON.stringify(snapshot) + '\n')
+  await writeFile(tmp, stringifyByLine(snapshot))
   await rename(tmp, OUT)
   console.log(`gen-mlb: ${Object.keys(players).length} of ${ids.length} players have MLB rows.`)
 }

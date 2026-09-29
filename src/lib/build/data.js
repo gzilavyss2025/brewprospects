@@ -2,10 +2,14 @@
 // from the JSON files, so a file shape change touches one module.
 import org from '../../data/org.json' with { type: 'json' }
 import pipeline from '../../data/pipeline.json' with { type: 'json' }
-import mlb from '../../data/mlb.json' with { type: 'json' }
+import mlbFile from '../../data/mlb.json' with { type: 'json' }
 import { levelRank } from '../model/levels.js'
+import { unpackMlb } from '../model/mlb.js'
 import { currentAssignments, orgPlayerIds } from '../model/org.js'
 import { paths } from '../slug.js'
+
+// mlb.json is packed (docs/adr/0015); every reader gets plain rows.
+const mlb = unpackMlb(mlbFile)
 
 export { org, pipeline, mlb }
 

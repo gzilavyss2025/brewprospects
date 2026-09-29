@@ -6,6 +6,7 @@
 // each row shaped as gen-org stores it. `throughSeason` is the season gen-org
 // held when the rows were fetched. On disk the file is packed (packCareers):
 // each club once, each row an array. See docs/adr/0006.
+import { packer, unpacker } from '../snapshot/pack.js'
 
 // Ids in the archive that are not in this season's org: the players whose page
 // is built from the archive (see pastPlayers in src/lib/build/archive.js).
@@ -51,47 +52,19 @@ const COLUMNS = {
   pitching: ['season', 'club', 'age', 'g', 'gs', 'w', 'l', 'sv', 'ip', 'h', 'bb', 'so', 'hr', 'era', 'whip', 'k9', 'bb9'],
 }
 
-// Lossless. A field with no column throws, so a new field in slim.mjs cannot
-// be dropped without a failure (docs/adr/0003).
+// Lossless: see packer() in src/lib/snapshot/pack.js.
 export function packCareers({ throughSeason, players }) {
-  const clubs = []
-  const clubIndex = new Map()
-  const club = (r) => {
-    const values = CLUB_COLUMNS.map((k) => r[k] ?? null)
-    const key = JSON.stringify(values)
-    if (!clubIndex.has(key)) clubIndex.set(key, clubs.push(values) - 1)
-    return clubIndex.get(key)
-  }
-  const pack = (group, r) => {
-    const known = new Set([...COLUMNS[group], ...CLUB_COLUMNS])
-    for (const k of Object.keys(r)) {
-      if (!known.has(k)) throw new Error(`No column for the ${group} field "${k}".`)
-    }
-    return COLUMNS[group].map((k) => (k === 'club' ? club(r) : (r[k] ?? null)))
-  }
+  const { row, clubs } = packer({ columns: COLUMNS, clubColumns: CLUB_COLUMNS })
   const packed = {}
   for (const [id, c] of Object.entries(players)) {
-    packed[id] = { hitting: c.hitting.map((r) => pack('hitting', r)), pitching: c.pitching.map((r) => pack('pitching', r)) }
+    packed[id] = { hitting: c.hitting.map((r) => row('hitting', r)), pitching: c.pitching.map((r) => row('pitching', r)) }
   }
   return { throughSeason: String(throughSeason), columns: COLUMNS, clubColumns: CLUB_COLUMNS, clubs, players: packed }
 }
 
 // The reverse. It reads the column names from the file, not from this module.
 export function unpackCareers(file) {
-  const { columns, clubColumns, clubs } = file
-  const unpack = (group, values) => {
-    const r = {}
-    columns[group].forEach((name, i) => {
-      if (name !== 'club') {
-        r[name] = values[i]
-        return
-      }
-      const c = clubs[values[i]]
-      if (!c) throw new Error(`A ${group} row points at club ${values[i]}, which is not in the club table.`)
-      clubColumns.forEach((k, j) => { r[k] = c[j] })
-    })
-    return r
-  }
+  const unpack = unpacker(file)
   const players = {}
   for (const [id, c] of Object.entries(file.players ?? {})) {
     players[id] = { hitting: c.hitting.map((v) => unpack('hitting', v)), pitching: c.pitching.map((v) => unpack('pitching', v)) }
