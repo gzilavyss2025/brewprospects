@@ -23,6 +23,10 @@ export function feedOrigin(siteUrl) {
   return siteUrl || FEED_ORIGIN_FALLBACK
 }
 
+// The byline for post JSON-LD. Empty means no `author` field: a missing value
+// beats a wrong one (ADR-0003). Set it when the owner picks a name.
+export const BYLINE = ''
+
 // The archive's first season. Past seasons run from here to the season before
 // the current one; the current season lives in src/data/org.json.
 export const ARCHIVE_FIRST_SEASON = 2006
