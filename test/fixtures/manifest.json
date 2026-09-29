@@ -38,5 +38,45 @@
     "capturedAt": "2026-09-29",
     "sourceUrl": "https://statsapi.mlb.com/api/v1/standings?leagueId=121&season=2006&standingsTypes=regularSeason",
     "note": "The same request for the Arizona League, 2006. AZL Brewers (406) only. This league had no divisions: the team record has no divisionRank, and the record has no division."
+  },
+  "gamelog-hitter-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/682633/stats?stats=gameLog&group=hitting&season=2026&leagueListId=milb_all",
+    "note": "The per-player game log (#35), for a hitter. Eduardo Garcia, trimmed to five rows: his first game, a doubleheader on 2026-06-04 (same date, two gamePks, game 2 has plateAppearances 0), his last Biloxi game and his first Nashville game. Without leagueListId=milb_all it returns no rows."
+  },
+  "gamelog-starter-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/676467/stats?stats=gameLog&group=pitching&season=2026&leagueListId=milb_all",
+    "note": "The per-player game log (#35), for a starter. Colton Gordon, trimmed to three rows: a start for Sugar Land (an Astros club, before he joined the system), his one relief outing, and his first Nashville start. inningsPitched is a string."
+  },
+  "gamelog-reliever-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/657649/stats?stats=gameLog&group=pitching&season=2026&leagueListId=milb_all",
+    "note": "The per-player game log (#35), for a reliever at Nashville. Trimmed to three rows, all gamesStarted 0."
+  },
+  "people-gamelog-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=695501,676467&hydrate=stats(group=[hitting,pitching],type=[gameLog],season=2026,leagueListId=milb_all)",
+    "note": "The batched game log that gen-gamelog (#35) will read: one stats block per group the player has. Blake Burke (hitting) and Colton Gordon (pitching), bio fields and rows trimmed to two per block."
+  },
+  "people-fielding-yearbyyear.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=695501,828824,676467&hydrate=stats(group=[hitting,pitching,fielding],type=[yearByYear],leagueListId=milb_all)",
+    "note": "gen-org's person request with fielding added (#40). Burke: a 2026 no-team 1B total (sportId 21), his Biloxi 1B row and a DH row (innings 0.0, chances 0, fielding .000). Ragsdale: Biloxi LF with 10 innings and 0 chances (also .000), Biloxi CF, Springfield CF (a Cardinals club) and the no-team Double-A CF total. Gordon: a Nashville P row. One hitting or pitching row each."
+  },
+  "splits-hitter-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people/695501/stats?stats=statSplits&group=hitting&season=2026&sportId=12&sitCodes=vl,vr,r0,ron,risp,h,a",
+    "note": "The per-player situational splits (#41). Blake Burke at Double-A (sportId 12): all seven sitCodes, one Biloxi row each. Without sportId, the splits merge every level."
+  },
+  "people-splits-hitting-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=695501,828824&hydrate=stats(group=[hitting],type=[statSplits],sitCodes=[vl,vr,r0,ron,risp,h,a],season=2026,sportId=12)",
+    "note": "The batched splits request (#41), one per level. Burke: vl and vr at Biloxi. Ragsdale played for Biloxi and Springfield at Double-A: vl for each club plus a no-team vl total."
+  },
+  "people-splits-pitching-2026.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=657649,676467&hydrate=stats(group=[pitching],type=[statSplits],sitCodes=[vl,vr,r0,ron,risp,h,a],season=2026,sportId=11)",
+    "note": "The batched splits request for pitchers (#41 covers both sides): opponent lines. The reliever 657649 at Nashville: risp. Gordon at Triple-A: vl for Sugar Land (an Astros club), Nashville and the no-team total."
   }
 }
