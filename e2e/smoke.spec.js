@@ -27,6 +27,8 @@ const ROUTES = [
   pastPlayer,
   '/seasons',
   '/seasons/2019',
+  '/levels/rookie',
+  '/levels/short-season-a',
   '/prospects',
   '/posts',
   aPost,

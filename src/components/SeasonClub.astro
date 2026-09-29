@@ -2,16 +2,18 @@
 // One affiliate in one archive season: hitters and pitchers with their line
 // for this club. Names link to a player page when one exists, else to MiLB.com.
 import { levelFor } from '../lib/model/levels.js'
-import { orDash } from '../lib/format.js'
+import { orDash, recordText, ordinal } from '../lib/format.js'
 import { clubIdentity } from '../lib/identity/affiliates.js'
 import { affiliateById } from '../lib/build/data.js'
 import { paths } from '../lib/slug.js'
 
-const { club, roster, pagedIds } = Astro.props
+const { club, roster, pagedIds, record = null } = Astro.props
 const level = levelFor(club.sportId)
 // Today's logo and color only if the club still has this season's name.
 const { logo, accent } = clubIdentity(club, affiliateById.get(club.id)?.name)
 const href = (e) => (pagedIds.has(e.id) ? paths.player(e.name, e.id) : `https://www.milb.com/player/${e.id}`)
+// A null record is not a 0-0 club (ADR-0003).
+const recordLine = recordText(record)
 const byName = (a, b) => a.name.localeCompare(b.name)
 // A two-way line puts a player in both tables. Most rows hold one or the other.
 const hitters = roster.filter((e) => e.hitting && e.pos !== 'P').sort(byName)
@@ -24,6 +26,9 @@ const idle = roster.filter((e) => !e.hitting && !e.pitching).sort(byName)
     <div>
       <h2>{club.name}</h2>
       <div class="club-meta">{level?.name ?? '—'} · {club.league || '—'}</div>
+      <div class="club-meta club-record">
+        {recordLine ? <>{recordLine} · {record.divRank ? `${ordinal(record.divRank)} in division` : 'division rank not on record'}</> : 'Record: not on record'}
+      </div>
     </div>
   </div>
   <div class="club-body">

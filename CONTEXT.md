@@ -82,6 +82,17 @@ current path (ADR-0009).
 snapshots at build time through `src/lib/build/`. A snapshot is replaced only
 by a good run; a bad run keeps the last good file (ADR-0003).
 
+**Level page**: `/levels/{level-slug}`, one per entry in `LEVELS`. It lists the
+Brewers clubs at that level, one row per club-season, with each season's own
+club name (ADR-0008) and its record. `levelHistory()` in
+`src/lib/model/level-history.js` builds the rows. Slugs are in ADR-0009. The
+API files the Pioneer League before 2019 under Rookie, so Helena is on the
+Rookie page.
+
+**Gap row**: a season with no Brewers club at the level being listed. It is
+shown as "No {level} club", not as a blank or a guess. Not the same as 2020,
+which has no minor-league season at any level.
+
 **Current season**: the season in `org.json`. It changes when the new
 season's rosters are complete, in spring, not on January 1.
 _Avoid_: reading the season from the clock.

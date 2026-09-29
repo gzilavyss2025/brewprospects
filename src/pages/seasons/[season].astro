@@ -39,7 +39,7 @@ const next = years[i + 1]
     {ranked ? <RankedList season={ranked} pagedIds={pagedIds} /> : <p class="muted">No list on record.</p>}
   </section>
 
-  {clubs.map((c) => <SeasonClub club={c} roster={data.rosters[c.id] ?? []} pagedIds={pagedIds} />)}
+  {clubs.map((c) => <SeasonClub club={c} roster={data.rosters[c.id] ?? []} pagedIds={pagedIds} record={data.standings?.[c.id] ?? null} />)}
 
   {!data.noSeason && <p class="muted section">Lines are each player's stats for that club only, from the MLB Stats API.</p>}
 </Base>

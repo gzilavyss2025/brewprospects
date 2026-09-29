@@ -1,0 +1,59 @@
+---
+// One level's Brewers clubs, season by season, each under that season's own
+// name (ADR-0008) with its regular-season record.
+import Base from '../../layouts/Base.astro'
+import { org } from '../../lib/build/data.js'
+import { archive } from '../../lib/build/archive.js'
+import { LEVELS } from '../../lib/model/levels.js'
+import { levelHistory, levelSlug } from '../../lib/model/level-history.js'
+import { orDash, recordText, ordinal } from '../../lib/format.js'
+import { paths } from '../../lib/slug.js'
+
+export function getStaticPaths() {
+  return LEVELS.map((level) => ({ params: { level: levelSlug(level.sportId) }, props: { level } }))
+}
+
+const { level } = Astro.props
+// The current season joins the archive, shaped like an archive season.
+const seasons = [...archive, { season: org.season, affiliates: org.affiliates, standings: org.standings }]
+const rows = levelHistory(level.sportId, seasons).reverse()
+const isCurrent = (r) => r.season === org.season
+const seasonHref = (r) => (isCurrent(r) ? '/depth-chart' : paths.season(r.season))
+---
+<Base title={`${level.name} Brewers clubs`} description={`Every Brewers ${level.name} club since ${archive[0]?.season}, with each season's record.`}>
+  <p><a href="/seasons">All seasons</a></p>
+  <h1>{level.name} ({level.label})</h1>
+
+  {rows.length === 0 ? (
+    <p class="coverage">The Brewers had no {level.name} club in any season on this site, {archive[0]?.season} to {org.season}.</p>
+  ) : (
+    <>
+      <p class="muted">
+        Every Brewers {level.name} club, {archive[0]?.season} to {org.season}. Each club has the name it had that season.
+        {level.sportId === 16 && ' The MLB Stats API files the Pioneer League clubs before 2019 under Rookie, so Helena appears here.'}
+        {' '}The {org.season} row is the season on the <a href="/depth-chart">depth chart</a>; its record is from the last nightly update.
+      </p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label={`${level.name} clubs by season`}>
+        <table class="stats">
+          <thead><tr><th>Season</th><th>Club</th><th>League</th><th>Record</th><th>Div. rank</th></tr></thead>
+          <tbody>
+            {rows.map((r) => r.kind === 'club' ? (
+              <tr>
+                <td><a href={seasonHref(r)}>{r.season}</a></td>
+                <td>{r.name}</td>
+                <td>{orDash(r.league)}</td>
+                <td>{recordText(r.record) ?? 'not on record'}</td>
+                <td>{ordinal(r.record?.divRank)}</td>
+              </tr>
+            ) : (
+              <tr>
+                <td><a href={seasonHref(r)}>{r.season}</a></td>
+                <td colspan="4" class="muted">{r.kind === 'noSeason' ? 'No minor-league season.' : `No ${level.name} club.`}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )}
+</Base>
