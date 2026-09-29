@@ -23,8 +23,10 @@ import { slimAffiliate, slimArchiveEntry, slimBio } from './lib/slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 // 15 was short-season A before 2021. The Brewers had no club there in the
-// archive window, but a season that did would still be read.
-const MILB_SPORT_IDS = [11, 12, 13, 14, 15, 16]
+// archive window, but a season that did would still be read. 5442 was Rookie
+// Advanced in 2019 only: the Rocky Mountain Vibes (team 551) play there. It is
+// not in /sports (checked live 2026-09-29), but /teams still lists its clubs.
+const MILB_SPORT_IDS = [11, 12, 13, 14, 15, 16, 5442]
 const DIR = new URL('../../src/data/archive/', import.meta.url)
 const BATCH = 40
 
