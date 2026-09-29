@@ -23,6 +23,9 @@ them; no page writes a path by hand.
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
 | `/about` | credits and disclaimer |
 | `/player-paths.json` | the path map: a data file for the 404 page |
+| `/robots.txt` | crawl rules; names the sitemap only when `SITE_URL` is set (a file, not a page) |
+| `/sitemap-index.xml` | the sitemap index from `@astrojs/sitemap`; built only when `SITE_URL` is set (a file, not a page) |
+| `/og-image.png` | the one share image, 1200 by 630, made by `scripts/assets/og-image.mjs` (an asset, not a page) |
 
 - **Name and id.** The id makes the address unique. The name makes it
   readable. Only the trailing id is trusted. A name change makes a new

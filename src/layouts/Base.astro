@@ -4,13 +4,13 @@ import '../styles/base.css'
 import '../styles/components.css'
 import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
 import { teamLogoUrl } from '../lib/identity/affiliates.js'
-import { canonicalUrl } from '../lib/slug.js'
+import { headMeta } from '../lib/seo.js'
 import { THEME_BOOT } from '../lib/theme.js'
 
-const { title, description = SITE_TAGLINE } = Astro.props
+const { title, description = SITE_TAGLINE, type = 'website' } = Astro.props
 const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME
 const path = Astro.url.pathname
-const canonical = canonicalUrl(Astro.site, path)
+const head = headMeta({ site: Astro.site, path, title: fullTitle, description, type })
 const nav = [
   { href: '/', label: 'Home' },
   { href: '/depth-chart', label: 'Depth chart' },
@@ -28,11 +28,8 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline set:html={THEME_BOOT} />
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    {canonical && <link rel="canonical" href={canonical} />}
-    {canonical && <meta property="og:url" content={canonical} />}
+    {head.meta.map((m) => <meta {...m} />)}
+    {head.links.map((l) => <link {...l} />)}
     <link rel="icon" href={teamLogoUrl(ORG_ID)} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
