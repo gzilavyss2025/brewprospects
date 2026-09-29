@@ -18,9 +18,10 @@ _Avoid_: "farm team" in code. It is fine in page copy.
 **Club**: one affiliate in one season, with that season's name. A team id is
 not a club: the id can pass to another club (ADR-0008).
 
-**Level**: where a club plays, by sportId: AAA (11), AA (12), High-A (13),
-Single-A (14), Rookie (16). `src/lib/model/levels.js` holds the names, the short
-labels for tables (AAA, AA, A+, A, ROK) and the order.
+**Level**: where a club plays, by sportId: MLB (1), AAA (11), AA (12),
+High-A (13), Single-A (14), Short-season A (15, before 2021), Rookie Advanced
+(5442, 2019 only), Rookie (16). `src/lib/model/levels.js` holds the names, the
+short labels for tables (MLB, AAA, AA, A+, A, SS-A, ROK+, ROK) and the order.
 _Avoid_: "Low-A" and "Class A Advanced". Those are the old names.
 
 **Complex club**: a Rookie-level club at the org's complex: the ACL Brewers

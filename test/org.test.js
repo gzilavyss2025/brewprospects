@@ -92,6 +92,30 @@ test('statRows drops the MiLB total row and orders low level first within a seas
   assert.deepEqual(rows.map((r) => r.sportId), [16, 14, 13, 12, 12])
 })
 
+// Short-season A (15) ended after 2020 and Rookie Advanced (5442) ran in 2019
+// only. Both must keep their rows (docs/adr/0003: show what the API sent).
+const retired = {
+  hitting: [
+    { season: '2019', sportId: 13, teamId: 1, team: 'High-A club' },
+    { season: '2019', sportId: 15, teamId: 2, team: 'SS-A club' },
+    { season: '2019', sportId: 5442, teamId: 3, team: 'Rookie Adv club' },
+    { season: '2019', sportId: 16, teamId: 4, team: 'Rookie club' },
+    { season: '2018', sportId: 15, teamId: 2, team: 'SS-A club' },
+  ],
+  pitching: [],
+}
+
+test('levelPath keeps short-season A and Rookie Advanced rows, low level first', () => {
+  assert.deepEqual(
+    levelPath(retired).map((s) => `${s.season} ${s.label}`),
+    ['2018 SS-A', '2019 ROK', '2019 ROK+', '2019 SS-A', '2019 A+'],
+  )
+})
+
+test('statRows keeps short-season A and Rookie Advanced rows, low level first', () => {
+  assert.deepEqual(statRows(retired, 'hitting').map((r) => r.sportId), [15, 16, 5442, 15, 13])
+})
+
 test('primaryGroup follows position', () => {
   assert.equal(primaryGroup({ pos: 'P' }), 'pitching')
   assert.equal(primaryGroup({ pos: 'TWP' }), 'pitching')

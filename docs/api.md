@@ -65,6 +65,7 @@ nightly `scripts/data/drift.mjs` refetches them and fails on a missing field.
 | 13 | High-A |
 | 14 | Single-A |
 | 15 | Short-season A (before 2021) |
+| 5442 | Rookie Advanced, 2019 only; retired, not in /sports; checked 2026-09-29 |
 | 16 | Rookie: ACL and DSL (was AZL and GCL before 2021) |
 | 17 | Winter leagues, including the Arizona Fall League |
 
