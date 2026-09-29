@@ -73,7 +73,7 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   page, loads eleven routes in both themes with third-party requests blocked,
   runs axe on each, and checks the 404 page and its redirect. Screenshot
   baselines later.
-- **Levels list is complete** (2026-09-29). `LEVELS` holds MLB, SS-A (15)
+- **Levels list is complete** (2026-09-29). `LEVELS` holds SS-A (15)
   and ROK+ (5442), so player pages show those stat rows. The archive
   generator's sportId list is a later PR.
 - **LICENSE and credits** (was Phase 1, item 4; 2026-09-28). MIT for the
