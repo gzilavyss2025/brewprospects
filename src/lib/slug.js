@@ -21,6 +21,7 @@ export const paths = {
   player: (name, id) => `/players/${playerSlug(name, id)}`,
   club: (name, id) => `/clubs/${playerSlug(name, id)}`,
   season: (year) => `/seasons/${year}`,
+  level: (slug) => `/levels/${slug}`,
   post: (type, id) => `/posts/${type}/${id}`,
   // A data file, not a page: player id to current path, read by the 404 page.
   playerPathMap: () => '/player-paths.json',

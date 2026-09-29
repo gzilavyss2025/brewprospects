@@ -3,7 +3,8 @@ import Base from '../../layouts/Base.astro'
 import { org } from '../../lib/build/data.js'
 import { archive, prospectHistory } from '../../lib/build/archive.js'
 import { clubsByLevel, affiliatePlayerIds } from '../../lib/model/archive.js'
-import { levelFor } from '../../lib/model/levels.js'
+import { LEVELS, levelFor } from '../../lib/model/levels.js'
+import { levelSlug } from '../../lib/model/level-history.js'
 import { paths } from '../../lib/slug.js'
 
 // Newest first. The current season links to the live depth chart.
@@ -25,6 +26,10 @@ const rows = [...archive].reverse().map((s) => {
   <p class="muted">
     Every Brewers farm season since {archive[0]?.season}. The {org.season} season is on the <a href="/depth-chart">depth chart</a>.
     See also <a href="/prospects">Top 100 history</a>.
+  </p>
+  <p>
+    By level:
+    {LEVELS.map((l, n) => <>{n > 0 && ' · '}<a href={paths.level(levelSlug(l.sportId))}>{l.name}</a></>)}
   </p>
   <div class="grid">
     {rows.map((r) => (

@@ -20,3 +20,18 @@ export function batsThrows(bats, throws) {
   if (!bats && !throws) return DASH
   return `${bats || '?'}/${throws || '?'}`
 }
+
+// A club record (src/lib/model/standings.js) -> "32-43 (.427)". Null when the
+// club has no wins-and-losses on record; the caller then says "not on record".
+export function recordText(record) {
+  if (!Number.isFinite(record?.wins) || !Number.isFinite(record?.losses)) return null
+  return record.pct ? `${record.wins}-${record.losses} (${record.pct})` : `${record.wins}-${record.losses}`
+}
+
+// 3 -> "3rd". A missing or non-positive rank is DASH.
+export function ordinal(n) {
+  if (!Number.isInteger(n) || n < 1) return DASH
+  const tail = n % 100
+  const suffix = tail >= 11 && tail <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' })[n % 10] ?? 'th'
+  return `${n}${suffix}`
+}

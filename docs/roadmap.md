@@ -47,6 +47,10 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Done
 
+- **Club records and level pages** (2026-09-29). Each club on
+  `/seasons/{year}` shows its record, or "not on record". `/levels/{level-slug}`
+  lists the Brewers clubs at each level, season by season (ADR-0009,
+  `src/lib/model/level-history.js`).
 - **Full careers for past players** (2026-09-29). A past player's page
   shows his whole minor-league career, with any club, from `careers.json`
   (ADR-0006). MLB rows are unchanged (ADR-0014).

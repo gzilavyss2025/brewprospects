@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { playerSlug, idFromSlug, slugify, paths, canonicalUrl, stalePlayerPath } from '../src/lib/slug.js'
-import { orDash, heightWeight, batsThrows, DASH } from '../src/lib/format.js'
+import { orDash, heightWeight, batsThrows, recordText, ordinal, DASH } from '../src/lib/format.js'
 import { contrastRatio, pickInk } from '../src/lib/identity/color.js'
 import { accentFor, accentProblems, measureAccent, ACCENTS, ACCENT_MIN, BREWERS, clubIdentity } from '../src/lib/identity/affiliates.js'
 import { cardPlayerIds, linkedPlayerIds, postsForPlayer, isListedPost, POST_TYPES } from '../src/lib/model/posts.js'
@@ -209,4 +209,17 @@ test('the canonical URL drops a trailing slash and keeps the home page', () => {
 
 test('no site origin means no canonical URL, not a guessed one', () => {
   assert.equal(canonicalUrl(undefined, '/players'), null)
+})
+
+test('recordText shows wins, losses and pct; a missing record is null', () => {
+  assert.equal(recordText({ wins: 32, losses: 43, pct: '.427' }), '32-43 (.427)')
+  assert.equal(recordText({ wins: 32, losses: 43, pct: null }), '32-43')
+  assert.equal(recordText({ wins: 32, losses: null }), null)
+  assert.equal(recordText(null), null)
+})
+
+test('ordinal spells 1st to 3rd, the teens, and a missing rank as a dash', () => {
+  assert.deepEqual([1, 2, 3, 4, 11, 12, 13, 21, 22, 112].map(ordinal), ['1st', '2nd', '3rd', '4th', '11th', '12th', '13th', '21st', '22nd', '112th'])
+  assert.equal(ordinal(null), DASH)
+  assert.equal(ordinal(0), DASH)
 })

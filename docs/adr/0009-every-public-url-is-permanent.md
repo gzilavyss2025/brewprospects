@@ -19,6 +19,7 @@ them; no page writes a path by hand.
 | `/players/{name-id}` | `/players/jesus-made-815908` |
 | `/clubs/{name-id}` | `/clubs/wilson-warbirds-249` (reserved, no page yet) |
 | `/seasons/{year}` | `/seasons/2019` |
+| `/levels/{level-slug}` | `/levels/rookie` (slugs: `aaa`, `double-a`, `high-a`, `single-a`, `short-season-a`, `rookie-advanced`, `rookie`; every level has a page, even one with no Brewers club) |
 | `/posts/{type}/{slug}` | `/posts/features/welcome-to-the-farm` |
 | `/depth-chart`, `/players`, `/seasons`, `/prospects`, `/posts` | list pages |
 | `/about` | credits and disclaimer |
