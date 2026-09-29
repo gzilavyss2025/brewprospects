@@ -1,11 +1,17 @@
-// MiLB levels, keyed by MLB Stats API sportId. Order is HIGH to LOW, the order
-// the depth chart reads top to bottom. sportId 16 holds every complex league
-// (ACL, DSL, and before 2021 the Pioneer League), which the API does not split.
+// Minor-league levels, keyed by MLB Stats API sportId. Order is HIGH to LOW,
+// the order the depth chart reads top to bottom. MLB (1) is not a level: its
+// rows live in mlb.json and never reach these views (ADR-0014).
+// sportId 15 is short-season A (before 2021). sportId 5442 is
+// Rookie Advanced, seen for 2019 only (checked 2026-09-29: retired, not in
+// /sports). sportId 16 holds every complex league (ACL, DSL, and the Pioneer
+// League through 2018), which the API does not split.
 export const LEVELS = [
   { sportId: 11, label: 'AAA', name: 'Triple-A' },
   { sportId: 12, label: 'AA', name: 'Double-A' },
   { sportId: 13, label: 'A+', name: 'High-A' },
   { sportId: 14, label: 'A', name: 'Single-A' },
+  { sportId: 15, label: 'SS-A', name: 'Short-season A' },
+  { sportId: 5442, label: 'ROK+', name: 'Rookie Advanced' },
   { sportId: 16, label: 'ROK', name: 'Rookie' },
 ]
 

@@ -47,6 +47,10 @@ jobs:
       - id: history
         continue-on-error: true
         run: node scripts/data/gen-prospect-history.mjs
+      # Runs after gen-org and gen-archive: it reads their player lists.
+      - id: mlb
+        continue-on-error: true
+        run: node scripts/data/gen-mlb.mjs
       # The new data must pass the tests and build the site before it reaches
       # main. The push does start ci.yml, but Vercel deploys at the same time,
       # so this is the check that counts.
@@ -96,6 +100,7 @@ jobs:
             fetch-pipeline=${{ steps.pipeline.outcome }}
             gen-archive=${{ steps.archive.outcome }}
             gen-prospect-history=${{ steps.history.outcome }}
+            gen-mlb=${{ steps.mlb.outcome }}
             api-drift=${{ steps.drift.outcome }}
         run: |
           failed=$(echo "$RESULTS" | tr ' ' '\n' | grep -v '=success$' || true)

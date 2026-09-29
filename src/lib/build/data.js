@@ -2,11 +2,12 @@
 // from the JSON files, so a file shape change touches one module.
 import org from '../../data/org.json' with { type: 'json' }
 import pipeline from '../../data/pipeline.json' with { type: 'json' }
+import mlb from '../../data/mlb.json' with { type: 'json' }
 import { levelRank } from '../model/levels.js'
 import { currentAssignments, orgPlayerIds } from '../model/org.js'
 import { paths } from '../slug.js'
 
-export { org, pipeline }
+export { org, pipeline, mlb }
 
 export const affiliates = [...org.affiliates].sort(
   (a, b) => levelRank(a.sportId) - levelRank(b.sportId) || a.name.localeCompare(b.name),
@@ -28,4 +29,9 @@ export function allPlayers() {
     .map((id) => org.players[id])
     .filter(Boolean)
     .map((p) => ({ ...p, assignment: assignments.get(p.id) ?? null, rank: rankById.get(p.id) ?? null }))
+}
+
+// A player's big-league rows, or null when he has none (ADR-0014).
+export function mlbFor(playerId) {
+  return mlb.players[playerId] ?? null
 }
