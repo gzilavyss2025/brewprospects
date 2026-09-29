@@ -18,5 +18,10 @@
     "capturedAt": "2026-09-25",
     "sourceUrl": "https://statsapi.mlb.com/api/v1/teams/5015/roster?rosterType=fullSeason&season=2025&hydrate=person(stats(type=season,group=[hitting,pitching],sportId=12,season=2025))",
     "note": "gen-archive's roster request (scripts/data/gen-archive.mjs). Trimmed to six players."
+  },
+  "people-mlb-yearbyyear.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=111904,451596,815908&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)",
+    "note": "gen-mlb's person request (scripts/data/gen-mlb.mjs). Cameron and Gallardo, trimmed to a few seasons; Cameron's 2011 has a traded-player total split with no team and numTeams 2. Made has no MLB rows and no stats block."
   }
 }

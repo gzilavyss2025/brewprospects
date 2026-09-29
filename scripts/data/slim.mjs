@@ -125,3 +125,19 @@ export function slimBio(p) {
   const { hitting: _h, pitching: _p, ...bio } = slimPerson({ ...p, stats: [] })
   return bio
 }
+
+// One person's MLB yearByYear splits (hydrate `sportId=1`), for gen-mlb. Kept
+// apart from slimPerson so no MiLB reader ever sees a big-league row. A player
+// traded in-season has one split per club plus a total with no team and
+// `numTeams` set (checked live 2026-09-29: Mike Cameron 2011). A player with
+// no big-league rows comes back with no stats block at all.
+export function slimMlbPerson(p) {
+  const splitsFor = (group) =>
+    (p.stats ?? []).find((s) => s.group?.displayName === group && s.type?.displayName === 'yearByYear')
+      ?.splits ?? []
+  const withTeams = (slim) => (split) => ({ ...slim(split), teams: num(split.numTeams) })
+  return {
+    hitting: splitsFor('hitting').map(withTeams(slimHitting)),
+    pitching: splitsFor('pitching').map(withTeams(slimPitching)),
+  }
+}

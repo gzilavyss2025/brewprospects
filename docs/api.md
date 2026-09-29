@@ -23,6 +23,7 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | `gen-archive` | `/teams/158/roster?rosterType={fullSeason,nonRosterInvitees}&season={y}` | Milwaukee's roster (ADR-0007) |
 | `gen-archive` | `/people?personIds={40 ids}&hydrate=draft` | Bios for past players |
 | `gen-prospect-history` | `/people?personIds={ids}` | Names the archive does not know |
+| `gen-mlb` | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)` | Every MLB season (ADR-0014) |
 | `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/model/card.js`) |
 
 Not the Stats API:
@@ -52,6 +53,10 @@ nightly `scripts/data/drift.mjs` refetches them and fails on a missing field.
 - **`leagueListId=milb_all`** puts every MiLB level into one stats block.
   Without it, a stats hydrate returns MLB rows only. Checked 2026-09-25:
   person 815908's `yearByYear` has no rows without it, and six with it.
+- **`sportId=1`** in the same hydrate returns MLB rows only. A player with
+  none has no stats block. Checked 2026-09-29: person 111904 has 19 hitting
+  rows, and 815908 has none. A traded season has a split per club plus one
+  with no `team` and `numTeams` set.
 - **`season`**: pass it. Without it, `type=season` means the current season,
   and a response captured today changes tomorrow.
 

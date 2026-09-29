@@ -9,6 +9,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs'
 // new season file is how a finished season joins the archive.
 const FILES = [
   'src/data/org.json',
+  'src/data/mlb.json',
   'src/data/pipeline.json',
   'src/data/prospect-history.json',
   ...(existsSync('src/data/archive') ? readdirSync('src/data/archive') : [])

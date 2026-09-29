@@ -51,11 +51,16 @@ rank, about 30 names) or on its overall Top 100 (top rank) (ADR-0004).
 the rosters show him in the system that season.
 
 **Past player**: a player who appears only in the archive. His page shows
-only his seasons with Brewers affiliates, and says so.
+only his seasons with Brewers affiliates, and says so. His major-league
+rows show every club.
 
 **Player pages**: every org player and every past player. Each has a page
 at `/players/{name-id}`. `playerPages()` in `src/lib/build/archive.js` is
 the one list.
+
+**Major-league rows**: a player's MLB year-by-year lines, from
+`src/data/mlb.json` (`gen-mlb`). MLB is not a level: `LEVELS` and the level
+path never hold it (ADR-0014).
 
 **Reached MLB**: a player with an `mlbDebutDate` on file. The Stats API
 sends it only for players who debuted. It decides whether the headshot
