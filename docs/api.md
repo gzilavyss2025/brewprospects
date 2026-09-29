@@ -152,9 +152,18 @@ Checked on this site unless marked.
   Sugar Land, an Astros club, until 2026-07-10). Checked 2026-09-29.
 - **Fielding `.000` is a placeholder for zero chances.** Every DH row has
   `innings "0.0"`, `chances 0` and `fielding ".000"`, and so does a real
-  position with no chances (828824, LF at Biloxi 2026: 10 innings). Store it
-  as missing (ADR-0003). Fielding rows have the same no-`team` totals as
-  hitting rows. Checked 2026-09-29.
+  position with no chances (828824, LF at Biloxi 2026: 10 innings). Do not
+  keep `fielding`: it is `(putOuts + assists) / (putOuts + assists + errors)`
+  to three places, and with zero chances it is missing (ADR-0003). All 8
+  fixture rows with chances match that formula. Fielding rows have the same
+  no-`team` totals as hitting rows. Checked 2026-09-29.
+- **Fielding `innings` is a string** (`"10.0"`, where `.1` is one out).
+  Unlike a pitching line, a fielding line has no `outs` field. Checked
+  2026-09-29 on the fielding fixture.
+- **A pitcher's `statSplits` line has no `earnedRuns`.** It is the batting
+  line against him (hits, walks, `outs`, HBP, SF), so a split can show
+  opponent AVG, OBP and SLG but not ERA. Checked 2026-09-29 on
+  `people-splits-pitching-2026.json`.
 - **`statSplits` needs `sportId` for a per-level split.** With
   `leagueListId=milb_all` instead, the splits merge every level. A player
   who changed clubs at one level gets each split per club plus a no-`team`
