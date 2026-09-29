@@ -17,8 +17,9 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | --- | --- | --- |
 | `gen-org` | `/teams?sportIds=11,12,13,14,16&season={y}` | Affiliates: filter `parentOrgId === 158` |
 | `gen-org` | `/teams/{id}/roster?rosterType=fullSeason&season={y}` | Each affiliate's roster |
+| `gen-org`, `gen-archive` | `/standings?leagueId={id}&season={y}&standingsTypes=regularSeason` | Each club's record (`src/lib/model/standings.js`). One request per league. The league id is `league.id` on the `/teams` row |
 | `gen-org` | `/people?personIds={40 ids}&hydrate=draft,stats(group=[hitting,pitching],type=[yearByYear],leagueListId=milb_all)` | Bio and every MiLB season |
-| `gen-archive` | `/teams?sportIds=11,12,13,14,15,16&season={y}` | Affiliates for a past season |
+| `gen-archive` | `/teams?sportIds=11,12,13,14,15,16,5442&season={y}` | Affiliates for a past season, and each club's league id |
 | `gen-archive` | `/teams/{id}/roster?rosterType=fullSeason&season={y}&hydrate=person(stats(type=season,group=[hitting,pitching],sportId={s},season={y}))` | A past roster with each line |
 | `gen-archive` | `/teams/158/roster?rosterType={fullSeason,nonRosterInvitees}&season={y}` | Milwaukee's roster (ADR-0007) |
 | `gen-archive` | `/people?personIds={40 ids}&hydrate=draft` | Bios for past players |
@@ -91,6 +92,25 @@ Checked on this site unless marked.
   shows only the current state **(bbsbh)**.
 - **A new season exists before its rosters do.** On 2026-09-25, 2027 listed
   all seven affiliates with empty rosters. Rosters fill in during spring.
+- **A club's record is `/standings`, by league id.** The league id is on the
+  `/teams` row without any hydrate. `hydrate=league` only adds detail
+  (`abbreviation`, `numGames`, `seasonDateInfo`). Checked 2026-09-29: league
+  128 in 2019 (Vibes 32-43), 121 in 2006, 130 in 2010.
+- **A standings response has one `records` entry per division.** Read every
+  `teamRecords` row in all of them. `team.name` is only the nickname
+  ("Vibes"), so key on `team.id`. `wins`, `losses`, `runsScored` and
+  `runsAllowed` are numbers. `winningPercentage`, `divisionRank`,
+  `leagueRank` and `gamesBack` are strings (".427", "3", "21.5"). Each row also
+  carries a large `records` block of splits that we drop.
+- **A league with no divisions sends no `divisionRank`.** The Arizona League had
+  none from 2006 to 2008 (club 406). The record is kept and the rank is
+  missing (ADR-0003).
+- **One league can hold two of our clubs.** AZL Brewers Blue (5430) and Gold
+  (406) play in league 121 in 2019. Ask for the league once.
+- **The DSL clubs before 2010 have no standings.** Their `/teams` row has no
+  `league`, and the API returns no standings for them (2006 to 2009, checked
+  2026-09-29). They also have no roster, so the archive drops them and no
+  archive club has a null record.
 - **Old DSL clubs have no rosters.** Before 2010 the teams list names DSL
   clubs that fielded no roster. The archive drops them.
 - **A player who changed clubs at one level** gets one split per club plus a

@@ -1,0 +1,133 @@
+{
+  "records": [
+    {
+      "standingsType": "regularSeason",
+      "league": {
+        "id": 128,
+        "link": "/api/v1/league/128"
+      },
+      "division": {
+        "id": 235,
+        "link": "/api/v1/divisions/235"
+      },
+      "sport": {
+        "id": 5442,
+        "link": "/api/v1/sports/5442"
+      },
+      "teamRecords": [
+        {
+          "team": {
+            "id": 518,
+            "name": "Osprey",
+            "link": "/api/v1/teams/518"
+          },
+          "season": "2019",
+          "streak": {
+            "streakCode": "L1",
+            "streakType": "losses",
+            "streakNumber": 1
+          },
+          "divisionRank": "1",
+          "leagueRank": "2",
+          "sportRank": "4",
+          "gamesPlayed": 76,
+          "gamesBack": "-",
+          "wildCardGamesBack": "-",
+          "leagueGamesBack": "14.0",
+          "springLeagueGamesBack": "-",
+          "sportGamesBack": "14.0",
+          "divisionGamesBack": "-",
+          "conferenceGamesBack": "-",
+          "leagueRecord": {
+            "wins": 40,
+            "losses": 36,
+            "ties": 0,
+            "pct": ".526"
+          },
+          "lastUpdated": "2021-12-02T21:14:42Z",
+          "runsAllowed": 379,
+          "runsScored": 374,
+          "divisionChamp": false,
+          "divisionLeader": true,
+          "hasWildcard": true,
+          "clinched": false,
+          "eliminationNumber": "-",
+          "eliminationNumberSport": "E",
+          "eliminationNumberLeague": "E",
+          "eliminationNumberDivision": "-",
+          "eliminationNumberConference": "E",
+          "wildCardEliminationNumber": "-",
+          "wins": 40,
+          "losses": 36,
+          "runDifferential": -5,
+          "winningPercentage": ".526"
+        }
+      ]
+    },
+    {
+      "standingsType": "regularSeason",
+      "league": {
+        "id": 128,
+        "link": "/api/v1/league/128"
+      },
+      "division": {
+        "id": 236,
+        "link": "/api/v1/divisions/236"
+      },
+      "sport": {
+        "id": 5442,
+        "link": "/api/v1/sports/5442"
+      },
+      "teamRecords": [
+        {
+          "team": {
+            "id": 551,
+            "name": "Vibes",
+            "link": "/api/v1/teams/551"
+          },
+          "season": "2019",
+          "streak": {
+            "streakCode": "L1",
+            "streakType": "losses",
+            "streakNumber": 1
+          },
+          "divisionRank": "3",
+          "leagueRank": "7",
+          "wildCardRank": "5",
+          "sportRank": "16",
+          "gamesPlayed": 75,
+          "gamesBack": "21.5",
+          "wildCardGamesBack": "-",
+          "leagueGamesBack": "21.5",
+          "springLeagueGamesBack": "-",
+          "sportGamesBack": "21.5",
+          "divisionGamesBack": "21.5",
+          "conferenceGamesBack": "-",
+          "leagueRecord": {
+            "wins": 32,
+            "losses": 43,
+            "ties": 0,
+            "pct": ".427"
+          },
+          "lastUpdated": "2024-09-23T16:31:20Z",
+          "runsAllowed": 405,
+          "runsScored": 360,
+          "divisionChamp": false,
+          "divisionLeader": false,
+          "hasWildcard": true,
+          "clinched": false,
+          "eliminationNumber": "E",
+          "eliminationNumberSport": "E",
+          "eliminationNumberLeague": "E",
+          "eliminationNumberDivision": "E",
+          "eliminationNumberConference": "E",
+          "wildCardEliminationNumber": "-",
+          "wins": 32,
+          "losses": 43,
+          "runDifferential": -45,
+          "winningPercentage": ".427"
+        }
+      ]
+    }
+  ]
+}

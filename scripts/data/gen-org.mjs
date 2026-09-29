@@ -3,7 +3,9 @@
 //
 // Reads the public MLB Stats API: the affiliates (parentOrgId 158), each
 // affiliate's full-season roster, and every rostered player's MiLB
-// year-by-year stats. Runs nightly in GitHub Actions and on demand with
+// year-by-year stats, plus each affiliate's regular-season record (the
+// `standings` block, keyed by team id; null where the API has none, as before
+// a season starts). Runs nightly in GitHub Actions and on demand with
 // `npm run data`. About 20 requests in total.
 //
 // Guards: the script throws, and leaves the last good file in place, when the
@@ -15,6 +17,7 @@ import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
 import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/model/org.js'
 import { slimAffiliate, slimRosterEntry, slimPerson } from './lib/slim.mjs'
+import { fetchStandings, leagueIdsByTeam } from './lib/standings.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const MILB_SPORT_IDS = [11, 12, 13, 14, 16]
@@ -72,7 +75,11 @@ async function main() {
     throw new Error(`${missing.length} of ${ids.length} players came back with no person record.`)
   }
 
-  const snapshot = { generatedAt: new Date().toISOString(), season, affiliates, rosters, players }
+  // No all-null guard here, unlike gen-archive: in spring a new season has no
+  // games, so every record is null and that is true, not a bad response.
+  const standings = await fetchStandings(getJson, season, leagueIdsByTeam(teams.teams ?? []), affiliates.map((a) => a.id))
+
+  const snapshot = { generatedAt: new Date().toISOString(), season, affiliates, rosters, players, standings }
   await mkdir(new URL('.', OUT), { recursive: true })
   const tmp = new URL('org.json.tmp', new URL('.', OUT))
   await writeFile(tmp, JSON.stringify(snapshot) + '\n')

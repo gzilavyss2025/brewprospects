@@ -94,6 +94,13 @@ career of every past player, with any club (ADR-0006). It is packed: each
 club is stored once and each row is an array. `throughSeason` is the season
 it was fetched for. Not a season file.
 
+**Club record**: one club's regular-season wins, losses, win percentage,
+division rank, runs scored and runs allowed in one season. It lives in the
+`standings` block of a season file and of `org.json`, keyed by team id, and is
+null when the API has none. The postseason is not in it. `src/lib/model/standings.js`
+is the definition.
+_Avoid_: "standings" for one club's line. Standings are the whole league's table.
+
 **Fixture**: a captured API response in `test/fixtures/`, listed with its
 date and source URL in `manifest.json`.
 

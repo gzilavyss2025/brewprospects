@@ -26,6 +26,9 @@ rosters). 2006–2025 holds 20 seasons, 1,956 players, and 3.1 MB of JSON.
   `gen-org` moves to the next season. That happens once the new season's
   rosters pass gen-org's guard (about March), so until then the finished
   season stays the "current" one.
+- Each season file also holds a `standings` block, each club's regular-season
+  record. `gen-archive --standings` writes only that block into a file on
+  disk, with no roster refetch.
 - Guards: a season with fewer than 4 clubs, fewer than 100 players, or more
   than half its clubs empty throws and writes nothing. A club the teams list
   names but that fielded no roster (the DSL clubs before 2010) is dropped.
