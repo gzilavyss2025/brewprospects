@@ -2,10 +2,10 @@
 // live responses so no test needs the network.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { slimPerson, slimRosterEntry } from '../scripts/data/slim.mjs'
+import { slimPerson, slimRosterEntry } from '../scripts/data/lib/slim.mjs'
 import {
   extractEntries, assertTop100Shape, assertOrgShape, dedupeByPlayer, statLineFor,
-} from '../scripts/data/pipeline-parse.mjs'
+} from '../scripts/data/lib/pipeline-parse.mjs'
 import people from './fixtures/people-yearbyyear.json' with { type: 'json' }
 
 test('slimPerson keeps bio fields and every yearByYear split', () => {

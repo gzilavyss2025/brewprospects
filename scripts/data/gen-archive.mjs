@@ -19,7 +19,7 @@
 // Usage: node scripts/data/gen-archive.mjs [--refetch] [--season YYYY]
 import { mkdir, readFile, writeFile, rename, access } from 'node:fs/promises'
 import { ORG_ID, ARCHIVE_FIRST_SEASON, NO_MILB_SEASONS } from '../../src/config/site.js'
-import { slimAffiliate, slimArchiveEntry, slimBio } from './slim.mjs'
+import { slimAffiliate, slimArchiveEntry, slimBio } from './lib/slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 // 15 was short-season A before 2021. The Brewers had no club there in the

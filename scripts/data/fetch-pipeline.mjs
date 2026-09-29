@@ -14,7 +14,7 @@
 // each fetch checks its shape and the script fails rather than write bad data.
 import { mkdir, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
-import { extractEntries, assertTop100Shape, assertOrgShape, dedupeByPlayer, statLineFor } from './pipeline-parse.mjs'
+import { extractEntries, assertTop100Shape, assertOrgShape, dedupeByPlayer, statLineFor } from './lib/pipeline-parse.mjs'
 
 const TOP100_URL = 'https://www.mlb.com/prospects/stats/top-prospects'
 const ORG_URL = 'https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1'

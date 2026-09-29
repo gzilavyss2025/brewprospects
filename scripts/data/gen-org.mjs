@@ -14,7 +14,7 @@
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
 import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/model/org.js'
-import { slimAffiliate, slimRosterEntry, slimPerson } from './slim.mjs'
+import { slimAffiliate, slimRosterEntry, slimPerson } from './lib/slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const MILB_SPORT_IDS = [11, 12, 13, 14, 16]
