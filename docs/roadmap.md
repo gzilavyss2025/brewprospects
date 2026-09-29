@@ -23,6 +23,7 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   `src/lib/identity/affiliates.js`. A switch to self-hosted assets is then
   one file.
 - **One author.** No author model. One byline in `src/config/site.js`.
+  The byline stays empty (2026-09-29), so post JSON-LD has no `author`.
 - **Foundations first** (2026-09-28). This offseason goes to Phase 1 and the
   foundation items of Phase 2. The 2026 Arizona Fall League and Rule 5 dates
   may pass without a feature. That is accepted.
@@ -90,9 +91,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   `SITE_URL`: the sitemap, the robots `Sitemap` line, canonical, `og:url`,
   `og:image`, `twitter:card` and the JSON-LD `url`. `public/og-image.png`
   carries the placeholder site name. Run `npm run og-image` again when the
-  name is chosen (open decision 1). The Article has no `author` until
-  `BYLINE` in `src/config/site.js` is set, and no `dateModified` until posts
-  have an `updated` field.
+  name is chosen (open decision 1). The Article has no `author`: `BYLINE`
+  in `src/config/site.js` stays empty by choice. It has no `dateModified`
+  until posts have an `updated` field.
 
 ## Phase 1: Ready to go public
 
