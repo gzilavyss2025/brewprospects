@@ -13,12 +13,14 @@
     "data": "node scripts/data/gen-org.mjs && node scripts/data/fetch-pipeline.mjs && node scripts/data/gen-archive.mjs && node scripts/data/gen-prospect-history.mjs",
     "lint": "eslint . && node scripts/checks/run-all.mjs",
     "test": "node scripts/test.mjs",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "og-image": "node scripts/assets/og-image.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.9",
     "@astrojs/react": "^7.0.0",
     "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^11.0.11",
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",

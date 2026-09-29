@@ -95,6 +95,8 @@ Most of what is left needs the site name (open decision 1).
    on player and post pages. Never render OG images in a function (Tally
    went over the Vercel CPU limit this way). The sitemap and `og:url` need
    `SITE_URL`.
+   Head tags, robots, sitemap and OG image are done (2026-09-29). JSON-LD is
+   next.
 2. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.

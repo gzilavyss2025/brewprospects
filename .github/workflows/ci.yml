@@ -21,3 +21,7 @@ jobs:
       # Smoke tests over the build (roadmap Phase 1): routes, links, axe.
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
+      # The SEO pack changes with SITE_URL: check it set as well as unset
+      # (the run above). Roadmap Phase 1, item 1.
+      - run: SITE_URL=https://example.test npm run build
+      - run: SITE_URL=https://example.test npx playwright test e2e/seo.spec.js
