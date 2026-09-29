@@ -4,7 +4,7 @@ import '../styles/base.css'
 import '../styles/components.css'
 import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
 import { teamLogoUrl } from '../lib/identity/affiliates.js'
-import { canonicalUrl } from '../lib/slug.js'
+import { canonicalUrl, paths } from '../lib/slug.js'
 import { THEME_BOOT } from '../lib/theme.js'
 
 const { title, description = SITE_TAGLINE } = Astro.props
@@ -34,6 +34,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     {canonical && <link rel="canonical" href={canonical} />}
     {canonical && <meta property="og:url" content={canonical} />}
     <link rel="icon" href={teamLogoUrl(ORG_ID)} type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={paths.feed()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

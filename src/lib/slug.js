@@ -24,6 +24,7 @@ export const paths = {
   post: (type, id) => `/posts/${type}/${id}`,
   // A data file, not a page: player id to current path, read by the 404 page.
   playerPathMap: () => '/player-paths.json',
+  feed: () => '/rss.xml',
 }
 
 // The one address a page names as its own: the site origin plus the path,

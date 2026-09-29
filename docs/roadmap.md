@@ -42,7 +42,7 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
-3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 4.
+3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 3.
 
 ## Done
 
@@ -81,6 +81,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   `milb` only.
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in
   under a minute. `pastPlayers()` runs once per build. No cache needed.
+- **RSS feed** (was Phase 1, item 3; 2026-09-28). `/rss.xml`, built with
+  `@astrojs/rss`, lists the same posts as `/posts`: recaps, features, lists
+  and guides, newest first, with no post body (ADR-0009).
 
 ## Phase 1: Ready to go public
 
@@ -95,8 +98,7 @@ Most of what is left needs the site name (open decision 1).
 2. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
    decision 1.
-3. **`@astrojs/rss`** for posts.
-4. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
+3. **Analytics**, if chosen: one `track()` wrapper with an allowlist and a
    test (Tally ADR-0028).
 
 ## Phase 2: Content and finding things
