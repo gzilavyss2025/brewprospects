@@ -50,7 +50,7 @@ test('a new file in src/data must be packed or exempt, and a stale exemption fai
   const root = mkdtempSync(join(tmpdir(), 'snap-'))
   mkdirSync(join(root, 'src/data/archive'), { recursive: true })
   for (const key of Object.keys(EXEMPT)) {
-    writeFileSync(join(root, key.replace('{season}', '2025')), '{}')
+    writeFileSync(join(root, key), '{}')
   }
   writeFileSync(join(root, 'src/data/gamelog.json'), JSON.stringify({ players: { 1: [{ date: '2026-04-03', h: 2 }] } }))
   assert.deepEqual(snapshotProblems(root), [

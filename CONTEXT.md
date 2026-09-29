@@ -98,7 +98,8 @@ season's rosters are complete, in spring, not on January 1.
 _Avoid_: reading the season from the clock.
 
 **Archive season**: one frozen file in `src/data/archive/`, for a season
-before the current one (ADR-0006).
+before the current one (ADR-0006). It is packed: the roster is three tables,
+`roster`, `hitting` and `pitching` (ADR-0015).
 
 **Careers file**: `src/data/archive/careers.json`. The whole minor-league
 career of every past player, with any club (ADR-0006). It is packed: each
@@ -107,8 +108,9 @@ it was fetched for. Not a season file.
 
 **Packed snapshot**: a file in `src/data/` whose rows are arrays, with the
 column names stored once in `columns` and each club stored once in `clubs`
-(ADR-0015). It stores counts, not rates. `mlb.json` and `careers.json` are
-packed.
+(ADR-0015). It stores counts, not rates. `org.json`, `mlb.json`,
+`careers.json` and every archive season file are packed. `src/lib/build/`
+unpacks each one.
 
 **Rate stat**: a stat computed from counts, such as AVG, OPS, IP or ERA. It
 is computed in `src/lib/model/player/rates.js` and never stored.

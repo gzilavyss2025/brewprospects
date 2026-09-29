@@ -9,21 +9,25 @@
 //
 // Refresh rule (careerTargets in src/lib/model/careers.js): a run fetches only
 // the ids with no entry. When gen-org moves to a new season, `throughSeason`
-// no longer matches and every id is fetched again. Reads org.json and the
+// no longer matches and every id is fetched again. --refetch fetches every id
+// now (use it after a change to what a row keeps). Reads org.json and the
 // archive, so it runs after gen-org and gen-archive. One request per 40 ids.
 //
 // Guards: throws, and leaves the last good file in place, when players come
 // back missing or when most of a big batch has no MiLB rows at all, which
 // means the hydrate stopped working (docs/adr/0003).
 //
-// The file is packed (packCareers): each club once, each row an array. This
-// script works on the unpacked rows and packs on the way out.
+// The file is packed, counts only (packCareers, docs/adr/0015): each club
+// once, each row an array, one player per line. This script works on the
+// unpacked rows and packs on the way out.
 //
-// Usage: node scripts/data/gen-careers.mjs
-import { readFile, readdir, writeFile, rename } from 'node:fs/promises'
+// Usage: node scripts/data/gen-careers.mjs [--refetch]
+import { readFile, writeFile, rename } from 'node:fs/promises'
 import { orgPlayerIds } from '../../src/lib/model/org.js'
 import { archiveOnlyIds, careerTargets, mergeCareers, packCareers, unpackCareers } from '../../src/lib/model/careers.js'
 import { slimCareer } from './lib/slim.mjs'
+import { stringifyByLine } from './lib/by-line.mjs'
+import { readSeasons } from './lib/season-file.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const DIR = new URL('../../src/data/archive/', import.meta.url)
@@ -36,8 +40,8 @@ const readJson = async (url) => JSON.parse(await readFile(url, 'utf8'))
 
 async function main() {
   const org = await readJson(new URL('../../src/data/org.json', import.meta.url))
-  const files = (await readdir(DIR)).filter((f) => /^\d{4}\.json$/.test(f)).sort()
-  const archive = await Promise.all(files.map((f) => readJson(new URL(f, DIR))))
+  const refetch = process.argv.slice(2).includes('--refetch')
+  const archive = await readSeasons(DIR)
   const ids = archiveOnlyIds(archive, orgPlayerIds(org.rosters))
   if (ids.length < 100) throw new Error(`Only ${ids.length} archive-only players; expected 100 or more.`)
 
@@ -46,7 +50,7 @@ async function main() {
     if (err.code === 'ENOENT') return null
     throw err
   })
-  const targets = careerTargets(ids, prev, org.season)
+  const targets = careerTargets(ids, prev, org.season, { refetch })
   const fetched = {}
   for (let i = 0; i < targets.length; i += BATCH) {
     const chunk = targets.slice(i, i + BATCH)
@@ -72,7 +76,7 @@ async function main() {
     return
   }
   const tmp = new URL('careers.json.tmp', DIR)
-  await writeFile(tmp, JSON.stringify({ generatedAt: new Date().toISOString(), ...packCareers(merged) }) + '\n')
+  await writeFile(tmp, stringifyByLine({ generatedAt: new Date().toISOString(), ...packCareers(merged) }))
   await rename(tmp, OUT)
   console.log(`gen-careers: fetched ${got.length} of ${targets.length}; ${Object.keys(merged.players).length} of ${ids.length} past players on file (${org.season}), ${missing.length} without a record.`)
 }

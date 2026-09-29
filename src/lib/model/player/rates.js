@@ -75,3 +75,18 @@ export function withRates(group, r) {
   if (group === 'hitting') return { ...r, avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
   return { ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
 }
+
+// One entry with rates on every row: an org.json or careers.json player, whose
+// groups are lists of rows, or an archive roster entry, whose groups are one
+// line or null. src/lib/build/ calls it once per entry as a file loads, so
+// every model and page reads the rows with rates, as before the files were
+// packed.
+export function entryWithRates(e) {
+  const add = (group, v) => (Array.isArray(v) ? v.map((r) => withRates(group, r)) : v && withRates(group, v))
+  return { ...e, hitting: add('hitting', e.hitting), pitching: add('pitching', e.pitching) }
+}
+
+// entryWithRates on every player of { [id]: entry }.
+export function playersWithRates(players) {
+  return Object.fromEntries(Object.entries(players).map(([id, p]) => [id, entryWithRates(p)]))
+}

@@ -22,12 +22,17 @@
 // record. A season in NO_MILB_SEASONS is written as a
 // record of why it is empty. Requests run one at a time.
 //
+// A season file is packed, counts only (docs/adr/0015,
+// src/lib/snapshot/season.js). This script reads and writes it through
+// lib/season-file.mjs and works on the unpacked rosters.
+//
 // Usage: node scripts/data/gen-archive.mjs [--refetch] [--standings] [--season YYYY]
 import { mkdir, readFile, writeFile, rename, access } from 'node:fs/promises'
 import { ORG_ID, ARCHIVE_FIRST_SEASON, NO_MILB_SEASONS } from '../../src/config/site.js'
 import { standingsProblem } from '../../src/lib/model/standings.js'
 import { slimAffiliate, slimArchiveEntry, slimBio } from './lib/slim.mjs'
 import { fetchStandings, leagueIdsByTeam } from './lib/standings.mjs'
+import { readSeason, seasonText } from './lib/season-file.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 // 15 was short-season A before 2021. The Brewers had no club there in the
@@ -53,12 +58,14 @@ async function exists(url) {
   }
 }
 
-async function writeJson(name, data) {
+async function writeText(name, text) {
   const out = new URL(name, DIR)
   const tmp = new URL(`${name}.tmp`, DIR)
-  await writeFile(tmp, JSON.stringify(data) + '\n')
+  await writeFile(tmp, text)
   await rename(tmp, out)
 }
+
+const writeSeason = (data) => writeText(`${data.season}.json`, seasonText(data))
 
 // One season's standings block for these club ids, or a thrown error when the
 // response looks wrong. `teamList` is the season's /teams `teams` array.
@@ -142,17 +149,17 @@ async function main() {
     const file = new URL(`${s}.json`, DIR)
     const wanted = only === null || only === s
     if (standingsOnly && wanted && (await exists(file))) {
-      const data = await withStandings(JSON.parse(await readFile(file, 'utf8')))
-      await writeJson(`${s}.json`, data)
+      const data = await withStandings(await readSeason(file))
+      await writeSeason(data)
       console.log(`gen-archive: ${s} standings written (${Object.keys(data.standings).length} clubs).`)
       archive.push(data)
     } else if (wanted && (refetch || only === s || !(await exists(file)))) {
       const data = await buildSeason(s)
-      await writeJson(`${s}.json`, data)
+      await writeSeason(data)
       console.log(`gen-archive: ${s} written (${data.affiliates.length} clubs).`)
       archive.push(data)
     } else {
-      archive.push(JSON.parse(await readFile(file, 'utf8')))
+      archive.push(await readSeason(file))
     }
   }
 
@@ -170,7 +177,7 @@ async function main() {
   if (stillMissing > ids.length * 0.02) {
     throw new Error(`${stillMissing} of ${ids.length} archive players came back with no person record.`)
   }
-  await writeJson('people.json', people)
+  await writeText('people.json', JSON.stringify(people) + '\n')
   console.log(`gen-archive: ${archive.length} seasons, ${ids.length} players, ${missing.length} new bios.`)
 }
 

@@ -9,9 +9,8 @@
 //   roster:   who was on which club
 //   hitting:  that club's line for a hitter, counts only
 //   pitching: the same for a pitcher
-// A no-season file (2020) has no tables and is written as it is.
-//
-// DRAFT for #62. Nothing imports this yet.
+// A no-season file (2020) packs the same way, with empty tables, so lint
+// checks every season file (scripts/checks/snapshots.mjs).
 import { MILB_COLUMNS } from './milb.js'
 
 const ENTRY = ['id', 'name', 'jersey', 'pos', 'status', 'statusText']
@@ -32,7 +31,6 @@ const clubFields = (season, a) => ({ season, sportId: a.sportId, teamId: a.id, t
 // Throws on a line that names another club, or on a field with no column, so
 // packing can never drop or change a value in silence (docs/adr/0003).
 export function packSeason(data) {
-  if (data.noSeason) return data
   const { rosters, ...rest } = data
   const byId = new Map(data.affiliates.map((a) => [a.id, a]))
   const tables = { roster: [], hitting: [], pitching: [] }
@@ -62,7 +60,6 @@ export function packSeason(data) {
 
 // The reverse, reading column names from the file. Roster order is kept.
 export function unpackSeason(file) {
-  if (file.noSeason) return file
   const { columns, roster, hitting, pitching, ...rest } = file
   const byId = new Map(file.affiliates.map((a) => [a.id, a]))
   const obj = (group, values) => Object.fromEntries(columns[group].map((k, i) => [k, values[i]]))

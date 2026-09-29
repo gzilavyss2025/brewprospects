@@ -4,9 +4,9 @@
 //
 // In memory, careers are { throughSeason, players: { [id]: { hitting, pitching } } },
 // each row shaped as gen-org stores it. `throughSeason` is the season gen-org
-// held when the rows were fetched. On disk the file is packed (packCareers):
-// each club once, each row an array. See docs/adr/0006.
-import { packer, unpacker } from '../snapshot/pack.js'
+// held when the rows were fetched. On disk the file is packed and holds counts
+// only (packCareers, docs/adr/0015). src/lib/build/archive.js adds the rates.
+import { packPlayers, unpackPlayers } from '../snapshot/milb.js'
 
 // Ids in the archive that are not in this season's org: the players whose page
 // is built from the archive (see pastPlayers in src/lib/build/archive.js).
@@ -24,8 +24,10 @@ export function archiveOnlyIds(archive, orgIds) {
 // Which ids to fetch. With a file from the same season, only ids with no entry
 // (a new past player). With no file, or a file from an older season, every id:
 // a past player can still play on, so a new season refetches them all.
-export function careerTargets(ids, careers, season) {
-  if (!careers || String(careers.throughSeason) !== String(season)) return [...ids]
+// `refetch` fetches every id too (gen-careers --refetch), as after a change to
+// what a row keeps.
+export function careerTargets(ids, careers, season, { refetch = false } = {}) {
+  if (refetch || !careers || String(careers.throughSeason) !== String(season)) return [...ids]
   return ids.filter((id) => !careers.players?.[id])
 }
 
@@ -42,32 +44,13 @@ export function mergeCareers(prev, fetched, { ids, season }) {
   return { throughSeason: String(season), players }
 }
 
-// The packed file. Every club (sport, team id, the name that season, league)
-// is stored once in `clubs`, and a row holds its index. A row is an array
-// whose columns are named in the file's `columns`, so the file explains
-// itself. The columns below are every field slimHitting and slimPitching send.
-const CLUB_COLUMNS = ['sportId', 'teamId', 'team', 'league']
-const COLUMNS = {
-  hitting: ['season', 'club', 'age', 'g', 'pa', 'ab', 'h', 'd', 't', 'hr', 'r', 'rbi', 'bb', 'so', 'sb', 'cs', 'avg', 'obp', 'slg', 'ops'],
-  pitching: ['season', 'club', 'age', 'g', 'gs', 'w', 'l', 'sv', 'ip', 'h', 'bb', 'so', 'hr', 'era', 'whip', 'k9', 'bb9'],
-}
-
-// Lossless: see packer() in src/lib/snapshot/pack.js.
+// The packed file (docs/adr/0015): the MiLB columns org.json uses, counts
+// only, each club once. See packPlayers in src/lib/snapshot/milb.js.
 export function packCareers({ throughSeason, players }) {
-  const { row, clubs } = packer({ columns: COLUMNS, clubColumns: CLUB_COLUMNS })
-  const packed = {}
-  for (const [id, c] of Object.entries(players)) {
-    packed[id] = { hitting: c.hitting.map((r) => row('hitting', r)), pitching: c.pitching.map((r) => row('pitching', r)) }
-  }
-  return { throughSeason: String(throughSeason), columns: COLUMNS, clubColumns: CLUB_COLUMNS, clubs, players: packed }
+  return { throughSeason: String(throughSeason), ...packPlayers(players) }
 }
 
-// The reverse. It reads the column names from the file, not from this module.
+// The reverse. It reads the column names from the file, not from a module.
 export function unpackCareers(file) {
-  const unpack = unpacker(file)
-  const players = {}
-  for (const [id, c] of Object.entries(file.players ?? {})) {
-    players[id] = { hitting: c.hitting.map((v) => unpack('hitting', v)), pitching: c.pitching.map((v) => unpack('pitching', v)) }
-  }
-  return { throughSeason: String(file.throughSeason), players }
+  return { throughSeason: String(file.throughSeason), players: unpackPlayers(file) }
 }
