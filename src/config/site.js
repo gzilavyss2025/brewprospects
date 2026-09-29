@@ -1,6 +1,5 @@
-// Site-wide settings. The name is a placeholder until one is chosen: change it
-// here and every page, title and feed follows.
-export const SITE_NAME = 'Brew Prospects'
+// Site-wide settings. Change the name here and every page, title and feed follows.
+export const SITE_NAME = 'Road to the Crew'
 export const SITE_TAGLINE = 'The Milwaukee Brewers farm system, level by level.'
 
 // MLB Stats API team id of the parent club. Every affiliate carries it as
