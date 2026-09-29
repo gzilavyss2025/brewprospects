@@ -2,7 +2,7 @@
 // ordered by mlbRows, and never seen by the level path or the MiLB tables.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { slimMlbPerson, slimPerson } from '../scripts/data/slim.mjs'
+import { slimMlbPerson, slimPerson } from '../scripts/data/lib/slim.mjs'
 import { mlbRows } from '../src/lib/model/mlb.js'
 import { levelPath, statRows } from '../src/lib/model/org.js'
 import { LEVELS, levelFor } from '../src/lib/model/levels.js'

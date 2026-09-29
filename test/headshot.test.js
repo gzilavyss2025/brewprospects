@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { headshotUrl, HEADSHOT_KINDS } from '../src/lib/identity/affiliates.js'
 import { reachedMlb, headshotChain, initialsOf, headshotOnError } from '../src/lib/identity/headshot.js'
-import { slimPerson } from '../scripts/data/slim.mjs'
+import { slimPerson } from '../scripts/data/lib/slim.mjs'
 import yby from './fixtures/people-yearbyyear.json' with { type: 'json' }
 
 const [made, adams] = yby.people.map(slimPerson)

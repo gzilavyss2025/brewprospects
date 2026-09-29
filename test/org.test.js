@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {
   statusGroup, currentAssignments, orgPlayerIds, isStarter, depthChart, levelPath, statRows, primaryGroup,
 } from '../src/lib/model/org.js'
-import { slimPerson } from '../scripts/data/slim.mjs'
+import { slimPerson } from '../scripts/data/lib/slim.mjs'
 import people from './fixtures/people-yearbyyear.json' with { type: 'json' }
 
 const made = slimPerson(people.people.find((p) => p.id === 815908))

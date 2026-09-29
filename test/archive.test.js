@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {
   brewersRanked, brewersClubIds, otherClubs, archiveLines, archiveIndex, pastPlayer, clubsByLevel, rankHistory,
 } from '../src/lib/model/archive.js'
-import { slimArchiveEntry } from '../scripts/data/slim.mjs'
+import { slimArchiveEntry } from '../scripts/data/lib/slim.mjs'
 import roster from './fixtures/roster-season-2025-biloxi.json' with { type: 'json' }
 
 // Pinned on a captured live roster: Biloxi 2025. Raúl Alcantara pitched for

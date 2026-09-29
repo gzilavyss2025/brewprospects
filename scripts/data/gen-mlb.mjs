@@ -13,7 +13,7 @@
 //
 // Usage: node scripts/data/gen-mlb.mjs
 import { readFile, writeFile, rename } from 'node:fs/promises'
-import { slimMlbPerson } from './slim.mjs'
+import { slimMlbPerson } from './lib/slim.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const OUT = new URL('../../src/data/mlb.json', import.meta.url)
