@@ -99,7 +99,11 @@ const draftText = draft
   )}
 
   {player.archiveOnly && (
-    <p class="coverage section">The path and tables below cover his minor-league seasons with Brewers affiliates, {ARCHIVE_FIRST_SEASON} on. Time with other clubs is not shown. His major-league seasons, with any club, are below.</p>
+    player.careerThrough ? (
+      <p class="coverage section">The path and tables below cover his minor-league seasons with any club, as the MLB Stats API lists them, through {player.careerThrough}. His major-league seasons are in the "Major leagues" section.</p>
+    ) : (
+      <p class="coverage section">The path and tables below cover only his minor-league seasons with Brewers affiliates, {ARCHIVE_FIRST_SEASON} on. Time with other clubs is not on record here. His major-league seasons, with any club, are in the "Major leagues" section.</p>
+    )
   )}
 
   <section class="section">

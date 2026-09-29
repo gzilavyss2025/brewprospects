@@ -101,6 +101,15 @@ export function slimPerson(p) {
   }
 }
 
+// One past player's whole MiLB career, for gen-careers: the same hitting and
+// pitching rows gen-org keeps, with every club and any no-team total as the
+// API sent them. No bio: people.json has it (checked live 2026-09-29, the
+// request in test/fixtures/manifest.json).
+export function slimCareer(p) {
+  const { hitting, pitching } = slimPerson(p)
+  return { hitting, pitching }
+}
+
 // One archive roster entry: who, and his line FOR THIS CLUB only. The season
 // stats hydrate returns one split per club at that level plus a no-team total
 // when a player changed clubs (checked live: Biloxi 2025, Raúl Alcantara).

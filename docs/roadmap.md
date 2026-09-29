@@ -47,6 +47,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Done
 
+- **Full careers for past players** (2026-09-29). A past player's page
+  shows his whole minor-league career, with any club, from `careers.json`
+  (ADR-0006). MLB rows are unchanged (ADR-0014).
 - **Phase 0** (PRs #4 to #11, #18). Lint runs true on Windows (0.1). LF
   line endings, `.nvmrc`, and a test runner that fails on no tests (0.2).
   The URL contract, ADR-0009 (0.3). Club identity keyed on (id, season),
@@ -74,8 +77,11 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   runs axe on each, and checks the 404 page and its redirect. Screenshot
   baselines later.
 - **Levels list is complete** (2026-09-29). `LEVELS` holds SS-A (15)
-  and ROK+ (5442), so player pages show those stat rows. The archive
-  generator's sportId list is a later PR.
+  and ROK+ (5442), so player pages show those stat rows.
+- **Club records in the data** (2026-09-29). The archive holds the 2019 Rocky
+  Mountain Vibes (sportId 5442). Every archive season file and `org.json` has
+  a `standings` block: each club's regular-season record, keyed by team id
+  (`gen-archive --standings`). Data only; the pages that show it are a later PR.
 - **LICENSE and credits** (was Phase 1, item 4; 2026-09-28). MIT for the
   code only. `/about` names each data source and who owns it.
 - **Headshot fallback** (was Phase 2, item 5; 2026-09-28). The player

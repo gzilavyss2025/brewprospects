@@ -1,0 +1,64 @@
+{
+  "records": [
+    {
+      "standingsType": "regularSeason",
+      "league": {
+        "id": 121,
+        "link": "/api/v1/league/121"
+      },
+      "sport": {
+        "id": 16,
+        "link": "/api/v1/sports/16"
+      },
+      "teamRecords": [
+        {
+          "team": {
+            "id": 406,
+            "name": "AZL Brewers",
+            "link": "/api/v1/teams/406"
+          },
+          "season": "2006",
+          "streak": {
+            "streakCode": "W2",
+            "streakType": "wins",
+            "streakNumber": 2
+          },
+          "leagueRank": "8",
+          "wildCardRank": "8",
+          "sportRank": "58",
+          "gamesPlayed": 56,
+          "gamesBack": "15.5",
+          "wildCardGamesBack": "-",
+          "leagueGamesBack": "15.5",
+          "springLeagueGamesBack": "-",
+          "sportGamesBack": "15.5",
+          "divisionGamesBack": "-",
+          "conferenceGamesBack": "-",
+          "leagueRecord": {
+            "wins": 21,
+            "losses": 35,
+            "ties": 0,
+            "pct": ".375"
+          },
+          "lastUpdated": "2021-12-02T20:57:55Z",
+          "runsAllowed": 422,
+          "runsScored": 321,
+          "divisionChamp": false,
+          "divisionLeader": false,
+          "hasWildcard": false,
+          "clinched": false,
+          "eliminationNumber": "E",
+          "eliminationNumberSport": "E",
+          "eliminationNumberLeague": "E",
+          "eliminationNumberDivision": "E",
+          "eliminationNumberConference": "E",
+          "wildCardEliminationNumber": "-",
+          "wins": 21,
+          "losses": 35,
+          "runDifferential": -101,
+          "winningPercentage": ".375"
+        }
+      ]
+    }
+  ]
+}

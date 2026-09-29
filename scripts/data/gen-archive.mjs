@@ -11,20 +11,30 @@
 // --season 2015 to rebuild one. The default run is cheap: it only fills
 // seasons that are missing, which is how a finished season joins the archive.
 //
+// Each season also holds a `standings` block: each club's regular-season record,
+// keyed by team id (null where the API has none). `--standings` writes only
+// that block into the files on disk, with no roster refetch; it is how a block
+// is added to seasons written before it existed.
+//
 // Guards (docs/adr/0006): a season throws, and nothing is written, when it has
 // fewer than 4 affiliates, fewer than 100 players, or more than half its
-// clubs with an empty roster. A season in NO_MILB_SEASONS is written as a
+// clubs with an empty roster, or when more than half its clubs have no standings
+// record. A season in NO_MILB_SEASONS is written as a
 // record of why it is empty. Requests run one at a time.
 //
-// Usage: node scripts/data/gen-archive.mjs [--refetch] [--season YYYY]
+// Usage: node scripts/data/gen-archive.mjs [--refetch] [--standings] [--season YYYY]
 import { mkdir, readFile, writeFile, rename, access } from 'node:fs/promises'
 import { ORG_ID, ARCHIVE_FIRST_SEASON, NO_MILB_SEASONS } from '../../src/config/site.js'
+import { standingsProblem } from '../../src/lib/model/standings.js'
 import { slimAffiliate, slimArchiveEntry, slimBio } from './lib/slim.mjs'
+import { fetchStandings, leagueIdsByTeam } from './lib/standings.mjs'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 // 15 was short-season A before 2021. The Brewers had no club there in the
-// archive window, but a season that did would still be read.
-const MILB_SPORT_IDS = [11, 12, 13, 14, 15, 16]
+// archive window, but a season that did would still be read. 5442 was Rookie
+// Advanced in 2019 only: the Rocky Mountain Vibes (team 551) play there. It is
+// not in /sports (checked live 2026-09-29), but /teams still lists its clubs.
+const MILB_SPORT_IDS = [11, 12, 13, 14, 15, 16, 5442]
 const DIR = new URL('../../src/data/archive/', import.meta.url)
 const BATCH = 40
 
@@ -50,6 +60,24 @@ async function writeJson(name, data) {
   await rename(tmp, out)
 }
 
+// One season's standings block for these club ids, or a thrown error when the
+// response looks wrong. `teamList` is the season's /teams `teams` array.
+async function standingsBlock(season, teamList, ids) {
+  const block = await fetchStandings(getJson, season, leagueIdsByTeam(teamList), ids)
+  const problem = standingsProblem(block)
+  if (problem) throw new Error(`${season}: ${problem}`)
+  return block
+}
+
+// Add the block to a season file already on disk. Nothing else in it changes,
+// `generatedAt` included: the rosters were not refetched.
+async function withStandings(data) {
+  if (data.noSeason) return { ...data, standings: {} }
+  const teams = await getJson(`/teams?sportIds=${MILB_SPORT_IDS.join(',')}&season=${data.season}`)
+  const ids = data.affiliates.map((a) => a.id)
+  return { ...data, standings: await standingsBlock(data.season, teams.teams ?? [], ids) }
+}
+
 async function buildSeason(season) {
   if (NO_MILB_SEASONS[season]) {
     // No farm rosters exist, so keep what the API does have: Milwaukee's
@@ -66,6 +94,7 @@ async function buildSeason(season) {
       rosters: {},
       milwaukee: await ids('fullSeason'),
       invitees: await ids('nonRosterInvitees'),
+      standings: {},
     }
   }
   const teams = await getJson(`/teams?sportIds=${MILB_SPORT_IDS.join(',')}&season=${season}`)
@@ -93,12 +122,14 @@ async function buildSeason(season) {
     affiliates: fielded,
     rosters: Object.fromEntries(fielded.map((a) => [a.id, rosters[a.id]])),
     milwaukee: (mke.roster ?? []).map((e) => e.person?.id).filter(Boolean),
+    standings: await standingsBlock(season, teams.teams ?? [], fielded.map((a) => a.id)),
   }
 }
 
 async function main() {
   const args = process.argv.slice(2)
   const refetch = args.includes('--refetch')
+  const standingsOnly = args.includes('--standings')
   const only = args.includes('--season') ? Number(args[args.indexOf('--season') + 1]) : null
   const org = JSON.parse(await readFile(new URL('../../src/data/org.json', import.meta.url), 'utf8'))
   const last = Number(org.season) - 1
@@ -109,7 +140,13 @@ async function main() {
   const archive = []
   for (const s of seasons) {
     const file = new URL(`${s}.json`, DIR)
-    if ((only === null || only === s) && (refetch || only === s || !(await exists(file)))) {
+    const wanted = only === null || only === s
+    if (standingsOnly && wanted && (await exists(file))) {
+      const data = await withStandings(JSON.parse(await readFile(file, 'utf8')))
+      await writeJson(`${s}.json`, data)
+      console.log(`gen-archive: ${s} standings written (${Object.keys(data.standings).length} clubs).`)
+      archive.push(data)
+    } else if (wanted && (refetch || only === s || !(await exists(file)))) {
       const data = await buildSeason(s)
       await writeJson(`${s}.json`, data)
       console.log(`gen-archive: ${s} written (${data.affiliates.length} clubs).`)

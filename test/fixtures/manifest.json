@@ -23,5 +23,20 @@
     "capturedAt": "2026-09-29",
     "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=111904,451596,815908&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)",
     "note": "gen-mlb's person request (scripts/data/gen-mlb.mjs). Cameron and Gallardo, trimmed to a few seasons; Cameron's 2011 has a traded-player total split with no team and numTeams 2. Made has no MLB rows and no stats block."
+  },
+  "people-milb-careers.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/people?personIds=282656,150378&hydrate=stats(group=[hitting,pitching],type=[yearByYear],leagueListId=milb_all)",
+    "note": "gen-careers' person request (scripts/data/gen-careers.mjs). Sheets and Gagne, bio fields trimmed. Sheets has no-team totals (sportId 21) and clubs outside the Brewers system; Gagne has no totals."
+  },
+  "standings-2019-pioneer.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/standings?leagueId=128&season=2019&standingsTypes=regularSeason",
+    "note": "The standings request (scripts/data/lib/standings.mjs) for the Pioneer League, 2019. Two teams kept, and each team's nested records block dropped. Includes Rocky Mountain Vibes (551), 32-43, division rank 3. Strings: winningPercentage, divisionRank."
+  },
+  "standings-2006-arizona.json": {
+    "capturedAt": "2026-09-29",
+    "sourceUrl": "https://statsapi.mlb.com/api/v1/standings?leagueId=121&season=2006&standingsTypes=regularSeason",
+    "note": "The same request for the Arizona League, 2006. AZL Brewers (406) only. This league had no divisions: the team record has no divisionRank, and the record has no division."
   }
 }
