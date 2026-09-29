@@ -2,8 +2,7 @@
 import '../styles/tokens.css'
 import '../styles/base.css'
 import '../styles/components.css'
-import { SITE_NAME, SITE_TAGLINE, DISCLAIMER, ORG_ID } from '../config/site.js'
-import { teamLogoUrl } from '../lib/identity/affiliates.js'
+import { SITE_NAME, SITE_TAGLINE, DISCLAIMER } from '../config/site.js'
 import { paths } from '../lib/slug.js'
 import { headMeta } from '../lib/seo.js'
 import { jsonLdScript } from '../lib/jsonld.js'
@@ -34,7 +33,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     {head.meta.map((m) => <meta {...m} />)}
     {head.links.map((l) => <link {...l} />)}
     {jsonLdBlocks.map((block) => <script type="application/ld+json" set:html={jsonLdScript(block)} />)}
-    <link rel="icon" href={teamLogoUrl(ORG_ID)} type="image/svg+xml" />
+    <link rel="icon" href="/brand/road-to-the-crew/avatar.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={paths.feed()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,7 +46,7 @@ const current = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="/">
-          <img src={teamLogoUrl(ORG_ID)} alt="" width="44" height="44" />
+          <img src="/brand/road-to-the-crew/mark.svg" alt="" width="44" height="44" />
           <span>{SITE_NAME}</span>
         </a>
         <nav class="site-nav" aria-label="Main">

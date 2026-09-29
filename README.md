@@ -2,8 +2,8 @@
 
 A fan site about the Milwaukee Brewers farm system: every affiliate, every
 player, MLB Pipeline ranks, and a blog whose posts can hold live data blocks.
-Built with Astro 7 and Keystatic. The site name is a placeholder
-(`src/config/site.js`).
+Built with Astro 7 and Keystatic. The site is called Road to the Crew
+(`src/config/site.js`); its logo files are in `public/brand/road-to-the-crew/`.
 
 ## Run it
 

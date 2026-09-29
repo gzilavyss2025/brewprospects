@@ -14,7 +14,7 @@ color appears only as an accent on its own sections. Audience: casual Brewers
 fans, prospect readers, and fans of the affiliate clubs. Results are open;
 there is no spoiler seal (unlike Tally, the sibling repo `bbsbh`).
 
-The site name is a placeholder in `src/config/site.js` until the owner picks one.
+The site name is Road to the Crew (`src/config/site.js`). The domain is still open.
 
 ## Stack
 

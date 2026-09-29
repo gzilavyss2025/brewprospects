@@ -38,8 +38,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Decisions still open
 
-1. **Site name and domain.** Deferred (2026-09-28). `src/config/site.js` is
-   still a placeholder. Blocks Phase 1 item 2 and the canonical parts of 1.
+1. **Domain.** Open. The name is settled (2026-09-29): Road to the Crew, in
+   `src/config/site.js`. The domain blocks Phase 1 item 2 and the canonical
+   parts of 1.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
@@ -103,15 +104,14 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   player and post pages. Nothing renders in a function. These wait for
   `SITE_URL`: the sitemap, the robots `Sitemap` line, canonical, `og:url`,
   `og:image`, `twitter:card` and the JSON-LD `url`. `public/og-image.png`
-  carries the placeholder site name. Run `npm run og-image` again when the
-  name is chosen (open decision 1). The Article has no `author`: `BYLINE`
+  carries the site name; run `npm run og-image` again if it changes. The Article has no `author`: `BYLINE`
   in `src/config/site.js` stays empty by choice. It has no `dateModified`
   until posts have an `updated` field.
 
 ## Phase 1: Ready to go public
 
 The site is live at the placeholder URL. This phase makes it safe to share.
-Most of what is left needs the site name (open decision 1).
+Most of what is left needs the domain (open decision 1).
 
 2. **Name, domain, `site` config, favicon and logo** in `public/`. Stop
    hotlinking the Brewers logo for the site's own mark. Blocked on open
