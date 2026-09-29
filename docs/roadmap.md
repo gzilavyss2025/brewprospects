@@ -74,6 +74,11 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
   baselines later.
 - **LICENSE and credits** (was Phase 1, item 4; 2026-09-28). MIT for the
   code only. `/about` names each data source and who owns it.
+- **Headshot fallback** (was Phase 2, item 5; 2026-09-28). The player
+  page tries `silo`, then `67`, for a player with an `mlbDebutDate`, then
+  `milb`, then initials. The chain and its `onerror` handler are pure functions in
+  `src/lib/identity/headshot.js`; no island. The prospect card still uses
+  `milb` only.
 - **Build time** (was Phase 1, item 9). CI runs lint, test and build in
   under a minute. `pastPlayers()` runs once per build. No cache needed.
 
@@ -104,9 +109,7 @@ Most of what is left needs the site name (open decision 1).
    about 1,700 past players are reachable only through season pages.
 4. Prospect cards for past and traded players, from the archive, not only
    `org.json`.
-5. Headshot fallback as a pure, tested function: `silo` first for players who
-   reached MLB, then `milb`, then initials.
-6. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
+5. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
    and 2026 is missing (ADR-0007 source). Add each new year's list as it
    comes out (see the calendar).
 

@@ -88,6 +88,13 @@ test('a className: string is read', () => {
   assert.match(problems[0], /class "club-notice" carries the shape word "notice"/)
 })
 
+test('a className: string in src/lib/ is read (the headshot onerror handler)', () => {
+  const handler = "export const h = `{className:'photo-chip'}`"
+  const problems = classShapeProblems('src/lib/identity/example.js', handler)
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /class "photo-chip" carries the shape word "chip"/)
+})
+
 test('the lint runner rejects a shape-word class in a nested source folder', () => {
   const dir = mkdtempSync(join(ROOT, 'src/styles/class-shape-test-'))
   try {

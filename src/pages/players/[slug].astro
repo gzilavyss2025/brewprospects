@@ -51,7 +51,7 @@ const draftText = draft
 ---
 <Base title={player.name} description={`${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}>
   <div class="player-head">
-    <Headshot id={player.id} name={player.name} />
+    <Headshot player={player} />
     <div>
       {level && <span class="pennant">{level.label}</span>}
       <h1>{player.name}</h1>

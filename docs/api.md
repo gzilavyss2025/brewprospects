@@ -30,8 +30,12 @@ Not the Stats API:
 - **MLB Pipeline ranks** come from an MLB.com page, not an API (ADR-0004).
 - **Team logos:** `https://www.mlbstatic.com/team-logos/{teamId}.svg`. Only
   the current logo for an id (ADR-0008).
-- **Headshots:** `https://img.mlbstatic.com/mlb-photos/image/upload/w_{w},q_auto:best/v1/people/{id}/headshot/milb/current`.
-  A player with no photo returns 404.
+- **Headshots:** `https://img.mlbstatic.com/mlb-photos/image/upload/w_{w},q_auto:best/v1/people/{id}/headshot/{kind}/current`,
+  where `kind` is `silo` (the studio shot, for players who reached MLB), `67`
+  (an older MLB shot; some retired players have it and no `silo`) or `milb`.
+  A player with no photo of that kind returns 404. We never add the `d_`
+  default parameter: it turns a miss into a generic silhouette.
+  `headshotUrl()` in `src/lib/identity/affiliates.js` builds each kind.
 
 Each test fixture's source URL is in `test/fixtures/manifest.json`. The
 nightly `scripts/data/drift.mjs` refetches them and fails on a missing field.

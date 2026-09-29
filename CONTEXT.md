@@ -56,6 +56,15 @@ only his seasons with Brewers affiliates, and says so.
 at `/players/{name-id}`. `playerPages()` in `src/lib/build/archive.js` is
 the one list.
 
+**Reached MLB**: a player with an `mlbDebutDate` on file. The Stats API
+sends it only for players who debuted. It decides whether the headshot
+chain tries the MLB shots.
+_Avoid_: "big-leaguer" in code. Rehab and debut are different questions.
+
+**Headshot chain**: the photos a player page tries, in order: `silo` (the
+studio shot) and then `67` (an older MLB shot) if he reached MLB, then
+`milb`, then his initials. The last step never fails. `src/lib/identity/headshot.js` is the definition.
+
 **Path map**: `/player-paths.json`, player id to current path, for every
 player page. The 404 page reads it to send a stale `{name-id}` to the
 current path (ADR-0009).
