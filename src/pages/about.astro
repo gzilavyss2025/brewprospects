@@ -2,12 +2,12 @@
 // Credits and disclaimer (roadmap Phase 1). Every claim here names a source
 // the site really uses; keep it in step with docs/api.md and ADR-0004/0007.
 import Base from '../layouts/Base.astro'
-import { SITE_NAME, DISCLAIMER, ARCHIVE_FIRST_SEASON } from '../config/site.js'
+import { SITE_NAME, SITE_DESCRIPTION, ARCHIVE_FIRST_SEASON } from '../config/site.js'
 ---
 <Base title="About and credits" description={`Where the data on ${SITE_NAME} comes from, and who owns it.`}>
   <article class="prose">
     <h1>About and credits</h1>
-    <p>{SITE_NAME} is a fan site about the Milwaukee Brewers farm system. {DISCLAIMER}</p>
+    <p>{SITE_DESCRIPTION}</p>
 
     <h2>Not affiliated</h2>
     <p>

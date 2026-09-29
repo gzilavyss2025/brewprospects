@@ -24,6 +24,12 @@ export const paths = {
   post: (type, id) => `/posts/${type}/${id}`,
   // A data file, not a page: player id to current path, read by the 404 page.
   playerPathMap: () => '/player-paths.json',
+  feed: () => '/rss.xml',
+  // SEO files, not pages: the sitemap index (from @astrojs/sitemap), the
+  // robots file and the one static share image.
+  sitemapIndex: () => '/sitemap-index.xml',
+  robots: () => '/robots.txt',
+  ogImage: () => '/og-image.png',
 }
 
 // The one address a page names as its own: the site origin plus the path,

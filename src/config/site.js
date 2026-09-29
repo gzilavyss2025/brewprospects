@@ -12,6 +12,17 @@ export const ORG_ID = 158
 export const DISCLAIMER =
   'Fan site. Not affiliated with MLB, MiLB or the Milwaukee Brewers. Stats from the MLB Stats API; prospect ranks from MLB Pipeline and, for 2006–2008, Baseball America.'
 
+// Shared by /about and the RSS channel description, so the two never drift.
+export const SITE_DESCRIPTION = `${SITE_NAME} is a fan site about the Milwaukee Brewers farm system. ${DISCLAIMER}`
+
+// The feed needs an absolute origin even before SITE_URL is set (ADR-0009).
+// Used only for the feed: astro.config.mjs's `site` stays unset, so pages
+// still emit no canonical link and no og:url until the domain is chosen.
+const FEED_ORIGIN_FALLBACK = 'https://brewprospects.vercel.app'
+export function feedOrigin(siteUrl) {
+  return siteUrl || FEED_ORIGIN_FALLBACK
+}
+
 // The archive's first season. Past seasons run from here to the season before
 // the current one; the current season lives in src/data/org.json.
 export const ARCHIVE_FIRST_SEASON = 2006

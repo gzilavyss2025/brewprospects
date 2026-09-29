@@ -1,22 +1,24 @@
 ---
-// A player photo, or his initials when MLB has no photo on file. The swap runs
-// on the image's error event, so a missing photo never shows a broken icon.
-import { headshotUrl } from '../lib/identity/affiliates.js'
+// A player photo, down the fallback chain in lib/identity/headshot.js: the
+// studio shot, then the MiLB shot, then his initials. The swap runs on the
+// image's error event, so a missing photo never shows a broken icon.
+import { headshotChain, headshotOnError, initialsOf } from '../lib/identity/headshot.js'
 
-const { id, name } = Astro.props
-const initials = String(name ?? '')
-  .split(/\s+/)
-  .filter(Boolean)
-  .map((w) => w[0])
-  .slice(0, 2)
-  .join('')
+const { player } = Astro.props
+const [first, ...rest] = headshotChain(player)
+const initials = initialsOf(player?.name)
 ---
-<img
-  class="headshot"
-  src={headshotUrl(id)}
-  alt={`${name}`}
-  width="132"
-  height="176"
-  loading="lazy"
-  onerror={`this.replaceWith(Object.assign(document.createElement('div'),{className:'initials',textContent:${JSON.stringify(initials)}}))`}
-/>
+{first ? (
+  <img
+    class="headshot"
+    src={first}
+    alt={player.name}
+    width="132"
+    height="176"
+    loading="lazy"
+    data-fallbacks={rest.join(' ')}
+    onerror={headshotOnError(initials)}
+  />
+) : (
+  <div class="initials">{initials}</div>
+)}
