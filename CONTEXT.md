@@ -226,6 +226,25 @@ label, so it reads without color. Its colors are the `chart` role. It is not
 the club bar.
 _Avoid_: "club bar band", and naming a band for its color.
 
+**OPS chart**: the bar chart on a hitter's page, one bar for each game in his
+game log, oldest on the left (#37). A static SVG drawn at build time by
+`OpsChart.astro`, with the math in
+`src/lib/model/player/gamelog/ops-chart-layout.js`. The scale is fixed, 0 to
+2.000: a game above it is clipped at the top and marked. A game with no value
+(missing) has no bar, only a tick under the baseline. A game for a club
+outside the system has a diamond above its bar. Each band also has a fill
+pattern, and a closed table of every game sits under the chart, so it reads
+without color.
+
+**Season OPS line**: the level line across the OPS chart. It is the OPS of the
+summed counts of every charted game, never the mean of the game OPS values.
+It is drawn solid.
+
+**Rolling OPS**: the OPS of the last 10 games, drawn as a dashed line on the
+OPS chart. A point needs at least 30 plate appearances in those games, and the
+line breaks where a point is missing. `ROLLING_GAMES` and `ROLLING_MIN_PA` are
+in `ops-chart.js`; they are not the season minimum in `sample.js`.
+
 **Club bar**: the band in an affiliate's own color at the top of its section
 or card (`--club-bar`), with readable text on it (`--club-on-bar`). A club
 with no researched color, or one that fails 4.5:1, gets Brewers navy.
