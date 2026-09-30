@@ -58,8 +58,8 @@ It also runs `drift.mjs` and `freshness.mjs`, which need the network.
   (`parentOrgId` 158), full-season rosters, and every player's MiLB
   year-by-year stats (`leagueListId=milb_all`, one batched request per 40
   players). MLB rows are `gen-mlb.mjs` and `mlb.json`; MLB is not a level (ADR-0014).
-- `scripts/data/fetch-pipeline.mjs` writes `src/data/pipeline.json`: the MLB
-  Pipeline Brewers list. It reads an undocumented MLB.com page (ADR-0004).
+- `scripts/data/fetch-pipeline.mjs` writes `src/data/pipeline.json` and
+  `pipeline-log.json` (rank changes): MLB Pipeline, an undocumented page (ADR-0004).
 - `scripts/data/gen-archive.mjs` writes `src/data/archive/{season}.json` for
   2006 to last season, one frozen file each, plus `people.json` (ADR-0006).
 - `scripts/data/gen-prospect-history.mjs` writes `src/data/prospect-history.json`
