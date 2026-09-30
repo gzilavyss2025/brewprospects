@@ -116,6 +116,12 @@ unpacks each one.
 is computed in `src/lib/model/player/rates.js` and never stored.
 _Avoid_: "derived field" in docs; say rate stat.
 
+**K%, BB% and K-BB%**: strikeouts, walks, and strikeouts minus walks, each as a
+share of the batters a player faced, to one decimal. A hitter's share is of
+plate appearances; a pitcher's is of batters faced. K-BB% is the exact
+(K - BB) / batters faced, so it can sit 0.1 from the K% and BB% cells beside it.
+K/9 is a different stat: strikeouts per nine innings.
+
 **Club record**: one club's regular-season wins, losses, win percentage,
 division rank, runs scored and runs allowed in one season. It lives in the
 `standings` block of a season file and of `org.json`, keyed by team id, and is

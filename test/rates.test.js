@@ -94,11 +94,28 @@ test('a pitcher K% and BB% are so / bf and bb / bf to one decimal', () => {
   assert.equal(pitchKPct({ so: 1, bf: 16 }), '6.3%')
 })
 
-test('K-BB% is the rounded K% minus the rounded BB%, so it equals the cells beside it', () => {
-  // The exact 64 / 466 is 13.7%. 21.7 - 7.9 is 13.8, the two cells beside it.
-  assert.equal(kbbPct(pitcher), '13.8%')
+test('K-BB% is (so - bb) / bf to one decimal, from the exact fraction', () => {
+  // 64 / 466 is 13.7%. The rounded K% and BB% cells (21.7% and 7.9%) differ by
+  // 13.8%, so the cell can sit 0.1 from its neighbours: it is the true value.
+  assert.equal(kbbPct(pitcher), '13.7%')
   assert.equal(kbbPct({ so: 10, bb: 10, bf: 100 }), '0.0%')
   assert.equal(kbbPct({ so: 10, bb: 30, bf: 100 }), '-20.0%', 'more walks than strikeouts is negative')
+  // -1 / 16 is exactly -.0625: half away from zero, as the positive side rounds.
+  assert.equal(kbbPct({ so: 0, bb: 1, bf: 16 }), '-6.3%')
+  assert.equal(kbbPct({ so: 1, bb: 0, bf: 16 }), '6.3%')
+})
+
+// battersFaced is what a pitcher's K%, BB% and K-BB% divide by. Every pitching
+// split in the three fixtures has it, above 0, and at least the batters who
+// struck out, walked, singled or made an out.
+test('every fixture pitching split has batters faced that fits its counts', () => {
+  const splits = [mlbPeople, milbPeople, milbCareers].flatMap((f) => everySplit(f, 'pitching'))
+  assert.ok(splits.length > 0)
+  for (const s of splits) {
+    assert.ok(Number.isInteger(s.battersFaced) && s.battersFaced > 0, `battersFaced ${s.battersFaced}`)
+    assert.ok(s.battersFaced >= s.strikeOuts + s.baseOnBalls + s.hits, 'BF is below K + BB + H')
+    assert.ok(s.battersFaced >= s.outs, 'BF is below outs')
+  }
 })
 
 test('a pitcher rate is null at 0 batters faced, or with a missing count (ADR-0003)', () => {

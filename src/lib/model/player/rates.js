@@ -89,13 +89,15 @@ export function pitchBbPct(r) {
   return percent(r.bb, r.bf)
 }
 
-// The rounded K% minus the rounded BB%, in tenths, as iso and ops subtract and
-// add rounded values. K-BB% then always equals the two cells beside it: 21.7%
-// and 7.9% give 13.8%, though the exact 64 / 466 is 13.7%.
+// (so - bb) / bf, from the exact fraction, not from the two rounded cells: 101
+// K and 37 BB in 466 BF is 64 / 466, 13.7%, though the K% (21.7%) and BB%
+// (7.9%) cells beside it differ by 13.8%. The API sends no K-BB%, so the exact
+// value is the one to show. A negative value rounds half away from zero, as a
+// positive one rounds half up.
 export function kbbPct(r) {
-  const k = tenthsOf(r.so, r.bf)
-  const bb = tenthsOf(r.bb, r.bf)
-  return k === null || bb === null ? null : showTenths(k - bb)
+  if (!known(r.so, r.bb)) return null
+  const t = tenthsOf(Math.abs(r.so - r.bb), r.bf)
+  return showTenths(t === null || r.so >= r.bb ? t : -t)
 }
 
 // (H - HR) / (AB - SO - HR + SF). The API sends babip on MiLB and MLB lines
@@ -130,11 +132,12 @@ export function bb9(r) {
 // The row with its rates added, under the names the stat tables read.
 export function withRates(group, r) {
   if (group === 'hitting') {
-    const base = { avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
-    return { ...r, ...base, iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
+    return { ...r, avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r), iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
   }
-  const base = { ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
-  return { ...r, ...base, kPct: pitchKPct(r), bbPct: pitchBbPct(r), kbbPct: kbbPct(r) }
+  return {
+    ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r),
+    kPct: pitchKPct(r), bbPct: pitchBbPct(r), kbbPct: kbbPct(r),
+  }
 }
 
 // One entry with rates on every row: an org.json or careers.json player, whose
