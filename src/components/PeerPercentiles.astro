@@ -1,0 +1,50 @@
+---
+// A player's percentile ranks against Brewers farm players at his level this
+// season (#39). The entries come from peerPercentiles() in src/lib/build/
+// peers.js; this component ranks nothing. The number is always text, so the
+// bar adds no meaning and is hidden from a screen reader. A null percentile
+// shows a dash and no bar. A player with no entry gets one line and no bars.
+import { DASH } from '../lib/format.js'
+import { MIN_PA, MIN_IP } from '../lib/model/player/sample.js'
+
+const { entries, season, group, played } = Astro.props
+const minimum = group === 'pitching' ? `${MIN_IP} innings` : `${MIN_PA} plate appearances`
+const sample = (e) => (e.group === 'hitting' ? `${e.pa} PA` : `${Math.floor(e.outs / 3)}.${e.outs % 3} IP`)
+---
+{entries.map((e) => (
+  <div class="peer-block">
+    <h3>vs Brewers farm players at {e.level.name}, {e.season}</h3>
+    <p class="muted">
+      {e.group === 'hitting' ? 'Hitters' : 'Pitchers'}, {e.size} in the group. His line: {sample(e)}.
+      {e.sportId === 16 && ' ACL and DSL players share one Rookie group.'}
+    </p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label={`${e.level.name} percentile ranks`}>
+      <table class="stats peer-stats">
+        <thead>
+          <tr><th scope="col">Stat</th><th scope="col">Value</th><th scope="col">Percentile</th></tr>
+        </thead>
+        <tbody>
+          {e.stats.map((s) => (
+            <tr>
+              <td>{s.label}</td>
+              <td>{s.value ?? DASH}</td>
+              <td class="peer-cell">
+                <span class="peer-num">{s.pct ?? DASH}</span>
+                {s.pct !== null && <span class="peer-bar" aria-hidden="true"><span class="peer-fill" style={`width: ${s.pct}%`}></span></span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+))}
+{entries.length > 0 && (
+  <p class="muted">
+    A high percentile is always good: ERA, WHIP and a hitter's K% are flipped. Ranks are among Brewers farm players
+    only, with at least {minimum}, not the whole league.
+  </p>
+)}
+{entries.length === 0 && played && (
+  <p class="muted">Under {minimum} in {season}, so no percentile.</p>
+)}
