@@ -12,7 +12,7 @@ export const CLUB_COLUMNS = ['sportId', 'teamId', 'team', 'league']
 // 2026-09-29 (org, careers and every archive season).
 export const MILB_COLUMNS = {
   hitting: ['season', 'club', 'age', 'g', 'pa', 'ab', 'h', 'd', 't', 'hr', 'r', 'rbi', 'bb', 'so', 'sb', 'cs', 'hbp', 'sf'],
-  pitching: ['season', 'club', 'age', 'g', 'gs', 'w', 'l', 'sv', 'outs', 'h', 'bb', 'so', 'hr', 'er'],
+  pitching: ['season', 'club', 'age', 'g', 'gs', 'w', 'l', 'sv', 'outs', 'h', 'bb', 'so', 'hr', 'er', 'bf'],
 }
 export const GROUPS = ['hitting', 'pitching']
 

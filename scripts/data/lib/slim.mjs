@@ -45,11 +45,14 @@ function base(split) {
 // One hitting or pitching row: counts only, no rates (docs/adr/0015).
 // src/lib/model/player/rates.js computes AVG, OBP, SLG and OPS from these,
 // which is why HBP and SF are kept, and IP, ERA, WHIP, K/9 and BB/9 from outs
-// and earned runs. MiLB and MLB rows share them. Fields checked live
-// 2026-09-29: hitByPitch and sacFlies on hitting splits, outs and earnedRuns
-// on pitching splits (test/fixtures/people-mlb-yearbyyear.json,
-// people-yearbyyear.json, people-milb-careers.json and
-// roster-season-2025-biloxi.json).
+// and earned runs, and a pitcher's K% and BB% from batters faced. MiLB and MLB
+// rows share them. Fields checked live 2026-09-29: hitByPitch and sacFlies on
+// hitting splits, outs and earnedRuns on pitching splits (test/fixtures/
+// people-mlb-yearbyyear.json, people-yearbyyear.json, people-milb-careers.json
+// and roster-season-2025-biloxi.json). battersFaced is on every pitching split
+// in three of them: people-mlb-yearbyyear.json (2 of 2, captured 2026-09-29),
+// people-milb-careers.json (21 of 21, 2026-09-29) and
+// roster-season-2025-biloxi.json (5 of 5, 2026-09-25).
 export function slimHitting(split) {
   const s = split.stat ?? {}
   return {
@@ -68,7 +71,7 @@ export function slimPitching(split) {
     g: num(s.gamesPitched ?? s.gamesPlayed), gs: num(s.gamesStarted),
     w: num(s.wins), l: num(s.losses), sv: num(s.saves), outs: num(s.outs),
     h: num(s.hits), bb: num(s.baseOnBalls), so: num(s.strikeOuts), hr: num(s.homeRuns),
-    er: num(s.earnedRuns),
+    er: num(s.earnedRuns), bf: num(s.battersFaced),
   }
 }
 

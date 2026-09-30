@@ -13,7 +13,7 @@ const CLUB_COLUMNS = ['sportId', 'teamId', 'team', 'league']
 // total row.
 const COLUMNS = {
   hitting: ['season', 'club', 'age', 'teams', 'g', 'pa', 'ab', 'h', 'd', 't', 'hr', 'r', 'rbi', 'bb', 'so', 'sb', 'cs', 'hbp', 'sf'],
-  pitching: ['season', 'club', 'age', 'teams', 'g', 'gs', 'w', 'l', 'sv', 'outs', 'h', 'bb', 'so', 'hr', 'er'],
+  pitching: ['season', 'club', 'age', 'teams', 'g', 'gs', 'w', 'l', 'sv', 'outs', 'h', 'bb', 'so', 'hr', 'er', 'bf'],
 }
 const GROUPS = ['hitting', 'pitching']
 

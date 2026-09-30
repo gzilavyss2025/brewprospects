@@ -9,7 +9,7 @@ import { relPath } from './paths.mjs'
 // Stats a page computes from counts (src/lib/model/player/rates.js). No
 // packed file may store one, as a column or as a key.
 export const DERIVED = new Set([
-  'avg', 'obp', 'slg', 'ops', 'iso', 'babip', 'kPct', 'bbPct',
+  'avg', 'obp', 'slg', 'ops', 'iso', 'babip', 'kPct', 'bbPct', 'kbbPct',
   'ip', 'era', 'whip', 'k9', 'bb9', 'h9', 'hr9', 'fip',
 ])
 

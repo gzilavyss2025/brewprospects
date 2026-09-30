@@ -34,6 +34,17 @@ test('slimMlbPerson keeps the counts the rates need, and no rate', () => {
   for (const k of ['outs', 'er']) assert.ok(Number.isInteger(g.pitching[0][k]), k)
 })
 
+// battersFaced is on every pitching split in the captured responses
+// (test/fixtures/people-mlb-yearbyyear.json, people-milb-careers.json and
+// roster-season-2025-biloxi.json), and the pitcher K% and BB% divide by it.
+test('slimMlbPerson keeps batters faced on a pitching row, and the file has a column for it', () => {
+  const g = slimMlbPerson(person(GALLARDO))
+  assert.deepEqual(g.pitching.map((r) => r.bf), [466, 97])
+  const file = JSON.parse(JSON.stringify(packMlb({ generatedAt: 'x', players: { [GALLARDO]: g } })))
+  assert.ok(file.columns.pitching.includes('bf'))
+  assert.equal(unpackMlb(file).players[GALLARDO].pitching[0].bf, 466)
+})
+
 test('packMlb and unpackMlb give back the exact rows', () => {
   const players = { [CAMERON]: slimMlbPerson(person(CAMERON)), [GALLARDO]: slimMlbPerson(person(GALLARDO)) }
   const file = JSON.parse(JSON.stringify(packMlb({ generatedAt: 'x', players })))
