@@ -131,6 +131,29 @@ plate appearances; a pitcher's is of batters faced. K-BB% is the exact
 (K - BB) / batters faced, so it can sit 0.1 from the K% and BB% cells beside it.
 K/9 is a different stat: strikeouts per nine innings.
 
+**Peer percentile**: where a player's line for the current season ranks among
+Brewers farm players at the same level, from `src/lib/model/player/percentiles.js`.
+It is not a league percentile: the site cannot rank against all of MiLB.
+- The pool is Brewers clubs only, by team id. A row at a club outside the
+  system, a level total with no team and the all-MiLB total never count.
+- One pool per level. The ACL Brewers and both DSL clubs are all sportId 16, so
+  they share one Rookie pool. Hitters and pitchers have separate pools.
+- The current season only. Earlier seasons get no percentile: `org.json` holds
+  today's org players, so an earlier pool would miss everyone who left.
+- The percentile is the mid-rank: the players below the line plus half of those
+  that tie it (itself included), over the pool, floored to a whole number, so it runs
+  from 0 to 99. Lines that show the same rate tie. A pool of one has none.
+- A high percentile is always good. ERA, WHIP and a hitter's K% are flipped. A
+  hitter's BB% is higher-is-better; a pitcher's BB% is lower-is-better.
+- A player with two Brewers clubs at one level (or ACL and DSL) is ranked once,
+  on the sum of his Brewers rows at that level, not once per club.
+- Each percentile carries the pool size, so the page can say how small it is.
+
+**Sample minimum**: the plate appearances or innings a line needs before it is
+ranked: `MIN_PA` (100) and `MIN_IP` (30), in `src/lib/model/player/sample.js`.
+Below it a player gets no rank and is not in the pool; the page shows `—`. A
+test fails when a second copy of either number appears in `src/`.
+
 **Stat definition**: the one sentence under a stat header on a player table,
 from `src/lib/model/player/glossary.js`. A header with one is a button: a tap,
 a click or a keyboard focus shows the sentence under the table, and a screen
