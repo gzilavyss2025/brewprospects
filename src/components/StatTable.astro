@@ -4,12 +4,12 @@
 // (src/lib/model/player/rates.js); the table computes nothing. `major` is the
 // big-league table: it has no level column, since every row is MLB. `gamelog`
 // is the game log: rows are one per game, and the leading columns and the stat
-// columns come from src/lib/model/player/gamelog-view.js. A header with a
+// columns come from src/lib/model/player/gamelog/gamelog-view.js. A header with a
 // definition is a button (StatHead); the script at the foot shows its sentence
 // in the line under the table.
 import { levelFor } from '../lib/model/levels.js'
 import { orDash } from '../lib/format.js'
-import { gameLogRows, gameLogHead } from '../lib/model/player/gamelog-view.js'
+import { gameLogRows, gameLogHead } from '../lib/model/player/gamelog/gamelog-view.js'
 import { STAT_COLS } from '../lib/model/player/columns.js'
 import StatHead from './StatHead.astro'
 

@@ -1,9 +1,9 @@
 // The game log as the page shows it (#35): rows in, display cells out. Pure.
 // The rows come newest first from gamelogFor and stay in that order. Every
 // missing value is a dash (docs/adr/0003); a real 0 is "0".
-import { levelFor } from '../levels.js'
-import { DASH, orDash } from '../../format.js'
-import { ip } from './rates.js'
+import { levelFor } from '../../levels.js'
+import { DASH, orDash } from '../../../format.js'
+import { ip } from '../rates.js'
 
 // Columns after the five lead columns, as [row key, label].
 export const GAMELOG_COLS = {

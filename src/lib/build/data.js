@@ -7,7 +7,7 @@ import gamelogFile from '../../data/gamelog.json' with { type: 'json' }
 import { levelRank } from '../model/levels.js'
 import { unpackMlb } from '../model/mlb.js'
 import { playersWithRates } from '../model/player/rates.js'
-import { newestFirst } from '../model/player/gamelog.js'
+import { newestFirst } from '../model/player/gamelog/gamelog.js'
 import { unpackOrg } from '../snapshot/milb.js'
 import { unpackGamelog } from '../snapshot/gamelog.js'
 import { currentAssignments, orgPlayerIds } from '../model/org.js'
