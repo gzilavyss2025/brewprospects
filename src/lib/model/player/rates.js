@@ -49,6 +49,40 @@ export function ops(r) {
   return three((onBase + thousandths(totalBases(r), r.ab)) / 1000)
 }
 
+// ISO is the rounded SLG minus the rounded AVG, in thousandths, as ops adds
+// rounded values. Then ISO always equals the SLG and AVG cells beside it. The
+// API does not send ISO. AVG and SLG give ".000" at zero at bats because the
+// API does; ISO, K%, BB% and BABIP have no API zero to copy, or (BABIP) the API
+// sends ".---", which we read as null. So each returns null when a denominator
+// is 0 or less, or an input is missing (ADR-0003).
+export function iso(r) {
+  if (!known(r.h, r.d, r.t, r.hr, r.ab) || r.ab <= 0) return null
+  return three((thousandths(totalBases(r), r.ab) - thousandths(r.h, r.ab)) / 1000)
+}
+
+// so / pa and bb / pa, half up on the exact fraction, to one decimal: "22.4%".
+const percent = (num, den) => {
+  if (!known(num, den) || den <= 0) return null
+  const tenths = units(num, den, 3)
+  return `${Math.floor(tenths / 10)}.${tenths % 10}%`
+}
+
+export function kPct(r) {
+  return percent(r.so, r.pa)
+}
+
+export function bbPct(r) {
+  return percent(r.bb, r.pa)
+}
+
+// (H - HR) / (AB - SO - HR + SF). The API sends babip on MiLB and MLB lines
+// (checked in test/fixtures/people-*.json).
+export function babip(r) {
+  if (!known(r.h, r.hr, r.ab, r.so, r.sf)) return null
+  const den = r.ab - r.so - r.hr + r.sf
+  return den > 0 ? three(units(r.h - r.hr, den, 3) / 1000) : null
+}
+
 // "110.1" is 110 innings and one out.
 export function ip(r) {
   return known(r.outs) ? `${Math.floor(r.outs / 3)}.${r.outs % 3}` : null
@@ -72,7 +106,10 @@ export function bb9(r) {
 
 // The row with its rates added, under the names the stat tables read.
 export function withRates(group, r) {
-  if (group === 'hitting') return { ...r, avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
+  if (group === 'hitting') {
+    const base = { avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
+    return { ...r, ...base, iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
+  }
   return { ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
 }
 
