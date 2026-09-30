@@ -2,8 +2,6 @@
 // careers.json: the same columns, the same club table, counts only. The
 // rates come back in src/lib/model/player/rates.js, at the build boundary
 // (src/lib/build/), so every model and page still reads plain rows with rates.
-//
-// DRAFT for #62. Nothing imports this yet.
 import { packer, unpacker } from './pack.js'
 
 export const CLUB_COLUMNS = ['sportId', 'teamId', 'team', 'league']

@@ -16,16 +16,10 @@ export const DERIVED = new Set([
 // Files that do not follow ADR-0015 yet, each with its reason. Remove a line
 // when its file is packed; a line for a file that is gone fails.
 export const EXEMPT = {
-  'src/data/org.json': 'Current-season rows as objects with rates. Convert next (ADR-0015).',
-  'src/data/archive/careers.json': 'Packed, but stores rates: needs hbp, sf and er fetched first.',
   'src/data/archive/people.json': 'Bios, not stat rows.',
   'src/data/pipeline.json': 'A ranked list, not stat rows.',
   'src/data/prospect-history.json': 'A ranked list, not stat rows.',
-  'src/data/archive/{season}.json': 'Frozen season files (ADR-0006), as objects with rates.',
 }
-const SEASON_FILE = /^src\/data\/archive\/\d{4}\.json$/
-
-const exemptKey = (rel) => (SEASON_FILE.test(rel) ? 'src/data/archive/{season}.json' : rel)
 
 // Every key anywhere in a JSON value, except inside `columns`, whose values
 // are names and are checked on their own.
@@ -107,7 +101,7 @@ export function snapshotProblems(root) {
   const files = jsonFiles(join(root, 'src/data'), root)
   const problems = []
   for (const rel of files) {
-    if (EXEMPT[exemptKey(rel)]) continue
+    if (EXEMPT[rel]) continue
     let file
     try {
       file = JSON.parse(readFileSync(join(root, rel), 'utf8'))
@@ -118,8 +112,7 @@ export function snapshotProblems(root) {
     problems.push(...packedProblems(rel, file))
   }
   for (const key of Object.keys(EXEMPT)) {
-    const present = key.includes('{season}') ? files.some((f) => SEASON_FILE.test(f)) : existsSync(join(root, key))
-    if (!present) problems.push(`EXEMPT in scripts/checks/snapshots.mjs names ${key}, which is gone. Remove the line.`)
+    if (!existsSync(join(root, key))) problems.push(`EXEMPT in scripts/checks/snapshots.mjs names ${key}, which is gone. Remove the line.`)
   }
   return problems
 }

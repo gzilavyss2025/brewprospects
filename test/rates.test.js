@@ -2,7 +2,7 @@
 // sends. The fixture tests compare every split in three captured responses.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { avg, obp, slg, ops, ip, era, whip, k9, bb9, withRates } from '../src/lib/model/player/rates.js'
+import { avg, obp, slg, ops, ip, era, whip, k9, bb9, withRates, entryWithRates, playersWithRates } from '../src/lib/model/player/rates.js'
 import mlbPeople from './fixtures/people-mlb-yearbyyear.json' with { type: 'json' }
 import milbPeople from './fixtures/people-yearbyyear.json' with { type: 'json' }
 import milbCareers from './fixtures/people-milb-careers.json' with { type: 'json' }
@@ -83,4 +83,22 @@ test('a missing count gives null, never a guess (ADR-0003)', () => {
 test('withRates adds the columns each stat table reads', () => {
   assert.deepEqual(Object.keys(withRates('hitting', {})), ['avg', 'obp', 'slg', 'ops'])
   assert.deepEqual(Object.keys(withRates('pitching', {})), ['ip', 'era', 'whip', 'k9', 'bb9'])
+})
+
+test('entryWithRates adds rates to a list of rows or to one line, and keeps a null line', () => {
+  const h = { ab: 4, h: 1, bb: 0, hbp: 0, sf: 0, d: 0, t: 0, hr: 0 }
+  const player = entryWithRates({ name: 'A', hitting: [h], pitching: [] })
+  assert.equal(player.name, 'A')
+  assert.equal(player.hitting[0].avg, '.250')
+  assert.deepEqual(player.pitching, [])
+  const line = entryWithRates({ id: 1, hitting: h, pitching: null })
+  assert.equal(line.hitting.obp, '.250')
+  assert.equal(line.pitching, null)
+})
+
+test('playersWithRates adds rates to every player and keeps the ids', () => {
+  const out = playersWithRates({ 7: { hitting: [{ ab: 2, h: 1 }], pitching: [{ outs: 4 }] } })
+  assert.deepEqual(Object.keys(out), ['7'])
+  assert.equal(out[7].hitting[0].avg, '.500')
+  assert.equal(out[7].pitching[0].ip, '1.1')
 })

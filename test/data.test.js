@@ -3,6 +3,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { slimPerson, slimRosterEntry } from '../scripts/data/lib/slim.mjs'
+import { withRates } from '../src/lib/model/player/rates.js'
 import {
   extractEntries, assertTop100Shape, assertOrgShape, dedupeByPlayer, statLineFor,
 } from '../scripts/data/lib/pipeline-parse.mjs'
@@ -17,13 +18,30 @@ test('slimPerson keeps bio fields and every yearByYear split', () => {
   const aa2026 = made.hitting.find((r) => r.season === '2026' && r.sportId === 12)
   assert.equal(aa2026.team, 'Biloxi Shuckers')
   assert.equal(aa2026.g, 122)
-  assert.equal(aa2026.avg, '.271')
+  assert.equal('avg' in aa2026, false, 'rates are computed, not stored (ADR-0015)')
+  assert.equal(withRates('hitting', aa2026).avg, '.271')
 })
 
 test('slimPerson keeps the draft record of a drafted player', () => {
   const adams = slimPerson(people.people.find((p) => p.id === 677941))
   assert.equal(adams.draft.year, 2018)
   assert.equal(adams.draft.round, '1')
+})
+
+// Checked live 2026-09-29 (/people/596307?hydrate=draft): `drafts` lists
+// every draft a player was taken in, Rule 5 picks and unsigned amateur picks
+// included, in no set order. Skyler Ewing's 2017 Rule 5 pick came first.
+test('slimPerson keeps the draft from his draftYear, not the first one listed', () => {
+  const draft = (year, code, round, pick, team, school) =>
+    ({ year, draftType: { code }, pickRound: round, pickNumber: pick, team: { name: team }, school: school ? { name: school } : {} })
+  const ewing = slimPerson({
+    id: 596307, draftYear: 2014,
+    drafts: [draft('2017', 'RA', '1', 6, 'Atlanta Braves'), draft('2014', 'JR', '6', 178, 'San Francisco Giants', 'Arlington (TX) HS')],
+  })
+  assert.deepEqual(ewing.draft, { year: 2014, round: '6', pick: 178, team: 'San Francisco Giants', school: 'Arlington (TX) HS' })
+  // Two drafts and no draftYear: we cannot tell which one signed him.
+  const unsure = slimPerson({ id: 1, drafts: [draft('2008', 'JR', '40', 1218, 'A'), draft('2012', 'JR', '22', 695, 'B')] })
+  assert.equal(unsure.draft, null)
 })
 
 test('slimPerson survives a person with no stats and no bio', () => {
@@ -34,14 +52,16 @@ test('slimPerson survives a person with no stats and no bio', () => {
   assert.equal(p.pos, '')
 })
 
-test('a placeholder rate like ".---" is stored as missing, not as a value', () => {
+test('a placeholder rate like "-.--" is not stored, and the rate shows as missing', () => {
   const p = slimPerson({
     id: 1,
     stats: [{ group: { displayName: 'pitching' }, type: { displayName: 'yearByYear' },
-      splits: [{ season: '2026', sport: { id: 14 }, team: { id: 1 }, stat: { era: '-.--', whip: '1.20' } }] }],
+      splits: [{ season: '2026', sport: { id: 14 }, team: { id: 1 }, stat: { era: '-.--', whip: '-.--', outs: 0, earnedRuns: 0, hits: 0, baseOnBalls: 0 } }] }],
   })
-  assert.equal(p.pitching[0].era, null)
-  assert.equal(p.pitching[0].whip, '1.20')
+  assert.equal('era' in p.pitching[0], false)
+  const shown = withRates('pitching', p.pitching[0])
+  assert.equal(shown.era, null)
+  assert.equal(shown.whip, null)
 })
 
 test('slimRosterEntry reads the live roster shape and treats a blank jersey as none', () => {

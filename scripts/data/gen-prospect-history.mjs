@@ -14,6 +14,7 @@
 import { readFile, writeFile, rename } from 'node:fs/promises'
 import { ARCHIVE_FIRST_SEASON, NO_MILB_SEASONS } from '../../src/config/site.js'
 import { brewersRanked, brewersClubIds, otherClubs } from '../../src/lib/model/archive.js'
+import { readSeason } from './lib/season-file.mjs'
 
 const SRC = new URL('../../data/sources/top-prospects-history/', import.meta.url)
 const ARCHIVE = new URL('../../src/data/archive/', import.meta.url)
@@ -38,7 +39,7 @@ async function main() {
       seasons.push({ season: s, missing: `No Top 100 list on record for ${s} yet.` })
       continue
     }
-    const seasonData = await readJson(new URL(`${s}.json`, ARCHIVE))
+    const seasonData = await readSeason(new URL(`${s}.json`, ARCHIVE))
     const list = rows.filter((r) => r.season === s)
     const source = list[0]?.source ?? m.source ?? 'mlb-pipeline'
     seasons.push({
@@ -93,7 +94,7 @@ async function main() {
   }
   for (const s of seasons) {
     if (!s.prospects?.length) continue
-    const seasonData = await readJson(new URL(`${s.season}.json`, ARCHIVE))
+    const seasonData = await readSeason(new URL(`${s.season}.json`, ARCHIVE))
     const ours = brewersClubIds(seasonData)
     for (const p of s.prospects) p.otherClubs = otherClubs(splits.get(p.playerId), s.season, ours)
   }

@@ -72,6 +72,12 @@ nightly `scripts/data/drift.mjs` refetches them and fails on a missing field.
 - **Club names in `yearByYear`** can be today's name, not the season's.
   Checked 2026-09-29: team 406 is "ACL Brewers" in 2016 to 2018, and the
   roster feed says "AZL Brewers". A Brewers line keeps the archive's name.
+- **`hydrate=draft`** lists every draft a player was taken in, Rule 5 picks
+  and unsigned amateur picks too, in no set order. Checked 2026-09-29: person
+  596307 lists his 2017 Rule 5 pick before his 2014 amateur pick. We keep the
+  one whose `year` is the person's `draftYear`. A player who signed as a free
+  agent after an unsigned pick has none (668929: drafted 2017, `draftYear`
+  2020), and the page shows a dash.
 - **`sportId=1`** in the same hydrate returns MLB rows only. A player with
   none has no stats block. Checked 2026-09-29: person 111904 has 19 hitting
   rows, and 815908 has none. A traded season has a split per club plus one

@@ -30,7 +30,6 @@ export function slimRosterEntry(e) {
 }
 
 const num = (v) => (Number.isFinite(v) ? v : null)
-const str = (v) => (typeof v === 'string' && v !== '' && !/^[.-]+$/.test(v) ? v : null)
 
 function base(split) {
   return {
@@ -43,6 +42,14 @@ function base(split) {
   }
 }
 
+// One hitting or pitching row: counts only, no rates (docs/adr/0015).
+// src/lib/model/player/rates.js computes AVG, OBP, SLG and OPS from these,
+// which is why HBP and SF are kept, and IP, ERA, WHIP, K/9 and BB/9 from outs
+// and earned runs. MiLB and MLB rows share them. Fields checked live
+// 2026-09-29: hitByPitch and sacFlies on hitting splits, outs and earnedRuns
+// on pitching splits (test/fixtures/people-mlb-yearbyyear.json,
+// people-yearbyyear.json, people-milb-careers.json and
+// roster-season-2025-biloxi.json).
 export function slimHitting(split) {
   const s = split.stat ?? {}
   return {
@@ -50,8 +57,7 @@ export function slimHitting(split) {
     g: num(s.gamesPlayed), pa: num(s.plateAppearances), ab: num(s.atBats),
     h: num(s.hits), d: num(s.doubles), t: num(s.triples), hr: num(s.homeRuns),
     r: num(s.runs), rbi: num(s.rbi), bb: num(s.baseOnBalls), so: num(s.strikeOuts),
-    sb: num(s.stolenBases), cs: num(s.caughtStealing),
-    avg: str(s.avg), obp: str(s.obp), slg: str(s.slg), ops: str(s.ops),
+    sb: num(s.stolenBases), cs: num(s.caughtStealing), hbp: num(s.hitByPitch), sf: num(s.sacFlies),
   }
 }
 
@@ -60,11 +66,20 @@ export function slimPitching(split) {
   return {
     ...base(split),
     g: num(s.gamesPitched ?? s.gamesPlayed), gs: num(s.gamesStarted),
-    w: num(s.wins), l: num(s.losses), sv: num(s.saves),
-    ip: str(s.inningsPitched), h: num(s.hits), bb: num(s.baseOnBalls),
-    so: num(s.strikeOuts), hr: num(s.homeRuns),
-    era: str(s.era), whip: str(s.whip), k9: str(s.strikeoutsPer9Inn), bb9: str(s.walksPer9Inn),
+    w: num(s.wins), l: num(s.losses), sv: num(s.saves), outs: num(s.outs),
+    h: num(s.hits), bb: num(s.baseOnBalls), so: num(s.strikeOuts), hr: num(s.homeRuns),
+    er: num(s.earnedRuns),
   }
+}
+
+// The draft he signed from: the one in his draftYear. `drafts` lists every
+// draft he was taken in, Rule 5 picks and unsigned amateur picks too, in no
+// set order (checked live 2026-09-29: Skyler Ewing, 596307, lists his 2017
+// Rule 5 pick first). With no draftYear, only a lone draft is safe to keep.
+function signingDraft(p) {
+  const drafts = p.drafts ?? []
+  if (p.draftYear == null) return drafts.length === 1 ? drafts[0] : null
+  return drafts.find((d) => String(d.year) === String(p.draftYear)) ?? null
 }
 
 // One person, with every MiLB yearByYear split. The API returns one stats
@@ -73,7 +88,7 @@ export function slimPerson(p) {
   const splitsFor = (group) =>
     (p.stats ?? []).find((s) => s.group?.displayName === group && s.type?.displayName === 'yearByYear')
       ?.splits ?? []
-  const draft = (p.drafts ?? [])[0]
+  const draft = signingDraft(p)
   return {
     id: p.id,
     name: p.fullName ?? '',
@@ -135,33 +150,6 @@ export function slimBio(p) {
   return bio
 }
 
-// One MLB row: counts only, no rates (docs/adr/0015). src/lib/model/player/rates.js
-// computes AVG, OBP, SLG and OPS from these, which is why HBP and SF are kept,
-// and IP, ERA, WHIP, K/9 and BB/9 from outs and earned runs. Fields checked
-// live 2026-09-29 (test/fixtures/people-mlb-yearbyyear.json): hitByPitch and
-// sacFlies on hitting splits, outs and earnedRuns on pitching splits.
-function mlbHitting(split) {
-  const s = split.stat ?? {}
-  return {
-    ...base(split),
-    g: num(s.gamesPlayed), pa: num(s.plateAppearances), ab: num(s.atBats),
-    h: num(s.hits), d: num(s.doubles), t: num(s.triples), hr: num(s.homeRuns),
-    r: num(s.runs), rbi: num(s.rbi), bb: num(s.baseOnBalls), so: num(s.strikeOuts),
-    sb: num(s.stolenBases), cs: num(s.caughtStealing), hbp: num(s.hitByPitch), sf: num(s.sacFlies),
-  }
-}
-
-function mlbPitching(split) {
-  const s = split.stat ?? {}
-  return {
-    ...base(split),
-    g: num(s.gamesPitched ?? s.gamesPlayed), gs: num(s.gamesStarted),
-    w: num(s.wins), l: num(s.losses), sv: num(s.saves), outs: num(s.outs),
-    h: num(s.hits), bb: num(s.baseOnBalls), so: num(s.strikeOuts), hr: num(s.homeRuns),
-    er: num(s.earnedRuns),
-  }
-}
-
 // One person's MLB yearByYear splits (hydrate `sportId=1`), for gen-mlb. Kept
 // apart from slimPerson so no MiLB reader ever sees a big-league row. A player
 // traded in-season has one split per club plus a total with no team and
@@ -173,7 +161,7 @@ export function slimMlbPerson(p) {
       ?.splits ?? []
   const withTeams = (slim) => (split) => ({ ...slim(split), teams: num(split.numTeams) })
   return {
-    hitting: splitsFor('hitting').map(withTeams(mlbHitting)),
-    pitching: splitsFor('pitching').map(withTeams(mlbPitching)),
+    hitting: splitsFor('hitting').map(withTeams(slimHitting)),
+    pitching: splitsFor('pitching').map(withTeams(slimPitching)),
   }
 }

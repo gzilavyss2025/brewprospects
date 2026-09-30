@@ -1,4 +1,4 @@
-// DRAFT for #62: the packed org.json, careers.json and season files
+// The packed org.json, careers.json and season files
 // (src/lib/snapshot/milb.js and season.js, docs/adr/0015).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -8,25 +8,24 @@ import { withRates } from '../src/lib/model/player/rates.js'
 import { packedProblems } from '../scripts/checks/snapshots.mjs'
 import { stringifyByLine } from '../scripts/data/lib/by-line.mjs'
 import { slimPerson, slimAffiliate, slimArchiveEntry } from '../scripts/data/lib/slim.mjs'
+import { brewersRanked } from '../src/lib/model/archive.js'
+import { readSeason } from '../scripts/data/lib/season-file.mjs'
+import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import people from './fixtures/people-yearbyyear.json' with { type: 'json' }
 import biloxi from './fixtures/roster-season-2025-biloxi.json' with { type: 'json' }
 
-// Today's slim functions still send rates and not hbp, sf, outs or er. Until
-// #62 step 1 changes them, these add the counts from the raw split and drop
-// the rates, which is what the changed slim functions will send.
-const RATES = new Set(['avg', 'obp', 'slg', 'ops', 'ip', 'era', 'whip', 'k9', 'bb9'])
-const EXTRA = { hitting: { hbp: 'hitByPitch', sf: 'sacFlies' }, pitching: { outs: 'outs', er: 'earnedRuns' } }
-const countsOnly = (group, row, stat) => ({
-  ...Object.fromEntries(Object.entries(row).filter(([k]) => !RATES.has(k))),
-  ...Object.fromEntries(Object.entries(EXTRA[group]).map(([k, api]) => [k, stat[api] ?? null])),
-})
-const splitsOf = (p, group) => p.stats.find((s) => s.group.displayName === group && s.type.displayName === 'yearByYear')?.splits ?? []
-const player = (p) => {
-  const slim = slimPerson(p)
-  for (const g of ['hitting', 'pitching']) slim[g] = slim[g].map((r, i) => countsOnly(g, r, splitsOf(p, g)[i].stat))
-  return slim
+// The rates the API sent, under the names withRates gives them. A placeholder
+// like "-.--" is stored as null (docs/adr/0015).
+const API_RATES = {
+  hitting: { avg: 'avg', obp: 'obp', slg: 'slg', ops: 'ops' },
+  pitching: { ip: 'inningsPitched', era: 'era', whip: 'whip', k9: 'strikeoutsPer9Inn', bb9: 'walksPer9Inn' },
 }
-const players = Object.fromEntries(people.people.map((p) => [p.id, player(p)]))
+const sentRate = (v) => (typeof v === 'string' && !/^[.-]+$/.test(v) ? v : null)
+const splitsOf = (p, group) => p.stats.find((s) => s.group.displayName === group && s.type.displayName === 'yearByYear')?.splits ?? []
+const players = Object.fromEntries(people.people.map((p) => [p.id, slimPerson(p)]))
 const through = (value) => JSON.parse(stringifyByLine(value))
 
 test('org.json packs and unpacks to the exact rows, bios and all', () => {
@@ -54,27 +53,21 @@ test('a rate in a row throws, so it cannot be written', () => {
 
 test('the rates from packed counts equal the rates the API sent', () => {
   for (const p of people.people) {
-    const back = unpackPlayers(through(packPlayers({ [p.id]: player(p) })))[p.id]
+    const back = unpackPlayers(through(packPlayers({ [p.id]: slimPerson(p) })))[p.id]
     for (const g of ['hitting', 'pitching']) {
-      slimPerson(p)[g].forEach((sent, i) => {
+      splitsOf(p, g).forEach((split, i) => {
         const r = withRates(g, back[g][i])
-        for (const k of Object.keys(sent).filter((k) => RATES.has(k))) assert.equal(r[k], sent[k], `${p.fullName} ${g} ${sent.season} ${k}`)
+        for (const [k, api] of Object.entries(API_RATES[g])) assert.equal(r[k], sentRate(split.stat[api]), `${p.fullName} ${g} ${split.season} ${k}`)
       })
     }
   }
 })
 
-// Biloxi 2025, as gen-archive shapes it, with counts only.
+// Biloxi 2025, as gen-archive shapes it.
 const affiliate = slimAffiliate({ id: 5015, name: 'Biloxi Shuckers', teamName: 'Shuckers', abbreviation: 'BLX', sport: { id: 12 }, league: { name: 'Southern League' } })
-const entry = (e) => {
-  const slim = slimArchiveEntry(e, 5015, 12)
-  const statOf = (g) => (e.person.stats ?? []).find((s) => s.group.displayName === g)?.splits.find((s) => s.team?.id === 5015)?.stat
-  for (const g of ['hitting', 'pitching']) if (slim[g]) slim[g] = countsOnly(g, slim[g], statOf(g))
-  return slim
-}
 const season = {
   season: '2025', generatedAt: 'x', affiliates: [affiliate],
-  rosters: { 5015: biloxi.roster.map(entry) }, milwaukee: [1], standings: {},
+  rosters: { 5015: biloxi.roster.map((e) => slimArchiveEntry(e, 5015, 12)) }, milwaukee: [1], standings: {},
 }
 
 test('a season file packs and unpacks to the exact roster, lines and all', () => {
@@ -96,8 +89,28 @@ test('a line that names another club throws, so a club is never rewritten', () =
   assert.throws(() => packSeason(bad), /another team/)
 })
 
-test('a no-season file is written as it is', () => {
+test('a no-season file packs to empty tables and reads back as it was', () => {
   const none = { season: '2020', noSeason: 'Cancelled', affiliates: [], rosters: {}, milwaukee: [1], invitees: [2], standings: {} }
-  assert.deepEqual(packSeason(none), none)
-  assert.deepEqual(unpackSeason(none), none)
+  const file = through(packSeason(none))
+  assert.deepEqual(unpackSeason(file), none)
+  assert.deepEqual([file.roster, file.hitting, file.pitching], [[], [], []])
+  assert.deepEqual(packedProblems('src/data/archive/2020.json', file), [])
+})
+
+// gen-prospect-history, gen-careers and gen-archive read season files from
+// disk. A packed file has no `rosters` key, so a raw read matched 0 ranked
+// prospects and failed nothing. readSeason unpacks.
+test('a packed season file read from disk gives brewersRanked its prospects', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'season-'))
+  try {
+    const url = pathToFileURL(join(dir, '2025.json'))
+    await writeFile(url, stringifyByLine(packSeason(season)))
+    const ids = season.rosters[5015].slice(0, 3).map((e) => e.id)
+    const rows = ids.map((mlbId, i) => ({ rank: i + 1, source: 'mlb-pipeline', mlbId }))
+    const data = await readSeason(url)
+    assert.deepEqual(brewersRanked(rows, data).map((p) => p.playerId), ids)
+    assert.deepEqual(data, season)
+  } finally {
+    await rm(dir, { recursive: true })
+  }
 })

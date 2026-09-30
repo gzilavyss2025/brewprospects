@@ -4,6 +4,7 @@ import { archiveOnlyIds, careerTargets, mergeCareers, packCareers, unpackCareers
 import { pastPlayer } from '../src/lib/model/archive.js'
 import { levelPath, statRows } from '../src/lib/model/org.js'
 import { slimCareer } from '../scripts/data/lib/slim.mjs'
+import { withRates } from '../src/lib/model/player/rates.js'
 import fixture from './fixtures/people-milb-careers.json' with { type: 'json' }
 
 // Captured live 2026-09-29 (manifest.json): Ben Sheets and Eric Gagne with the
@@ -83,10 +84,11 @@ test('a blank stat stays blank from the API to the page (ADR-0003)', () => {
     }],
   }
   const c = slimCareer(raw)
-  assert.equal(c.hitting[0].avg, null)
-  assert.equal(c.hitting[0].obp, null)
+  assert.equal('avg' in c.hitting[0], false, 'a rate is never stored (ADR-0015)')
   assert.equal(c.hitting[0].hr, null, 'a stat the API did not send is null, not 0')
-  assert.equal(pastPlayer(1, archive, {}, careersOf(c)).hitting[0].avg, null)
+  const shown = withRates('hitting', pastPlayer(1, archive, {}, careersOf(c)).hitting[0])
+  assert.equal(shown.avg, null)
+  assert.equal(shown.obp, null)
 })
 
 test('slimCareer gives empty groups for a player with no stats block', () => {
@@ -107,6 +109,12 @@ test('careerTargets fetches an id with no entry, and only that id', () => {
 test('careerTargets refetches every id when the season has moved on', () => {
   const careers = { throughSeason: '2026', players: { 1: { hitting: [], pitching: [] } } }
   assert.deepEqual(careerTargets([1, 2], careers, '2027'), [1, 2])
+})
+
+test('careerTargets with refetch fetches every id, even ones with an entry', () => {
+  const careers = { throughSeason: '2026', players: { 1: { hitting: [], pitching: [] } } }
+  assert.deepEqual(careerTargets([1, 2], careers, '2026', { refetch: true }), [1, 2])
+  assert.deepEqual(careerTargets([1, 2], careers, '2026', { refetch: false }), [2])
 })
 
 test('careerTargets fetches every id when there is no file', () => {

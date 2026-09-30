@@ -35,7 +35,8 @@ did not follow it.
   so the generator keeps the last good file.
 - **Numbers over strings.** A season is a number on disk, and so are outs.
   An id beats a name.
-- **One entry per line** in the big tables (`clubs`, `players`), written by
+- **One entry per line** in the big tables (`clubs`, `players`, and a season
+  file's `roster`, `hitting` and `pitching`), written by
   `scripts/data/lib/by-line.mjs`. A nightly diff shows only the players that
   changed, and a reviewer can read it.
 - **Unpacked once.** `src/lib/build/` unpacks each file when it loads.
@@ -69,11 +70,20 @@ responses, MiLB and MLB.
 
 - `mlb.json` went from 1,463,427 bytes to 306,979 (79% less). Gzipped, it
   went from 188 KB to 84 KB.
-- `careers.json` uses the same packer. It still stores rates, because its
-  rows have no HBP, SF or earned runs. It stays exempt until those counts are
-  fetched.
-- `org.json` and the season files are exempt until they are converted.
-  `pipeline.json`, `prospect-history.json` and `people.json` hold no stat
+- `org.json`, `careers.json` and the archive season files were converted on
+  2026-09-29 (#62). They share the MiLB columns in `src/lib/snapshot/milb.js`;
+  a season file packs as `src/lib/snapshot/season.js` says. The slim
+  functions in `scripts/data/lib/slim.mjs` send counts only, for MiLB and MLB
+  rows alike. `src/lib/build/` unpacks each file and adds the rates once
+  (`entryWithRates`). Sizes, raw and gzipped:
+
+  | File | Before | After | Gzipped before | Gzipped after |
+  |---|---|---|---|---|
+  | `org.json` | 552,112 | 215,459 | 88,306 | 53,013 |
+  | `careers.json` | 1,740,028 | 1,113,807 | 512,364 | 332,023 |
+  | Season files, all | 2,613,265 | 774,671 | 380,766 | 229,004 |
+
+- `pipeline.json`, `prospect-history.json` and `people.json` hold no stat
   rows and stay exempt.
 - ADR-0014 said `mlbRows` "derives nothing". Now it adds each row's rates,
   from that row's counts. It still adds nothing up.

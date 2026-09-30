@@ -82,3 +82,20 @@ player's page could not show his other minor-league clubs. It now can.
 This replaces two lines above: a past-only player's page now says it shows
 his minor-league seasons with any club when he has an entry, and the
 Consequences line about other clubs holds only for a player with no entry.
+
+## Amended 2026-09-29: packed, counts only (ADR-0015)
+
+- The season files and `careers.json` are packed and store counts, not
+  rates (ADR-0015). A season file keeps its roster in three tables, `roster`,
+  `hitting` and `pitching`; the club on each line comes back from
+  `affiliates` (`src/lib/snapshot/season.js`). The 2020 file packs the same
+  way, with empty tables. `careers.json` uses the columns `org.json` uses
+  (`src/lib/snapshot/milb.js`). The line above that says "The season files
+  stay as objects" no longer holds.
+- The season files were refetched once, on 2026-09-29, to add the counts.
+  No stored count changed.
+- `gen-careers --refetch` fetches every past player, whatever the file holds.
+  It was run once, on 2026-09-29, for the same reason.
+- Scripts read a season file only through `scripts/data/lib/season-file.mjs`,
+  which unpacks it. A raw read finds no `rosters` key, and
+  `brewersRanked` then matches 0 prospects with no error.

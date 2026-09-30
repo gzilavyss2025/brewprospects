@@ -12,12 +12,17 @@
 // affiliate count or the player count looks wrong. A thin or broken response
 // must never replace good data (docs/adr/0003).
 //
+// The players are packed, counts only (docs/adr/0015, packOrg), one player
+// per line so a nightly diff shows only the players whose rows changed.
+//
 // Usage: node scripts/data/gen-org.mjs [season]
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
 import { orgPlayerIds, rosterVerdict, snapshotAction } from '../../src/lib/model/org.js'
 import { slimAffiliate, slimRosterEntry, slimPerson } from './lib/slim.mjs'
 import { fetchStandings, leagueIdsByTeam } from './lib/standings.mjs'
+import { stringifyByLine } from './lib/by-line.mjs'
+import { packOrg } from '../../src/lib/snapshot/milb.js'
 
 const API = 'https://statsapi.mlb.com/api/v1'
 const MILB_SPORT_IDS = [11, 12, 13, 14, 16]
@@ -79,10 +84,11 @@ async function main() {
   // games, so every record is null and that is true, not a bad response.
   const standings = await fetchStandings(getJson, season, leagueIdsByTeam(teams.teams ?? []), affiliates.map((a) => a.id))
 
-  const snapshot = { generatedAt: new Date().toISOString(), season, affiliates, rosters, players, standings }
+  // packOrg throws on a field with no column, before anything is written.
+  const snapshot = packOrg({ generatedAt: new Date().toISOString(), season, affiliates, rosters, players, standings })
   await mkdir(new URL('.', OUT), { recursive: true })
   const tmp = new URL('org.json.tmp', new URL('.', OUT))
-  await writeFile(tmp, JSON.stringify(snapshot) + '\n')
+  await writeFile(tmp, stringifyByLine(snapshot))
   await rename(tmp, OUT)
   console.log(`gen-org: ${affiliates.length} affiliates, ${Object.keys(players).length} players (${season}).`)
 }
