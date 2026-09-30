@@ -176,6 +176,8 @@ the light theme pixel-identical. Recoloring the stripe would be a visual
 change riding along inside a rename-only PR, which this pass avoids on
 principle (see Consequences).
 
+`.season-summary` (the plain-language season summary at the top of a player page, #50) joined the same rule later, with the same stripe.
+
 ## The shape count, deferred
 
 A stricter guard — one that counts declarations actually drawn (a

@@ -5,9 +5,12 @@
 // Brewers Double-A hitters."
 //
 // What it reuses, and never redoes:
-// - The line is the first of peerLines (percentiles.js): the highest level,
-//   hitting before pitching at one level, Brewers rows only (by team id), two
-//   Brewers clubs at one level summed. Its rates come from rates.js.
+// - The line is one of peerLines (percentiles.js): Brewers rows only (by team
+//   id), two Brewers clubs at one level summed. Its rates come from rates.js.
+//   Which one: his primary group first (a pitcher's stray at bat is not his
+//   season), then a line over the minimum before one under it (eight PA at
+//   Triple-A do not hide a season at Double-A), then the highest level, hitting
+//   before pitching. Code review of #73 found both traps in the real snapshot.
 // - The ranking clause is the peer entry (peerPercentilesFor) for that group
 //   and level: the percentile of OPS for a hitter, of ERA for a pitcher, with
 //   the pool size. Owner decision, 2026-09-30: a percentile and a pool size,
@@ -18,6 +21,7 @@
 // A missing part is dropped, never filled (ADR-0003).
 import { peerLines, belowMinimum } from './percentiles.js'
 import { levelFor } from '../levels.js'
+import { primaryGroup } from '../org.js'
 import { ordinal } from '../../format.js'
 
 // The stat each group is ranked on, and the ones its line shows.
@@ -68,7 +72,13 @@ function whereText(player, group, sportId, season, brewersIds, clubNames) {
 // - `clubNames`: Map of team id to club name.
 export function seasonSummary({ player, season, brewersIds, peers = [], clubNames }) {
   if (!season) return null
-  const first = peerLines(player, season, brewersIds)[0]
+  const smalls = belowMinimum(player, season, brewersIds)
+  const isSmall = (l) => smalls.some((b) => b.group === l.group && b.sportId === l.sportId)
+  const primary = primaryGroup(player)
+  // The sort is stable, so the level order from peerLines breaks every tie.
+  const first = peerLines(player, season, brewersIds).sort(
+    (a, b) => (a.group !== primary) - (b.group !== primary) || isSmall(a) - isSmall(b),
+  )[0]
   if (!first) return null
   const { group, sportId, line } = first
 
@@ -76,8 +86,7 @@ export function seasonSummary({ player, season, brewersIds, peers = [], clubName
   const stats = lineText(group, line)
   if (stats) sentences.push(`${HEADING[group]} ${stats} ${whereText(player, group, sportId, season, brewersIds, clubNames)}.`)
 
-  const small = belowMinimum(player, season, brewersIds).some((b) => b.group === group && b.sportId === sportId)
-  if (small) {
+  if (isSmall(first)) {
     if (stats) sentences.push('Small sample.')
   } else {
     const entry = peers.find((e) => e.group === group && e.sportId === sportId && String(e.season) === String(season))

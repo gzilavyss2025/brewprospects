@@ -172,8 +172,8 @@ test('a player with only rows outside the system gets null', () => {
 })
 
 test('the highest level leads, and hitting comes before pitching at one level', () => {
-  const both = player(695501, { hitting: [hit('aPlus'), hit('aa', { ab: 45, h: 12, bb: 5, so: 10 })], pitching: [pitch('aa')] })
-  assert.match(summarize(index(both), both).text, /^Hitting .* for Biloxi Shuckers\. Small sample\.$/)
+  const both = player(695501, { hitting: [hit('aPlus'), hit('aa')], pitching: [pitch('aa')] })
+  assert.match(summarize(index(both), both).text, /^Hitting .* for Biloxi Shuckers\./)
   const arm = player(695501, { hitting: [hit('aa')], pitching: [pitch('aa')] })
   assert.match(summarize(index(arm), arm).text, /^Hitting /)
   const pitcher = player(695501, { pitching: [pitch('aa')] })
@@ -185,4 +185,22 @@ test('the text is plain: no markup, and short', () => {
   const { text } = summarize(index(me, ...rest), me)
   assert.doesNotMatch(text, /[<>&]/)
   assert.ok(text.split(/(?<=\.)\s/).length <= 2, 'one or two sentences')
+})
+
+test('a pitcher with a stray batting row is summarised as a pitcher', () => {
+  const stray = hit('aa', { ab: 2, h: 0, bb: 1, so: 1, hr: 0 })
+  const me = { ...player(695501, { hitting: [stray], pitching: [pitch('aa', { ip: 60, er: 15 })] }), pos: 'P' }
+  assert.match(summarize(index(me), me).text, /^Pitching 2\.25 ERA, 1\.00 WHIP for Biloxi Shuckers\./)
+  const small = { ...player(695501, { hitting: [stray], pitching: [pitch('aa', { ip: 12, er: 4 })] }), pos: 'P' }
+  assert.match(summarize(index(small), small).text, /^Pitching .* Small sample\.$/)
+})
+
+test('a short stint at a higher level does not hide a full season at a lower one', () => {
+  const brief = hit('aaa', { ab: 8, h: 1, bb: 0, so: 3, hr: 0 })
+  const me = player(682633, { hitting: [brief, hit('aa', { ab: 250, h: 60 })] })
+  const [, ...rest] = aaHitters()
+  const out = summarize(index(me, ...rest), me)
+  assert.equal(out.text, 'Hitting .240/.296/.340 for Biloxi Shuckers. 70th percentile in OPS among 5 Brewers Double-A hitters.')
+  const arm = player(657649, { pitching: [pitch('aaa', { ip: 4, er: 1 }), pitch('aa', { ip: 60, er: 15 })] })
+  assert.match(summarize(index(arm), arm).text, /^Pitching 2\.25 ERA, 1\.00 WHIP for Biloxi Shuckers\./)
 })
