@@ -7,7 +7,7 @@
    bbsbh/src/lib/data/mlb-team-colors.json. That match is not proof of an
    official style guide. */
 
-/* PAIRS: text-ink/surface-paper text-ink-soft/surface-paper text-link/surface-paper text-ink/surface-card text-ink-soft/surface-card text-link/surface-card text-on-navy/brand-navy brand-navy/brand-gold club-on-bar/club-bar */
+/* PAIRS: text-ink/surface-paper text-ink-soft/surface-paper text-link/surface-paper text-ink/surface-card text-ink-soft/surface-card text-link/surface-card text-ink/surface-hover text-link/surface-hover text-on-navy/brand-navy brand-navy/brand-gold club-on-bar/club-bar */
 /* The focus ring is two-tone: a --focus-ring outline with a --focus-halo band
    inside it, so one of the two stands out on every surface below.
    FOCUS: focus-ring|focus-halo/surface-paper focus-ring|focus-halo/surface-card focus-ring|focus-halo/brand-gold focus-ring|focus-halo/brand-navy */
@@ -21,6 +21,7 @@
   --surface-paper: #fbf6e9;
   --surface-card: #ffffff;
   --surface-logo: #ffffff;
+  --surface-hover: #f3ead0;
   --text-ink: #12284b;
   --text-ink-soft: #4a5670;
   --text-link: #0b4f8a;
@@ -90,6 +91,7 @@
   --surface-paper: #080f1b;
   --surface-card: #121e30;
   --surface-logo: #ffffff;
+  --surface-hover: #1c2c46;
   --text-ink: #fbf6e9;
   --text-ink-soft: #a9b4c8;
   --text-link: #a8ceff;

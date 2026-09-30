@@ -84,3 +84,22 @@ px check. There is no budget table, ratchet or per-line escape comment.
 Tests cover these boundaries and place a raw value in a temporary nested
 source folder to prove the actual lint runner rejects it. The scanner
 checks source literals; it does not evaluate JavaScript-generated CSS.
+
+## Amendment, 2026-09-30: dense stat tables
+
+The counts above are as measured on 2026-09-25 and do not change.
+
+Stat tables (`table.stats`, which also covers `game-log`, `peer-stats` and
+`ops-table`) now follow a small type scale: cell text 13px on a 16px line,
+header text 10px. Font sizes stay outside the raw-px check.
+
+Padding steps used by the density pass:
+
+- Table cells: `--space-1-5` on both axes (was `--space-1-5` by `--space-2-5`).
+- `.card`: `--space-3` (was `--space-4`).
+- `.bucket li`: `--space-0-5` (was `--space-0-75`). `.bucket` has no padding
+  of its own; its rows carry it.
+- The club logo in `.club-head` is 36px (was 48px). The page text is 15px
+  (was 17px).
+
+No new step was added. Every value is on the existing scale.

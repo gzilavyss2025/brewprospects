@@ -36,7 +36,7 @@ main { padding-top: var(--space-6); }
 /* Card: white stock with a hard navy shadow that lifts on hover. */
 .card {
   background: var(--surface-card); border: 2px solid var(--line-edge); border-radius: var(--radius-md);
-  box-shadow: var(--shadow); padding: var(--space-4);
+  box-shadow: var(--shadow); padding: var(--space-3);
   transition: transform var(--dur-fast) ease-out, box-shadow var(--dur-fast) ease-out;
 }
 a.card { display: block; color: inherit; text-decoration: none; }
@@ -51,8 +51,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
   background: var(--club-bar); color: var(--club-on-bar); border-radius: var(--radius-md) var(--radius-md) 0 0;
   border: 2px solid var(--line-edge); border-bottom: 0;
 }
-.club-head img { width: 48px; height: 48px; background: var(--surface-logo); border-radius: var(--radius-round); padding: var(--space-1); }
-.club-head .club-logo-none { width: 48px; height: 48px; flex: none; }
+.club-head img { width: 36px; height: 36px; background: var(--surface-logo); border-radius: var(--radius-round); padding: var(--space-1); }
+.club-head .club-logo-none { width: 36px; height: 36px; flex: none; }
 .club-head h2 { margin: 0; font-size: 24px; }
 .club-head .club-meta { font-size: 14px; opacity: 0.9; }
 .club-body {
@@ -62,7 +62,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 .buckets { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 .bucket h3 { font-size: 16px; font-family: var(--font-body); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: var(--space-1-5); }
 .bucket ul { list-style: none; margin: 0; padding: 0; }
-.bucket li { padding: var(--space-0-75) 0; border-bottom: 1px dotted var(--line-rule); display: flex; gap: var(--space-2); align-items: baseline; }
+.bucket li { padding: var(--space-0-5) 0; border-bottom: 1px dotted var(--line-rule); display: flex; gap: var(--space-2); align-items: baseline; }
 .bucket .jersey { font-family: var(--font-num); color: var(--text-ink-soft); min-width: 2ch; text-align: right; }
 .rank {
   margin-left: auto; font-family: var(--font-num); font-weight: 700; font-size: 13px;
@@ -72,15 +72,29 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 /* Stat tables scroll inside themselves; the page never scrolls sideways. */
 /* A scroll box takes keyboard focus (tabindex="0"), so the keyboard can
    reach columns past the edge (axe scrollable-region-focusable). */
-.table-scroll { overflow-x: auto; border: 2px solid var(--line-edge); border-radius: var(--radius-sm); background: var(--surface-card); }
-table.stats { border-collapse: collapse; width: 100%; font-family: var(--font-num); font-size: 16px; }
-table.stats th, table.stats td { padding: var(--space-1-5) var(--space-2-5); text-align: right; white-space: nowrap; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line-rule); border-radius: var(--radius-sm); background: var(--surface-card); }
+table.stats { border-collapse: collapse; width: 100%; font-family: var(--font-num); font-size: 13px; line-height: 16px; }
+table.stats th, table.stats td { padding: var(--space-1-5); text-align: right; white-space: nowrap; }
+table.stats tbody tr { border-bottom: 1px solid var(--line-rule); }
 table.stats th:first-child, table.stats td:first-child,
 table.stats th:nth-child(2), table.stats td:nth-child(2),
 table.stats th:nth-child(3), table.stats td:nth-child(3) { text-align: left; }
 table.game-log th:nth-child(-n+5), table.game-log td:nth-child(-n+5) { text-align: left; }
-table.stats thead th { background: var(--brand-navy); color: var(--text-on-navy); position: sticky; top: 0; }
-table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
+table.stats thead th {
+  background: var(--brand-navy); color: var(--text-on-navy); position: sticky; top: 0; z-index: 2;
+  font-size: 10px; text-transform: uppercase; font-weight: 500; letter-spacing: 0.05em;
+}
+/* The first column stays put while the table scrolls sideways. Its background
+   is opaque so the cells that slide under it do not show through. The header
+   corner sits above both the other headers and the pinned cells. */
+table.stats th:first-child, table.stats td:first-child, table.stats tbody th { position: sticky; left: 0; z-index: 1; background: var(--surface-card); }
+table.stats thead th:first-child { z-index: 3; background: var(--brand-navy); }
+/* The hover tint is for a pointer that can hover. A tap on a touch screen
+   would leave it stuck on the tapped row. */
+@media (hover: hover) {
+  table.stats tbody tr:hover { background: var(--surface-hover); }
+  table.stats tbody tr:hover td:first-child, table.stats tbody tr:hover th:first-child, table.stats tbody tr:hover th { background: var(--surface-hover); }
+}
 /* A header with a definition is a button that looks like the header: a dotted
    underline says it can be tapped. */
 .stat-term { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; }
