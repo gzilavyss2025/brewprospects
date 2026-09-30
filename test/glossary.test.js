@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { STAT_TERMS, termFor } from '../src/lib/model/player/glossary.js'
 import { STAT_COLS } from '../src/lib/model/player/columns.js'
-import { GAMELOG_COLS } from '../src/lib/model/player/gamelog-view.js'
+import { GAMELOG_COLS } from '../src/lib/model/player/gamelog/gamelog-view.js'
 import { wordProblems } from '../scripts/checks/docs.mjs'
 
 const labels = (cols) => cols.map(([, label]) => label)

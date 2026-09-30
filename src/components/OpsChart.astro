@@ -1,0 +1,207 @@
+---
+// The per-game OPS chart on a hitter's page (#37). A static SVG drawn at build
+// time: no script, no chart library (ADR-0001). `chart` is the result of
+// opsChart() in src/lib/model/player/gamelog/ops-chart.js, `year` the season
+// text. The numbers come from ops-chart-layout.js; this file only prints them.
+//
+// It reads without color. Each band has its own fill pattern (dots, stripes,
+// cross-hatch, solid) drawn in the band's own token color, its own outline
+// and a text label. A game at a club outside the system has a diamond above
+// its bar. A game with no value has no bar: a tick under the baseline marks
+// it. The two lines differ in stroke (solid and dashed). A table of every game
+// sits under the chart, closed, for a reader who does not use the picture.
+//
+// On a narrow screen the chart keeps a readable size and its box scrolls
+// sideways (the box takes keyboard focus), so text never shrinks to dust.
+import { DASH } from '../lib/format.js'
+import { OPS_BANDS } from '../lib/model/player/gamelog/ops-band.js'
+import { ROLLING_GAMES, ROLLING_MIN_PA } from '../lib/model/player/gamelog/ops-chart.js'
+import { dateText, oppText } from '../lib/model/player/gamelog/gamelog-view.js'
+import {
+  OPS_CAP, opsLabel, markerPath, chevronPath, chartLayout,
+} from '../lib/model/player/gamelog/ops-chart-layout.js'
+
+const { chart, year } = Astro.props
+const { games, season, outsideClubs, charted, missing } = chart
+const layout = chartLayout(chart)
+const { plot, grid, bars, missingMarks, outsideMarks, clipMarks, rolling } = layout
+const barAt = new Map(bars.map((b) => [b.index, b]))
+const capText = opsLabel(OPS_CAP)
+const seasonText = season ?? 'not on record'
+const bandWords = OPS_BANDS.map((b) => b.label).join(', ')
+const title = `OPS by game${year ? `, ${year}` : ''}`
+const description = `${charted} of ${games.length} games have a bar. Season OPS ${seasonText}. Bar height is the OPS of one game, oldest game on the left. The bands are ${bandWords}.`
+const outsideCount = games.filter((g) => g.outside).length
+
+// The OPS cell of the table: the value, or the reason there is none.
+const opsCell = (g) => {
+  if (!g.missing) return g.ops
+  return g.pa === 0 ? 'no plate appearances' : 'not on record'
+}
+const bandCell = (g, bar) => {
+  if (!g.band) return DASH
+  return bar?.clipped ? `${g.band.label} (bar cut off at ${capText})` : g.band.label
+}
+const dateCell = (g) => (g.gameNumber > 1 ? `${dateText(g.date)} (game ${g.gameNumber})` : dateText(g.date))
+const clubCell = (g) => {
+  const name = g.team || DASH
+  return g.outside ? `${name} (club outside the system)` : name
+}
+const tip = (g) => `${dateCell(g)}, ${g.team || 'club not on record'}: ${g.missing ? opsCell(g) : `OPS ${g.ops}, ${g.pa} PA`}`
+const first = games[0]
+const last = games[games.length - 1]
+---
+{games.length === 0 ? (
+  <p class="muted">No games to chart.</p>
+) : (
+  <>
+    <div class="ops-chart-scroll" tabindex="0" role="region" aria-label="OPS by game chart. It scrolls sideways on a narrow screen.">
+      <svg class="ops-chart" viewBox={`0 0 ${layout.view.width} ${layout.view.height}`} role="img" aria-labelledby="ops-chart-title ops-chart-desc" focusable="false">
+        <title id="ops-chart-title">{title}</title>
+        <desc id="ops-chart-desc">{description}</desc>
+        <defs>
+          <pattern id="ops-fill-low" width="6" height="6" patternUnits="userSpaceOnUse">
+            <circle class="ops-ink-low" cx="3" cy="3" r="1.1" />
+          </pattern>
+          <pattern id="ops-fill-fair" width="4" height="4" patternUnits="userSpaceOnUse">
+            <path class="ops-ink-fair" d="M0 4L4 0M-1 1L1 -1M3 5L5 3" stroke-width="1.4" />
+          </pattern>
+          <pattern id="ops-fill-good" width="4" height="4" patternUnits="userSpaceOnUse">
+            <path class="ops-ink-good" d="M0 0L4 4M0 4L4 0" stroke-width="1" />
+          </pattern>
+          <pattern id="ops-fill-great" width="4" height="4" patternUnits="userSpaceOnUse">
+            <rect class="ops-ink-great" width="4" height="4" />
+          </pattern>
+        </defs>
+
+        <g aria-hidden="true">
+          {grid.map((g) => (
+            <>
+              <line class={g.value === 0 ? 'ops-axis' : g.edge ? 'ops-grid ops-grid-edge' : 'ops-grid'} x1={plot.left} x2={plot.right} y1={g.y} y2={g.y} />
+              <text class="ops-text ops-text-end" x={plot.left - 6} y={g.y + 4.5}>{g.label}</text>
+            </>
+          ))}
+          <text class="ops-text" x={plot.left} y={plot.floor + 26}>{dateText(first.date)}</text>
+          {games.length > 1 && <text class="ops-text ops-text-end" x={plot.right} y={plot.floor + 26}>{dateText(last.date)}</text>}
+
+          {bars.map((b) => (
+            <rect class={`ops-bar ops-band-${b.band}`} fill={`url(#ops-fill-${b.band})`} x={b.x} y={b.y} width={b.width} height={b.height}>
+              <title>{tip(games[b.index])}</title>
+            </rect>
+          ))}
+          {missingMarks.map((m) => (
+            <line class="ops-mark-missing" x1={m.x} x2={m.x} y1={m.y1} y2={m.y2}><title>{tip(games[m.index])}</title></line>
+          ))}
+          {clipMarks.map((m) => <path class="ops-mark-clip" d={m.d} />)}
+          {outsideMarks.map((m) => <path class="ops-mark-outside" d={m.d}><title>{tip(games[m.index])}, club outside the system</title></path>)}
+
+          {layout.season && <line class="ops-line-season" x1={layout.season.x1} x2={layout.season.x2} y1={layout.season.y} y2={layout.season.y} />}
+          {rolling.map((run) => run.length > 1 ? (
+            <polyline class="ops-line-rolling" points={run.map((p) => `${p.x},${p.y}`).join(' ')} />
+          ) : (
+            <circle class="ops-dot-rolling" cx={run[0].x} cy={run[0].y} r="2.5" />
+          ))}
+        </g>
+      </svg>
+    </div>
+
+    <ul class="ops-legend">
+      {OPS_BANDS.map((b) => (
+        <li>
+          <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false">
+            <rect class={`ops-bar ops-band-${b.key}`} fill={`url(#ops-fill-${b.key})`} x="1" y="1" width="22" height="12" />
+          </svg>
+          <span>{b.label}</span>
+        </li>
+      ))}
+      <li>
+        <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false"><line class="ops-line-season" x1="0" x2="24" y1="7" y2="7" /></svg>
+        <span>Season OPS {seasonText}</span>
+      </li>
+      {rolling.length > 0 && (
+        <li>
+          <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false"><line class="ops-line-rolling" x1="0" x2="24" y1="7" y2="7" /></svg>
+          <span>Rolling OPS, last {ROLLING_GAMES} games</span>
+        </li>
+      )}
+      {outsideMarks.length > 0 && (
+        <li>
+          <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false"><path class="ops-mark-outside" d={markerPath(12, 7)} /></svg>
+          <span>Game for a club outside the system</span>
+        </li>
+      )}
+      {missingMarks.length > 0 && (
+        <li>
+          <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false">
+            <line class="ops-axis" x1="0" x2="24" y1="3" y2="3" />
+            <line class="ops-mark-missing" x1="12" x2="12" y1="5" y2="13" />
+          </svg>
+          <span>Game with no value, so no bar</span>
+        </li>
+      )}
+      {clipMarks.length > 0 && (
+        <li>
+          <svg class="ops-swatch" viewBox="0 0 24 14" aria-hidden="true" focusable="false"><path class="ops-mark-clip" d={chevronPath(12, 5)} /></svg>
+          <span>Bar cut off at {capText}</span>
+        </li>
+      )}
+    </ul>
+
+    <p class="muted">
+      Each bar is the OPS of one game, oldest on the left. One game is a tiny sample, so a single bar says little
+      about a hitter. Season OPS adds up the {charted} games that have a bar, so it can differ from the year-by-year
+      table above.
+    </p>
+    <p class="muted">
+      The rolling line is the last {ROLLING_GAMES} games. It draws only when those games hold at least {ROLLING_MIN_PA} plate
+      appearances{rolling.length === 0 && ', and no stretch of games reaches that yet, so there is no rolling line'}.
+    </p>
+    {missing > 0 && (
+      <p class="muted">
+        {missing} of {games.length} {missing === 1 ? 'game has' : 'games have'} no value and no bar: no plate appearances, or a
+        count the source did not send. A tick under the baseline marks each one.
+      </p>
+    )}
+    {outsideCount > 0 && (
+      <p class="muted">
+        A diamond above a bar marks a game for a club outside the Brewers system{outsideClubs.length > 0 && `: ${outsideClubs.join(', ')}`}.
+      </p>
+    )}
+    {clipMarks.length > 0 && (
+      <p class="muted">
+        The scale stops at {capText}. A bar with a chevron on top is higher than that. Its real OPS is in the table.
+      </p>
+    )}
+
+    <details class="ops-detail">
+      <summary>Table of every game</summary>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Every game in the OPS chart">
+        <table class="stats ops-table">
+          <caption class="ops-caption">Every game in the chart, oldest first{year ? `, ${year}` : ''}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Club</th>
+              <th scope="col">Opponent</th>
+              <th scope="col">PA</th>
+              <th scope="col">OPS</th>
+              <th scope="col">Band</th>
+            </tr>
+          </thead>
+          <tbody>
+            {games.map((g, index) => (
+              <tr>
+                <th scope="row">{dateCell(g)}</th>
+                <td>{clubCell(g)}</td>
+                <td>{oppText(g)}</td>
+                <td>{Number.isFinite(g.pa) ? g.pa : DASH}</td>
+                <td>{opsCell(g)}</td>
+                <td>{bandCell(g, barAt.get(index))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </>
+)}

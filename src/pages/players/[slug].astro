@@ -9,7 +9,7 @@ import { playerPages, ranksFor, lastArchiveStop, seasonByYear } from '../../lib/
 import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/model/org.js'
 import { levelFor } from '../../lib/model/levels.js'
 import { mlbRows } from '../../lib/model/mlb.js'
-import { throughText } from '../../lib/model/player/gamelog-view.js'
+import { throughText } from '../../lib/model/player/gamelog/gamelog-view.js'
 import { playerSlug, idFromSlug, canonicalUrl, paths } from '../../lib/slug.js'
 import { personLd } from '../../lib/jsonld.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
@@ -19,6 +19,8 @@ import { seasonSummary, summaryDescription } from '../../lib/model/player/summar
 import { brewersClubIds } from '../../lib/model/archive.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
 import { postsForPlayer } from '../../lib/model/posts.js'
+import OpsChart from '../../components/OpsChart.astro'
+import { opsChart } from '../../lib/model/player/gamelog/ops-chart.js'
 
 export async function getStaticPaths() {
   return playerPages().map((p) => ({ params: { slug: playerSlug(p.name, p.id) }, props: { player: p } }))
@@ -48,6 +50,7 @@ const log = gamelogFor(player.id)
 const logGroups = [group, other]
   .map((g) => ({ g, rows: log?.[g] ?? [] }))
   .filter(({ rows }) => rows.length > 0)
+const opsData = group === 'hitting' && log?.hitting?.length ? opsChart(log.hitting, brewersClubIds(org)) : null
 const lastStop = player.archiveOnly ? lastArchiveStop(player.id) : null
 const lastClub = lastStop
   ? seasonByYear.get(lastStop.season)?.affiliates.find((a) => a.id === lastStop.teamId)?.name
@@ -158,6 +161,13 @@ const draftText = draft
     <section class="section">
       <h2>Against Brewers farm peers</h2>
       <PeerPercentiles entries={peers} unranked={unranked} season={org.season} />
+    </section>
+  )}
+
+  {group === 'hitting' && (
+    <section class="section">
+      <h2>OPS by game</h2>
+      {opsData ? <OpsChart chart={opsData} year={log.season} /> : <p class="muted">No {org.season} game log on record, so there is no chart.</p>}
     </section>
   )}
 

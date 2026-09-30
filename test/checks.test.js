@@ -128,9 +128,9 @@ test('every PAIRS and FOCUS line in tokens.css passes in both themes', () => {
 })
 
 // A two-theme tokens.css in miniature. Both themes pass as written.
-const LINES = '/* PAIRS: text-ink/surface-paper */ /* FOCUS: focus-ring|focus-halo/surface-paper */'
-const LIGHT = { 'surface-paper': '#fbf6e9', 'text-ink': '#12284b', 'focus-ring': '#12284b', 'focus-halo': 'var(--surface-paper)' }
-const DARK = { 'surface-paper': '#080f1b', 'text-ink': '#fbf6e9', 'focus-ring': '#fbf6e9', 'focus-halo': 'var(--surface-paper)' }
+const LINES = '/* PAIRS: text-ink/surface-paper */ /* FOCUS: focus-ring|focus-halo/surface-paper */ /* GRAPHIC: chart-band-low/surface-paper */'
+const LIGHT = { 'surface-paper': '#fbf6e9', 'text-ink': '#12284b', 'focus-ring': '#12284b', 'focus-halo': 'var(--surface-paper)', 'chart-band-low': '#7e8ba3' }
+const DARK = { 'surface-paper': '#080f1b', 'text-ink': '#fbf6e9', 'focus-ring': '#fbf6e9', 'focus-halo': 'var(--surface-paper)', 'chart-band-low': '#667590' }
 const block = (vars) => Object.entries(vars).map(([k, v]) => `--${k}: ${v};`).join(' ')
 const themed = ({ light = LIGHT, dark = DARK, lines = LINES } = {}) =>
   `${lines}\n:root { ${block(light)} }\n[data-theme="dark"] { ${block(dark)} }\n`
@@ -187,7 +187,49 @@ test('a token that does not resolve to a hex fails', () => {
 
 test('a missing check line fails', () => {
   const problems = checkContrastLines(themed({ lines: '/* PAIRS: text-ink/surface-paper */' }))
-  assert.deepEqual(problems, ['tokens.css has no FOCUS line to check.'])
+  assert.deepEqual(problems, ['tokens.css has no FOCUS line to check.', 'tokens.css has no GRAPHIC line to check.'])
+})
+
+test('a missing GRAPHIC line fails', () => {
+  const lines = '/* PAIRS: text-ink/surface-paper */ /* FOCUS: focus-ring|focus-halo/surface-paper */'
+  assert.deepEqual(checkContrastLines(themed({ lines })), ['tokens.css has no GRAPHIC line to check.'])
+})
+
+test('a chart color too close to its surface fails the GRAPHIC line', () => {
+  // Non-text contrast is 3:1 (WCAG 1.4.11). Pale slate on paper is under it.
+  const problems = checkContrastLines(themed({ light: { ...LIGHT, 'chart-band-low': '#c9d1e0' } }))
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /GRAPHIC pair chart-band-low\/surface-paper is 1\.\d\d:1 in light \(needs 3:1\)/)
+})
+
+test('a dark chart color too close to its surface fails even when light passes', () => {
+  const problems = checkContrastLines(themed({ dark: { ...DARK, 'chart-band-low': '#1b2a44' } }))
+  assert.equal(problems.length, 1)
+  assert.match(problems[0], /GRAPHIC pair chart-band-low\/surface-paper is 1\.\d\d:1 in dark/)
+})
+
+test('a chart token missing from the dark block fails; chart colors may differ by theme', () => {
+  assert.deepEqual(checkContrastLines(themed()), [])
+  const dark = { ...DARK }
+  delete dark['chart-band-low']
+  const problems = checkContrastLines(themed({ dark })).join('\n')
+  assert.match(problems, /--chart-band-low does not resolve to a hex color in \[data-theme="dark"\]/)
+  assert.match(problems, /GRAPHIC pair chart-band-low\/surface-paper in dark: --chart-band-low does not resolve/)
+})
+
+test('a GRAPHIC mention in prose does not stand in for the line', () => {
+  // The check reads the first `GRAPHIC:` in the file, so prose must not say it.
+  const css = themed().replace('/* GRAPHIC: chart-band-low/surface-paper */', '/* the graphic line is below */')
+  assert.deepEqual(checkContrastLines(css), ['tokens.css has no GRAPHIC line to check.'])
+})
+
+test('every chart token in tokens.css is on the GRAPHIC line against paper and card', () => {
+  const css = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8')
+  const line = /GRAPHIC:([^*]*)\*\//.exec(css)[1].trim().split(/\s+/)
+  const names = [...css.matchAll(/--(chart-[\w-]+):/g)].map((m) => m[1])
+  const expected = [...new Set(names)].flatMap((n) => [`${n}/surface-paper`, `${n}/surface-card`])
+  assert.equal(expected.length, 12)
+  assert.deepEqual([...line].sort(), expected.sort())
 })
 
 test('brand and club colors may not change between themes', () => {
