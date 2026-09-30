@@ -1,10 +1,11 @@
 // JSON text for a packed snapshot (docs/adr/0015) with one entry per line in
 // each large table: one club per line in `clubs`, one player per line in
 // `players`, and one row per line in a season file's `roster`, `hitting` and
-// `pitching` (src/lib/snapshot/season.js). It parses to the same value as
+// `pitching` (src/lib/snapshot/season.js). gamelog.json's `opponents` table
+// is one team per line too. It parses to the same value as
 // JSON.stringify, but a nightly diff shows only the entries that changed, and
 // a reviewer can read it.
-const TABLES = ['clubs', 'players', 'roster', 'hitting', 'pitching']
+const TABLES = ['clubs', 'players', 'roster', 'hitting', 'pitching', 'opponents']
 
 function table(value) {
   const lines = Array.isArray(value)

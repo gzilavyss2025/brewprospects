@@ -27,7 +27,7 @@ Parts of this file come from bbsbh's `docs/MLB_STATS_API.md` (audited live on
 | `gen-prospect-history` | `/people?personIds={ids}` | Names the archive does not know |
 | `gen-mlb` | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[yearByYear],sportId=1)` | Every MLB season (ADR-0014) |
 | `ProspectCard` (browser) | `/people/{id}?hydrate=currentTeam,stats(group=[hitting,pitching],type=[season],leagueListId=milb_all)` | The live card (`src/lib/model/card.js`) |
-| `gen-gamelog` (planned, #35) | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[gameLog],season={y},leagueListId=milb_all)` | Every game of the current season, for `src/data/gamelog.json` |
+| `gen-gamelog` (`scripts/data/live/`, #35) | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[gameLog],season={y},leagueListId=milb_all)` | Every game of the current season, for `src/data/gamelog.json` |
 | `gen-org` (planned, #40) | Its `/people` request above, with `fielding` added: `stats(group=[hitting,pitching,fielding],...)` | Fielding by position, each MiLB season |
 | splits generator (planned, #41) | `/people?personIds={40 ids}&hydrate=stats(group=[hitting,pitching],type=[statSplits],sitCodes=[vl,vr,r0,ron,risp,h,a],season={y},sportId={s})` | Situational splits for one level, for `src/data/splits.json`. One request per 40 players per level |
 

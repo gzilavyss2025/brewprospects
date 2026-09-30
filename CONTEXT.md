@@ -112,6 +112,15 @@ column names stored once in `columns` and each club stored once in `clubs`
 `careers.json` and every archive season file are packed. `src/lib/build/`
 unpacks each one.
 
+**Game log**: one row for each game a player played in the current season,
+at any club, in `src/data/gamelog.json` (#35). A row has the game's `gamePk`
+(its key: a doubleheader has two rows with one date), the date as yyyymmdd,
+the club, the opponent's team id and counts only. A game he missed has no
+row. The file is packed and written by `scripts/data/live/gen-gamelog.mjs`;
+`gamelogFor(id)` in `src/lib/build/data.js` reads it, newest game first. A
+row can name a club outside the system: tell it apart by team id.
+_Avoid_: "box score" (that is every player in one game).
+
 **Rate stat**: a stat computed from counts, such as AVG, OPS, IP or ERA. It
 is computed in `src/lib/model/player/rates.js` and never stored.
 _Avoid_: "derived field" in docs; say rate stat.

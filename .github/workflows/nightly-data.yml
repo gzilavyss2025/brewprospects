@@ -56,6 +56,10 @@ jobs:
       - id: mlb
         continue-on-error: true
         run: node scripts/data/gen-mlb.mjs
+      # Runs after gen-org: it reads the season and the player ids from org.json.
+      - id: gamelog
+        continue-on-error: true
+        run: node scripts/data/live/gen-gamelog.mjs
       # The new data must pass the tests and build the site before it reaches
       # main. The push does start ci.yml, but Vercel deploys at the same time,
       # so this is the check that counts.
@@ -107,6 +111,7 @@ jobs:
             gen-careers=${{ steps.careers.outcome }}
             gen-prospect-history=${{ steps.history.outcome }}
             gen-mlb=${{ steps.mlb.outcome }}
+            gen-gamelog=${{ steps.gamelog.outcome }}
             api-drift=${{ steps.drift.outcome }}
         run: |
           failed=$(echo "$RESULTS" | tr ' ' '\n' | grep -v '=success$' || true)
