@@ -131,6 +131,13 @@ plate appearances; a pitcher's is of batters faced. K-BB% is the exact
 (K - BB) / batters faced, so it can sit 0.1 from the K% and BB% cells beside it.
 K/9 is a different stat: strikeouts per nine innings.
 
+**Stat definition**: the one sentence under a stat header on a player table,
+from `src/lib/model/player/glossary.js`. A header with one is a button: a tap,
+a click or a keyboard focus shows the sentence under the table, and a screen
+reader reads it with the header. Add an entry when a column lands; a test fails
+when a stat column has none. A label can mean two things by group (R is runs
+scored for a hitter, runs allowed for a pitcher), so each group has its own list.
+
 **Club record**: one club's regular-season wins, losses, win percentage,
 division rank, runs scored and runs allowed in one season. It lives in the
 `standings` block of a season file and of `org.json`, keyed by team id, and is

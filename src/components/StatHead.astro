@@ -1,0 +1,20 @@
+---
+// One stat column header. A stat with a definition (src/lib/model/player/
+// glossary.js) becomes a button: the screen reader reads the definition with
+// the header, and a tap, a click or a focus by keyboard shows it under the
+// table (the script in StatTable.astro). `title` is the fallback without
+// script. A label with no definition stays plain text.
+import { termFor } from '../lib/model/player/glossary.js'
+
+const { group, label, idBase } = Astro.props
+const term = termFor(group, label)
+const id = `${idBase}-${label.replace('%', 'pct').replace('/', 'per')}`
+---
+<th scope="col">
+  {term ? (
+    <>
+      <button type="button" class="stat-term" data-term={term} aria-describedby={id} title={term}>{label}</button>
+      <span id={id} hidden>{term}</span>
+    </>
+  ) : label}
+</th>

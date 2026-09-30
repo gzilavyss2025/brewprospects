@@ -4,37 +4,32 @@
 // (src/lib/model/player/rates.js); the table computes nothing. `major` is the
 // big-league table: it has no level column, since every row is MLB. `gamelog`
 // is the game log: rows are one per game, and the leading columns and the stat
-// columns come from src/lib/model/player/gamelog-view.js.
+// columns come from src/lib/model/player/gamelog-view.js. A header with a
+// definition is a button (StatHead); the script at the foot shows its sentence
+// in the line under the table.
 import { levelFor } from '../lib/model/levels.js'
 import { orDash } from '../lib/format.js'
 import { gameLogRows, gameLogHead } from '../lib/model/player/gamelog-view.js'
+import { STAT_COLS } from '../lib/model/player/columns.js'
+import StatHead from './StatHead.astro'
 
 const { rows, group, major = false, gamelog = false } = Astro.props
 const logHead = gamelog ? gameLogHead(group) : []
 const logRows = gamelog ? gameLogRows(group, rows) : []
-const COLS = {
-  hitting: [
-    ['g', 'G'], ['pa', 'PA'], ['h', 'H'], ['d', '2B'], ['t', '3B'], ['hr', 'HR'], ['r', 'R'], ['rbi', 'RBI'],
-    ['bb', 'BB'], ['so', 'SO'], ['sb', 'SB'], ['avg', 'AVG'], ['obp', 'OBP'], ['slg', 'SLG'], ['ops', 'OPS'],
-    ['iso', 'ISO'], ['kPct', 'K%'], ['bbPct', 'BB%'], ['babip', 'BABIP'],
-  ],
-  pitching: [
-    ['g', 'G'], ['gs', 'GS'], ['w', 'W'], ['l', 'L'], ['sv', 'SV'], ['ip', 'IP'], ['h', 'H'], ['bb', 'BB'],
-    ['so', 'SO'], ['hr', 'HR'], ['era', 'ERA'], ['whip', 'WHIP'], ['k9', 'K/9'], ['bb9', 'BB/9'],
-    ['kPct', 'K%'], ['bbPct', 'BB%'], ['kbbPct', 'K-BB%'],
-  ],
-}[group]
+const COLS = STAT_COLS[group]
+const kind = gamelog ? 'log' : major ? 'mlb' : 'yby'
+const idBase = `term-${kind}-${group}`
 ---
 <div class="table-scroll" tabindex="0" role="region" aria-label={gamelog ? `${group === 'hitting' ? 'Hitting' : 'Pitching'} game log` : major ? `Major-league ${group} stats by year` : `${group === 'hitting' ? 'Hitting' : 'Pitching'} stats by year`}>
   <table class={gamelog ? 'stats game-log' : 'stats'}>
     <thead>
       <tr>
-        {gamelog ? logHead.map((label) => <th scope="col">{label}</th>) : <>
+        {gamelog ? logHead.map((label) => <StatHead group={group} label={label} idBase={idBase} />) : <>
         <th scope="col">Year</th>
         {!major && <th scope="col">Lvl</th>}
         <th scope="col">Club</th>
         <th scope="col">Age</th>
-        {COLS.map(([, label]) => <th scope="col">{label}</th>)}
+        {COLS.map(([, label]) => <StatHead group={group} label={label} idBase={idBase} />)}
         </>}
       </tr>
     </thead>
@@ -53,3 +48,33 @@ const COLS = {
     </tbody>
   </table>
 </div>
+<p class="stat-def muted" aria-hidden="true" hidden></p>
+
+<script>
+  // One handler for every table on the page. The line under a table shows the
+  // sentence of the header last tapped, clicked or focused by keyboard. The
+  // screen reader gets the sentence from aria-describedby, so the line is
+  // hidden from it.
+  const show = (button) => {
+    const line = button.closest('.table-scroll')?.nextElementSibling
+    if (!line?.classList.contains('stat-def')) return
+    hideAll(line)
+    line.textContent = `${button.textContent}: ${button.dataset.term}`
+    line.hidden = false
+  }
+  const hideAll = (except) => {
+    document.querySelectorAll('.stat-def').forEach((line) => { if (line !== except) line.hidden = true })
+  }
+  document.addEventListener('click', (e) => {
+    const button = e.target.closest?.('.stat-term')
+    if (button) show(button)
+    else hideAll()
+  })
+  document.addEventListener('focusin', (e) => {
+    const button = e.target.closest?.('.stat-term')
+    if (button?.matches(':focus-visible')) show(button)
+  })
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideAll()
+  })
+</script>
