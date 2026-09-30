@@ -1,8 +1,8 @@
 /* Design tokens. Use these names in rules, never a raw hex.
    Brewers navy and gold lead; minor-league fun comes from type, shape and
    motion, not from more colors. Color tokens are named for their job
-   (--{role}-{name}, ADR-0012). scripts/checks/contrast.mjs reads the PAIRS
-   and FOCUS comments below and checks each pair in both theme blocks.
+   (--{role}-{name}, ADR-0012). scripts/checks/contrast.mjs reads the PAIRS,
+   FOCUS and GRAPHIC lines below and checks each pair in both theme blocks.
    --brand-navy and --brand-gold match the Brewers primary and secondary in
    bbsbh/src/lib/data/mlb-team-colors.json. That match is not proof of an
    official style guide. */
@@ -11,6 +11,10 @@
 /* The focus ring is two-tone: a --focus-ring outline with a --focus-halo band
    inside it, so one of the two stands out on every surface below.
    FOCUS: focus-ring|focus-halo/surface-paper focus-ring|focus-halo/surface-card focus-ring|focus-halo/brand-gold focus-ring|focus-halo/brand-navy */
+/* Chart colors are bars and lines, so each needs 3:1 (WCAG 1.4.11) on the two
+   surfaces a chart sits on. The band colors also differ from each other by
+   lightness and hue; ADR-0012 lists what was measured.
+   GRAPHIC: chart-band-low/surface-paper chart-band-fair/surface-paper chart-band-good/surface-paper chart-band-great/surface-paper chart-line-season/surface-paper chart-line-rolling/surface-paper chart-band-low/surface-card chart-band-fair/surface-card chart-band-good/surface-card chart-band-great/surface-card chart-line-season/surface-card chart-line-rolling/surface-card */
 
 :root {
   color-scheme: light;
@@ -32,6 +36,14 @@
      section sets both from accentFor(), and wins over these. */
   --club-bar: var(--brand-navy);
   --club-on-bar: #ffffff;
+  /* Chart colors (ADR-0012): four OPS bands, low to great, each darker than
+     the last on paper; then the season line and the 10-game rolling line. */
+  --chart-band-low: #7e8ba3;
+  --chart-band-fair: #9c6800;
+  --chart-band-good: #2a5aa0;
+  --chart-band-great: var(--brand-navy);
+  --chart-line-season: #c8102e;
+  --chart-line-rolling: #0b7a75;
 
   --font-display: 'Alfa Slab One', 'Rockwell', Georgia, serif;
   --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -91,6 +103,13 @@
   --brand-gold: #ffc52f;
   --club-bar: var(--brand-navy);
   --club-on-bar: #ffffff;
+  /* Chart colors rise in lightness with OPS on the navy-black ground. */
+  --chart-band-low: #667590;
+  --chart-band-fair: #5a9be8;
+  --chart-band-good: var(--brand-gold);
+  --chart-band-great: #fbf6e9;
+  --chart-line-season: #ff6b81;
+  --chart-line-rolling: #3fd0c4;
   /* Restated so they pick up this block's edge color wherever it applies. */
   --shadow: 0 2px 0 var(--line-edge);
   --shadow-lift: 0 5px 0 var(--line-edge);

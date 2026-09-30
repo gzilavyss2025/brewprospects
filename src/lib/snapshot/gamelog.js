@@ -7,7 +7,7 @@
 // - The opponent is a team id in the row. The `opponents` table holds each
 //   id's name once, so a name is not repeated on 15,000 rows.
 // Rows are in the order the API sent them (oldest first). The model orders
-// them (src/lib/model/player/gamelog.js).
+// them (src/lib/model/player/gamelog/gamelog.js).
 import { packer, unpacker } from './pack.js'
 
 export const GAMELOG_CLUB_COLUMNS = ['sportId', 'teamId', 'team']

@@ -3,9 +3,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { slimGameLogRow } from '../scripts/data/live/gamelog-slim.mjs'
-import { newestFirst } from '../src/lib/model/player/gamelog.js'
+import { newestFirst } from '../src/lib/model/player/gamelog/gamelog.js'
 import { brewersClubIds } from '../src/lib/model/archive.js'
-import { gameLogRows, gameLogHead, dateText, throughText } from '../src/lib/model/player/gamelog-view.js'
+import { gameLogRows, gameLogHead, dateText, throughText } from '../src/lib/model/player/gamelog/gamelog-view.js'
 import hitterLog from './fixtures/gamelog-hitter-2026.json' with { type: 'json' }
 import starterLog from './fixtures/gamelog-starter-2026.json' with { type: 'json' }
 import orgFile from '../src/data/org.json' with { type: 'json' }
