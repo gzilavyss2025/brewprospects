@@ -159,3 +159,23 @@ Measured 2026-09-25, each with white ink: 556 `#071d49` 16.39:1, 249
 Turning dark mode on later is a toggle and a `data-theme` attribute, not a
 token sweep. A new color use picks a role by its job, and a new pair goes on
 a check line. A new affiliate color that fails lint still renders, in navy.
+
+## Amendment, 2026-09-30: the hover tint
+
+One new role token, `--surface-hover`, is the tint of a hovered table row and
+of its pinned first cell. Text sits on it, so two pairs joined the `PAIRS`
+line in `tokens.css`: `text-ink/surface-hover` and `text-link/surface-hover`.
+
+| Token | Light | Dark |
+| --- | --- | --- |
+| `--surface-hover` | `#f3ead0` | `#1c2c46` |
+
+Measured 2026-09-30: `text-ink/surface-hover` is 12.22:1 in light and
+12.99:1 in dark. `text-link/surface-hover` is 7.00:1 in light and 8.64:1 in
+dark. All four pass 4.5:1.
+
+The tint applies only where the pointer can hover, inside
+`@media (hover: hover)`. On a touch screen a tap would leave the tint stuck on
+the tapped row. A pinned cell keeps an opaque background outside that query,
+so it hides the cells that scroll under it on every device. The media query
+was not tried on a real phone.

@@ -7,7 +7,7 @@ body {
   background: var(--surface-paper);
   color: var(--text-ink);
   font-family: var(--font-body);
-  font-size: 17px;
+  font-size: 15px;
   line-height: 1.5;
 }
 
