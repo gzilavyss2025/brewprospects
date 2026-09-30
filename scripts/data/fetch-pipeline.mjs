@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // fetch-pipeline: snapshot MLB Pipeline's Brewers Top 30 (and each Brewer's
-// overall Top 100 rank) into src/data/pipeline.json.
+// overall Top 100 rank) into src/data/pipeline.json, and append any rank
+// change to src/data/pipeline-log.json (scripts/data/live/pipeline-log.mjs).
 //
 // Adapted from Tally's scripts/fetch-top-prospects.mjs. The source is an
 // editorial page on www.mlb.com, not a documented API: it embeds the list as an
@@ -14,11 +15,13 @@
 // each fetch checks its shape and the script fails rather than write bad data.
 import { mkdir, writeFile, rename } from 'node:fs/promises'
 import { ORG_ID } from '../../src/config/site.js'
+import { updatePipelineLog } from './live/pipeline-log.mjs'
 import { extractEntries, assertTop100Shape, assertOrgShape, dedupeByPlayer, statLineFor } from './lib/pipeline-parse.mjs'
 
 const TOP100_URL = 'https://www.mlb.com/prospects/stats/top-prospects'
 const ORG_URL = 'https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1'
 const OUT = new URL('../../src/data/pipeline.json', import.meta.url)
+const LOG = new URL('../../src/data/pipeline-log.json', import.meta.url)
 const UA = 'brewprospects-pipeline/0.1 (fan site prospect-rank snapshot)'
 
 async function fetchEntries(url) {
@@ -56,6 +59,11 @@ async function main() {
   await writeFile(tmp, JSON.stringify(snapshot, null, 2) + '\n')
   await rename(tmp, OUT)
   console.log(`fetch-pipeline: ${prospects.length} ranked Brewers prospects.`)
+
+  // The rank log (#48) grows only when a rank changed. A log that will not
+  // unpack throws here and stays as it is; pipeline.json is already good.
+  const day = snapshot.generatedAt.slice(0, 10)
+  console.log(`fetch-pipeline: rank log ${await updatePipelineLog(LOG, prospects, day)} (${day}).`)
 }
 
 main().catch((err) => {

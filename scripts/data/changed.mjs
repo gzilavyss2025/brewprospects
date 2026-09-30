@@ -12,6 +12,7 @@ const FILES = [
   'src/data/mlb.json',
   'src/data/gamelog.json',
   'src/data/pipeline.json',
+  'src/data/pipeline-log.json',
   'src/data/prospect-history.json',
   ...(existsSync('src/data/archive') ? readdirSync('src/data/archive') : [])
     .filter((f) => f.endsWith('.json'))
