@@ -15,6 +15,8 @@ import { personLd } from '../../lib/jsonld.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
 import { ARCHIVE_FIRST_SEASON } from '../../config/site.js'
 import { peerPercentiles, underMinimum } from '../../lib/build/peers.js'
+import { seasonSummary, summaryDescription } from '../../lib/model/player/summary.js'
+import { brewersClubIds } from '../../lib/model/archive.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
 import { postsForPlayer } from '../../lib/model/posts.js'
 
@@ -32,6 +34,13 @@ const otherRows = statRows(player, other)
 const path = levelPath(player)
 const peers = peerPercentiles(player.id)
 const unranked = underMinimum(player.id)
+const summary = seasonSummary({
+  player,
+  season: org.season,
+  brewersIds: brewersClubIds(org),
+  peers,
+  clubNames: new Map(org.affiliates.map((a) => [a.id, a.name])),
+})
 const mlbEntry = mlbFor(player.id)
 const mlbPrimary = mlbRows(mlbEntry, group)
 const mlbOther = mlbRows(mlbEntry, other)
@@ -65,7 +74,7 @@ const draftText = draft
 ---
 <Base
   title={player.name}
-  description={`${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}
+  description={summaryDescription(player.name, summary) ?? `${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}
   jsonLd={personLd({ name: player.name, url: canonicalUrl(Astro.site, paths.player(player.name, player.id)), jobTitle: player.pos })}
 >
   <div class="player-head">
@@ -89,6 +98,8 @@ const draftText = draft
       </dl>
     </div>
   </div>
+
+  {summary && <p class="season-summary section">{summary.text}</p>}
 
   {note && (
     <section class="section">

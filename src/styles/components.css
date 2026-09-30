@@ -105,7 +105,7 @@ table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 .path li { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-0-5); font-size: 14px; }
 
 .section { margin-top: var(--space-9); }
-.coverage, .player-note { background: var(--surface-card); border-left: 6px solid var(--brand-gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
+.coverage, .player-note, .season-summary { background: var(--surface-card); border-left: 6px solid var(--brand-gold); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); }
 
 /* Peer percentiles: the number is text; the bar only repeats it. */
 .peer-block { margin-bottom: var(--space-5); }
