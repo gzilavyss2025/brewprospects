@@ -3,10 +3,13 @@
 import orgFile from '../../data/org.json' with { type: 'json' }
 import pipeline from '../../data/pipeline.json' with { type: 'json' }
 import mlbFile from '../../data/mlb.json' with { type: 'json' }
+import gamelogFile from '../../data/gamelog.json' with { type: 'json' }
 import { levelRank } from '../model/levels.js'
 import { unpackMlb } from '../model/mlb.js'
 import { playersWithRates } from '../model/player/rates.js'
+import { newestFirst } from '../model/player/gamelog.js'
 import { unpackOrg } from '../snapshot/milb.js'
+import { unpackGamelog } from '../snapshot/gamelog.js'
 import { currentAssignments, orgPlayerIds } from '../model/org.js'
 import { paths } from '../slug.js'
 
@@ -16,6 +19,7 @@ import { paths } from '../slug.js'
 const unpacked = unpackOrg(orgFile)
 const org = { ...unpacked, players: playersWithRates(unpacked.players) }
 const mlb = unpackMlb(mlbFile)
+const gamelog = unpackGamelog(gamelogFile)
 
 export { org, pipeline, mlb }
 
@@ -44,4 +48,15 @@ export function allPlayers() {
 // A player's big-league rows, or null when he has none (ADR-0014).
 export function mlbFor(playerId) {
   return mlb.players[playerId] ?? null
+}
+
+// A player's game log for the current season, or null when he has no rows
+// (#35). Plain rows, newest game first, with the counts and club fields
+// src/lib/snapshot/gamelog.js unpacks and the opponent as `opp`, a name. A
+// row with a club outside the system is kept: tell it apart by team id with
+// brewersClubIds (src/lib/model/archive.js).
+export function gamelogFor(playerId) {
+  const p = gamelog.players[playerId]
+  if (!p) return null
+  return { season: String(gamelog.season), hitting: newestFirst(p.hitting), pitching: newestFirst(p.pitching) }
 }

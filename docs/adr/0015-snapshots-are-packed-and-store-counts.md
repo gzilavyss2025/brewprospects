@@ -87,5 +87,9 @@ responses, MiLB and MLB.
   rows and stay exempt.
 - ADR-0014 said `mlbRows` "derives nothing". Now it adds each row's rates,
   from that row's counts. It still adds nothing up.
+- `gamelog.json` (#35) follows the same rules, with one addition: the
+  opponent is a team id on each row, and an `opponents` table at the top of
+  the file maps each id to its name once (one team per line). A 2026 file of
+  9,677 rows is 524,364 bytes, 87,120 gzipped.
 - A new rate (ISO, K%, BB%, BABIP in #38) is a function in `rates.js` with
   a fixture test, not a new column.
