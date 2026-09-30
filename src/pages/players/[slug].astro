@@ -14,7 +14,7 @@ import { playerSlug, idFromSlug, canonicalUrl, paths } from '../../lib/slug.js'
 import { personLd } from '../../lib/jsonld.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
 import { ARCHIVE_FIRST_SEASON } from '../../config/site.js'
-import { peerPercentiles } from '../../lib/build/peers.js'
+import { peerPercentiles, underMinimum } from '../../lib/build/peers.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
 import { postsForPlayer } from '../../lib/model/posts.js'
 
@@ -31,7 +31,7 @@ const primaryRows = statRows(player, group)
 const otherRows = statRows(player, other)
 const path = levelPath(player)
 const peers = peerPercentiles(player.id)
-const playedNow = primaryRows.some((r) => r.season === org.season)
+const unranked = underMinimum(player.id)
 const mlbEntry = mlbFor(player.id)
 const mlbPrimary = mlbRows(mlbEntry, group)
 const mlbOther = mlbRows(mlbEntry, other)
@@ -143,10 +143,10 @@ const draftText = draft
     </section>
   )}
 
-  {(peers.length > 0 || playedNow) && (
+  {(peers.length > 0 || unranked.length > 0) && (
     <section class="section">
       <h2>Against Brewers farm peers</h2>
-      <PeerPercentiles entries={peers} season={org.season} group={group} played={playedNow} />
+      <PeerPercentiles entries={peers} unranked={unranked} season={org.season} />
     </section>
   )}
 

@@ -3,8 +3,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { MIN_PA, MIN_IP } from '../src/lib/model/player/sample.js'
-import { percentileRank } from '../src/lib/model/player/percentiles.js'
-import { SEASON, hit, pitch, player, index, entries, stat, ladder } from './peer-rows.js'
+import { percentileRank, belowMinimum } from '../src/lib/model/player/percentiles.js'
+import { SEASON, BREWERS, hit, pitch, player, index, entries, stat, ladder } from './peer-rows.js'
 
 test('percentileRank uses the mid-rank: below plus half of equal, over the group', () => {
   assert.equal(percentileRank(3, [1, 2, 3, 4, 5]), 50)
@@ -153,3 +153,27 @@ test('a group of one keeps its entry with a null percentile and a size of 1', ()
   assert.equal(stat(e, 'avg').value, '.250', 'the value stays: it is on record')
 })
 
+
+test('belowMinimum lists each Brewers line under the minimum, in either group', () => {
+  const p = player(1, {
+    hitting: [hit('aaa', { ab: 250 }), hit('aa', { ab: MIN_PA - 20, bb: 10 })],
+    pitching: [pitch('aa', { ip: 10 })],
+  })
+  const lines = belowMinimum(p, SEASON, BREWERS)
+  assert.deepEqual(lines.map((l) => [l.group, l.sportId]), [['hitting', 12], ['pitching', 12]])
+  assert.equal(lines[0].pa, MIN_PA - 10)
+  assert.equal(lines[1].outs, 30)
+  assert.equal(lines[0].level.name, 'Double-A')
+})
+
+test('belowMinimum ignores a club outside the system, another season and a line at the minimum', () => {
+  const p = player(1, {
+    hitting: [hit('cards', { ab: 30 }), hit('aa', { ab: 30, season: '2025' }), hit('aaa', { ab: MIN_PA })],
+  })
+  assert.deepEqual(belowMinimum(p, SEASON, BREWERS), [])
+})
+
+test('belowMinimum leaves out a line with no count on record', () => {
+  const row = { ...hit('aa', { ab: 30 }), pa: null }
+  assert.deepEqual(belowMinimum(player(1, { hitting: [row] }), SEASON, BREWERS), [])
+})

@@ -6,11 +6,11 @@
 // script. A label with no definition stays plain text.
 import { termFor } from '../lib/model/player/glossary.js'
 
-const { group, label, idBase } = Astro.props
+const { group, label, idBase, row = false } = Astro.props
 const term = termFor(group, label)
 const id = `${idBase}-${label.replace('%', 'pct').replace('/', 'per')}`
 ---
-<th scope="col">
+<th scope={row ? 'row' : 'col'}>
   {term ? (
     <>
       <button type="button" class="stat-term" data-term={term} aria-describedby={id} title={term}>{label}</button>
