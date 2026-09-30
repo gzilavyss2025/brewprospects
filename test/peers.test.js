@@ -4,7 +4,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { org, allPlayers } from '../src/lib/build/data.js'
-import { peerPercentiles } from '../src/lib/build/peers.js'
+import { peerPercentiles, underMinimum } from '../src/lib/build/peers.js'
 import { MIN_PA, MIN_IP } from '../src/lib/model/player/sample.js'
 import { levelFor } from '../src/lib/model/levels.js'
 
@@ -59,4 +59,19 @@ test('an id as a string works, and an unknown or empty one has no entries', () =
   assert.deepEqual(peerPercentiles(String(ranked.id)), peerPercentiles(ranked.id))
   assert.deepEqual(peerPercentiles(1), [])
   assert.deepEqual(peerPercentiles(undefined), [])
+})
+
+test('a line is either ranked or listed as under the minimum, never both', () => {
+  let under = 0
+  for (const p of allPlayers()) {
+    const ranked = new Set(peerPercentiles(p.id).map((e) => `${e.group}:${e.sportId}`))
+    for (const u of underMinimum(p.id)) {
+      under++
+      assert.ok(!ranked.has(`${u.group}:${u.sportId}`), `${p.id} ${u.group} ${u.sportId} is both`)
+      if (u.group === 'hitting') assert.ok(u.pa < MIN_PA, `${p.id} has ${u.pa} PA`)
+      else assert.ok(u.outs < MIN_IP * 3, `${p.id} has ${u.outs} outs`)
+    }
+  }
+  assert.ok(under > 0, 'the snapshot has players under the minimum')
+  assert.deepEqual(underMinimum(-1), [])
 })

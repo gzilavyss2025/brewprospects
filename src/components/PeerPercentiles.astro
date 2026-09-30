@@ -1,0 +1,61 @@
+---
+// A player's percentile ranks against Brewers farm players at his level this
+// season (#39). The entries come from peerPercentiles() in src/lib/build/
+// peers.js; this component ranks nothing. The number is always text, so the
+// bar adds no meaning and is hidden from a screen reader. A null percentile
+// shows a dash and no bar. `unranked` (underMinimum in the same file) holds
+// the lines under the minimum: each gets one sentence and no bars.
+import { DASH } from '../lib/format.js'
+import { MIN_PA, MIN_IP } from '../lib/model/player/sample.js'
+import StatHead from './StatHead.astro'
+
+const { entries, unranked = [], season } = Astro.props
+const WORDS = {
+  hitting: { who: 'Hitters', min: `${MIN_PA} plate appearances`, flipped: 'A hitter\'s K%' },
+  pitching: { who: 'Pitchers', min: `${MIN_IP} innings`, flipped: 'ERA, WHIP and a pitcher\'s BB%' },
+}
+const inningsText = (outs) => `${Math.floor(outs / 3)}.${outs % 3} IP`
+const sampleText = (e) => (e.group === 'hitting' ? `${e.pa} PA` : inningsText(e.outs))
+// The bar is never wider than the track, whatever arrives.
+const width = (pct) => Math.min(100, Math.max(0, pct))
+---
+{entries.map((e) => (
+  <div class="peer-block">
+    <h3>{WORDS[e.group].who} vs Brewers farm players at {e.level.name}, {e.season}</h3>
+    <p class="muted">
+      {e.size} in the group. His line: {sampleText(e)}.
+      {e.sportId === 16 && ' ACL and DSL players share one Rookie group.'}
+    </p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label={`${e.level.name} ${e.group} percentile ranks`}>
+      <table class="stats peer-stats">
+        <thead>
+          <tr><th scope="col">Stat</th><th scope="col">Value</th><th scope="col">Percentile</th></tr>
+        </thead>
+        <tbody>
+          {e.stats.map((s) => (
+            <tr>
+              <StatHead group={e.group} label={s.label} idBase={`peer-${e.group}-${e.sportId}`} row />
+              <td>{s.value ?? DASH}</td>
+              <td>
+                <div class="peer-cell">
+                  <span class="peer-num">{s.pct ?? DASH}</span>
+                  {Number.isFinite(s.pct) && <span class="peer-bar" aria-hidden="true"><span class="peer-fill" style={`width: ${width(s.pct)}%`}></span></span>}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="stat-def muted" aria-hidden="true" hidden></p>
+    <p class="muted">
+      Ranked among Brewers farm players with at least {WORDS[e.group].min}, not the whole league. A high percentile is
+      always good: {WORDS[e.group].flipped} counts lower as better.
+    </p>
+  </div>
+))}
+{unranked.map((u) => (
+  <p class="muted">
+    {u.group === 'hitting' ? 'Hitting' : 'Pitching'} at {u.level.name}: {sampleText(u)}, under the minimum of {WORDS[u.group].min} in {season}, so no percentile.
+  </p>
+))}

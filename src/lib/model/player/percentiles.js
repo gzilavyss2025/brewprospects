@@ -112,6 +112,19 @@ export function peerLines(player, season, brewersIds) {
   return lines.sort((a, b) => levelRank(a.sportId) - levelRank(b.sportId) || GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group))
 }
 
+// The lines a player has this season, at Brewers clubs, that are under the
+// minimum: [{ group, sportId, level: { label, name }, pa | outs }], highest
+// level first. A line with no count on record is left out: we cannot say it is
+// under (ADR-0003). A line over the minimum is not here, ranked or not.
+export function belowMinimum(player, season, brewersIds) {
+  return peerLines(player, season, brewersIds)
+    .filter(({ group, line }) => Number.isFinite(group === 'hitting' ? line.pa : line.outs) && !qualifies(group, line))
+    .map(({ group, sportId, line }) => {
+      const { label, name } = levelFor(sportId)
+      return { group, sportId, level: { label, name }, ...(group === 'hitting' ? { pa: line.pa } : { outs: line.outs }) }
+    })
+}
+
 const poolKey = (group, sportId) => `${group}:${sportId}`
 
 // The pools for one season: every qualifying line, keyed by group and level,
