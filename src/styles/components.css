@@ -78,6 +78,7 @@ table.stats th, table.stats td { padding: var(--space-1-5) var(--space-2-5); tex
 table.stats th:first-child, table.stats td:first-child,
 table.stats th:nth-child(2), table.stats td:nth-child(2),
 table.stats th:nth-child(3), table.stats td:nth-child(3) { text-align: left; }
+table.game-log th:nth-child(-n+5), table.game-log td:nth-child(-n+5) { text-align: left; }
 table.stats thead th { background: var(--brand-navy); color: var(--text-on-navy); position: sticky; top: 0; }
 table.stats tbody tr:nth-child(even) { background: var(--surface-paper); }
 

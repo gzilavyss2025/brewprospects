@@ -3,11 +3,12 @@ import { render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
 import StatTable from '../../components/StatTable.astro'
 import Headshot from '../../components/Headshot.astro'
-import { org, affiliateById, mlbFor } from '../../lib/build/data.js'
+import { org, affiliateById, mlbFor, gamelogFor } from '../../lib/build/data.js'
 import { playerPages, ranksFor, lastArchiveStop, seasonByYear } from '../../lib/build/archive.js'
 import { levelPath, statRows, primaryGroup, statusGroup } from '../../lib/model/org.js'
 import { levelFor } from '../../lib/model/levels.js'
 import { mlbRows } from '../../lib/model/mlb.js'
+import { throughText } from '../../lib/model/player/gamelog-view.js'
 import { playerSlug, idFromSlug, canonicalUrl, paths } from '../../lib/slug.js'
 import { personLd } from '../../lib/jsonld.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
@@ -30,6 +31,10 @@ const path = levelPath(player)
 const mlbEntry = mlbFor(player.id)
 const mlbPrimary = mlbRows(mlbEntry, group)
 const mlbOther = mlbRows(mlbEntry, other)
+const log = gamelogFor(player.id)
+const logGroups = [group, other]
+  .map((g) => ({ g, rows: log?.[g] ?? [] }))
+  .filter(({ rows }) => rows.length > 0)
 const lastStop = player.archiveOnly ? lastArchiveStop(player.id) : null
 const lastClub = lastStop
   ? seasonByYear.get(lastStop.season)?.affiliates.find((a) => a.id === lastStop.teamId)?.name
@@ -131,6 +136,22 @@ const draftText = draft
     <section class="section">
       <h2>{other === 'hitting' ? 'Hitting' : 'Pitching'}</h2>
       <StatTable rows={otherRows} group={other} />
+    </section>
+  )}
+
+  {logGroups.length > 0 && (
+    <section class="section">
+      <h2>Game log</h2>
+      {logGroups.map(({ g, rows }) => (
+        <>
+          <h3>{g === 'hitting' ? 'Hitting' : 'Pitching'}</h3>
+          <StatTable rows={rows} group={g} gamelog />
+        </>
+      ))}
+      <p class="muted">
+        A row is one game he played, newest first. A game he did not play has no row, so a log can have fewer rows
+        than the G column above for the same season: a pitcher who batted once shows one hitting row. Season {log.season}, through {throughText(log.season, logGroups.flatMap(({ rows }) => rows))}.
+      </p>
     </section>
   )}
 

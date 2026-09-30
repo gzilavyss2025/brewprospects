@@ -2,11 +2,16 @@
 // One player's year-by-year table for one stat group. A missing value shows a
 // dash. The rows arrive with their rates already computed from the counts
 // (src/lib/model/player/rates.js); the table computes nothing. `major` is the
-// big-league table: it has no level column, since every row is MLB.
+// big-league table: it has no level column, since every row is MLB. `gamelog`
+// is the game log: rows are one per game, and the leading columns and the stat
+// columns come from src/lib/model/player/gamelog-view.js.
 import { levelFor } from '../lib/model/levels.js'
 import { orDash } from '../lib/format.js'
+import { gameLogRows, gameLogHead } from '../lib/model/player/gamelog-view.js'
 
-const { rows, group, major = false } = Astro.props
+const { rows, group, major = false, gamelog = false } = Astro.props
+const logHead = gamelog ? gameLogHead(group) : []
+const logRows = gamelog ? gameLogRows(group, rows) : []
 const COLS = {
   hitting: [
     ['g', 'G'], ['pa', 'PA'], ['h', 'H'], ['d', '2B'], ['t', '3B'], ['hr', 'HR'], ['r', 'R'], ['rbi', 'RBI'],
@@ -20,19 +25,23 @@ const COLS = {
   ],
 }[group]
 ---
-<div class="table-scroll" tabindex="0" role="region" aria-label={major ? `Major-league ${group} stats by year` : `${group === 'hitting' ? 'Hitting' : 'Pitching'} stats by year`}>
-  <table class="stats">
+<div class="table-scroll" tabindex="0" role="region" aria-label={gamelog ? `${group === 'hitting' ? 'Hitting' : 'Pitching'} game log` : major ? `Major-league ${group} stats by year` : `${group === 'hitting' ? 'Hitting' : 'Pitching'} stats by year`}>
+  <table class={gamelog ? 'stats game-log' : 'stats'}>
     <thead>
       <tr>
+        {gamelog ? logHead.map((label) => <th scope="col">{label}</th>) : <>
         <th scope="col">Year</th>
         {!major && <th scope="col">Lvl</th>}
         <th scope="col">Club</th>
         <th scope="col">Age</th>
         {COLS.map(([, label]) => <th scope="col">{label}</th>)}
+        </>}
       </tr>
     </thead>
     <tbody>
-      {rows.map((r) => (
+      {gamelog ? logRows.map((r) => (
+        <tr>{r.cells.map((c) => <td>{c}</td>)}</tr>
+      )) : rows.map((r) => (
         <tr>
           <td>{r.season}</td>
           {!major && <td>{levelFor(r.sportId)?.label ?? '—'}</td>}
