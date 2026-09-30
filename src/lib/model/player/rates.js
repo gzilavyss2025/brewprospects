@@ -60,12 +60,15 @@ export function iso(r) {
   return three((thousandths(totalBases(r), r.ab) - thousandths(r.h, r.ab)) / 1000)
 }
 
-// so / pa and bb / pa, half up on the exact fraction, to one decimal: "22.4%".
-const percent = (num, den) => {
-  if (!known(num, den) || den <= 0) return null
-  const tenths = units(num, den, 3)
-  return `${Math.floor(tenths / 10)}.${tenths % 10}%`
-}
+// Tenths of a percent, half up on the exact fraction: 224 is 22.4%. null when
+// a count is missing or the denominator is 0 or less.
+const tenthsOf = (num, den) => (known(num, den) && den > 0 ? units(num, den, 3) : null)
+
+// Tenths as one decimal with a percent sign, "22.4%" or "-3.1%".
+const showTenths = (t) => (t === null ? null : `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 10)}.${Math.abs(t) % 10}%`)
+
+// so / pa and bb / pa to one decimal: "22.4%".
+const percent = (num, den) => showTenths(tenthsOf(num, den))
 
 export function kPct(r) {
   return percent(r.so, r.pa)
@@ -73,6 +76,26 @@ export function kPct(r) {
 
 export function bbPct(r) {
   return percent(r.bb, r.pa)
+}
+
+// A pitcher's K% and BB% are so / bf and bb / bf, from batters faced. The API
+// sends neither (nor K-BB%) for a pitcher, so there is no API string to check
+// them against; the fixture tests only prove bf is on the rows.
+export function pitchKPct(r) {
+  return percent(r.so, r.bf)
+}
+
+export function pitchBbPct(r) {
+  return percent(r.bb, r.bf)
+}
+
+// The rounded K% minus the rounded BB%, in tenths, as iso and ops subtract and
+// add rounded values. K-BB% then always equals the two cells beside it: 21.7%
+// and 7.9% give 13.8%, though the exact 64 / 466 is 13.7%.
+export function kbbPct(r) {
+  const k = tenthsOf(r.so, r.bf)
+  const bb = tenthsOf(r.bb, r.bf)
+  return k === null || bb === null ? null : showTenths(k - bb)
 }
 
 // (H - HR) / (AB - SO - HR + SF). The API sends babip on MiLB and MLB lines
@@ -110,7 +133,8 @@ export function withRates(group, r) {
     const base = { avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
     return { ...r, ...base, iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
   }
-  return { ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
+  const base = { ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
+  return { ...r, ...base, kPct: pitchKPct(r), bbPct: pitchBbPct(r), kbbPct: kbbPct(r) }
 }
 
 // One entry with rates on every row: an org.json or careers.json player, whose

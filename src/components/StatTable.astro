@@ -1,6 +1,7 @@
 ---
 // One player's year-by-year table for one stat group. A missing value shows a
-// dash; the table never computes a stat the API did not send. `major` is the
+// dash. The rows arrive with their rates already computed from the counts
+// (src/lib/model/player/rates.js); the table computes nothing. `major` is the
 // big-league table: it has no level column, since every row is MLB.
 import { levelFor } from '../lib/model/levels.js'
 import { orDash } from '../lib/format.js'
@@ -15,6 +16,7 @@ const COLS = {
   pitching: [
     ['g', 'G'], ['gs', 'GS'], ['w', 'W'], ['l', 'L'], ['sv', 'SV'], ['ip', 'IP'], ['h', 'H'], ['bb', 'BB'],
     ['so', 'SO'], ['hr', 'HR'], ['era', 'ERA'], ['whip', 'WHIP'], ['k9', 'K/9'], ['bb9', 'BB/9'],
+    ['kPct', 'K%'], ['bbPct', 'BB%'], ['kbbPct', 'K-BB%'],
   ],
 }[group]
 ---

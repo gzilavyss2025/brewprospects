@@ -2,7 +2,7 @@
 // sends. The fixture tests compare every split in three captured responses.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { avg, obp, slg, ops, iso, kPct, bbPct, babip, ip, era, whip, k9, bb9, withRates, entryWithRates, playersWithRates } from '../src/lib/model/player/rates.js'
+import { avg, obp, slg, ops, iso, kPct, bbPct, babip, pitchKPct, pitchBbPct, kbbPct, ip, era, whip, k9, bb9, withRates, entryWithRates, playersWithRates } from '../src/lib/model/player/rates.js'
 import mlbPeople from './fixtures/people-mlb-yearbyyear.json' with { type: 'json' }
 import milbPeople from './fixtures/people-yearbyyear.json' with { type: 'json' }
 import milbCareers from './fixtures/people-milb-careers.json' with { type: 'json' }
@@ -82,6 +82,35 @@ test('K% and BB% are shown to one decimal with a percent sign', () => {
   assert.equal(kPct({ so: 1, pa: 16 }), '6.3%')
 })
 
+// The API sends no K%, BB% or K-BB% for a pitcher, so no API string to compare
+// with. Batters faced is real: 101 K and 37 BB in 466 BF (Gallardo, 2007,
+// test/fixtures/people-mlb-yearbyyear.json).
+const pitcher = { so: 101, bb: 37, bf: 466 }
+
+test('a pitcher K% and BB% are so / bf and bb / bf to one decimal', () => {
+  assert.equal(pitchKPct(pitcher), '21.7%')
+  assert.equal(pitchBbPct(pitcher), '7.9%')
+  // 1 / 16 is exactly .0625: half up gives 6.3%, not the float's 6.2%.
+  assert.equal(pitchKPct({ so: 1, bf: 16 }), '6.3%')
+})
+
+test('K-BB% is the rounded K% minus the rounded BB%, so it equals the cells beside it', () => {
+  // The exact 64 / 466 is 13.7%. 21.7 - 7.9 is 13.8, the two cells beside it.
+  assert.equal(kbbPct(pitcher), '13.8%')
+  assert.equal(kbbPct({ so: 10, bb: 10, bf: 100 }), '0.0%')
+  assert.equal(kbbPct({ so: 10, bb: 30, bf: 100 }), '-20.0%', 'more walks than strikeouts is negative')
+})
+
+test('a pitcher rate is null at 0 batters faced, or with a missing count (ADR-0003)', () => {
+  const rates = (r) => [pitchKPct(r), pitchBbPct(r), kbbPct(r)]
+  assert.deepEqual(rates({ so: 0, bb: 0, bf: 0 }), [null, null, null])
+  assert.deepEqual(rates({ so: 5, bb: 2, bf: null }), [null, null, null])
+  assert.deepEqual(rates({ so: 5, bb: 2 }), [null, null, null])
+  // One count missing takes out only the rates that need it.
+  assert.deepEqual(rates({ so: null, bb: 2, bf: 20 }), [null, '10.0%', null])
+  assert.deepEqual(rates({ so: 5, bb: undefined, bf: 20 }), ['25.0%', null, null])
+})
+
 test('BABIP is (H - HR) / (AB - SO - HR + SF)', () => {
   assert.equal(babip(line), '.356')
   assert.equal(babip({ h: 1, hr: 0, ab: 3, so: 0, sf: 0 }), '.333')
@@ -139,7 +168,7 @@ test('a missing count gives null, never a guess (ADR-0003)', () => {
 
 test('withRates adds the columns each stat table reads', () => {
   assert.deepEqual(Object.keys(withRates('hitting', {})), ['avg', 'obp', 'slg', 'ops', 'iso', 'kPct', 'bbPct', 'babip'])
-  assert.deepEqual(Object.keys(withRates('pitching', {})), ['ip', 'era', 'whip', 'k9', 'bb9'])
+  assert.deepEqual(Object.keys(withRates('pitching', {})), ['ip', 'era', 'whip', 'k9', 'bb9', 'kPct', 'bbPct', 'kbbPct'])
 })
 
 test('entryWithRates adds rates to a list of rows or to one line, and keeps a null line', () => {
