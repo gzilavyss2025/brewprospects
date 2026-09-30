@@ -33,6 +33,17 @@ test('a rate fails, as a column or as a key anywhere', () => {
   assert.ok(packedProblems('f', asKey).some((p) => /"ops" key/.test(p)))
 })
 
+test('K%, BB% and K-BB% fail as a column in either group: they are computed, not stored', () => {
+  for (const group of ['hitting', 'pitching']) {
+    for (const name of ['kPct', 'bbPct', 'kbbPct']) {
+      const f = packed()
+      f.columns[group] = ['season', 'club', name]
+      f.players[1][group] = [[2026, 0, '22.4%']]
+      assert.ok(packedProblems('f', f).some((p) => p.includes(`columns.${group} stores "${name}"`)), `${group} ${name}`)
+    }
+  }
+})
+
 test('a row of the wrong width, or an object row, fails once per group', () => {
   const f = packed()
   f.players[2] = { hitting: [[2026, 0, 1]] }

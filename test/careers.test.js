@@ -91,6 +91,21 @@ test('a blank stat stays blank from the API to the page (ADR-0003)', () => {
   assert.equal(shown.obp, null)
 })
 
+test('batters faced is null when the API did not send it, not 0 (ADR-0003)', () => {
+  const raw = {
+    id: 9,
+    stats: [{
+      group: { displayName: 'pitching' },
+      type: { displayName: 'yearByYear' },
+      splits: [
+        { season: '2010', sport: { id: 12 }, team: { id: 5, name: 'X' }, stat: { gamesPitched: 3, strikeOuts: 4, battersFaced: 21 } },
+        { season: '2011', sport: { id: 12 }, team: { id: 5, name: 'X' }, stat: { gamesPitched: 3, strikeOuts: 4 } },
+      ],
+    }],
+  }
+  assert.deepEqual(slimCareer(raw).pitching.map((r) => r.bf), [21, null])
+})
+
 test('slimCareer gives empty groups for a player with no stats block', () => {
   assert.deepEqual(slimCareer({ id: 3 }), { hitting: [], pitching: [] })
 })

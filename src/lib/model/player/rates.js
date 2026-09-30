@@ -60,12 +60,15 @@ export function iso(r) {
   return three((thousandths(totalBases(r), r.ab) - thousandths(r.h, r.ab)) / 1000)
 }
 
-// so / pa and bb / pa, half up on the exact fraction, to one decimal: "22.4%".
-const percent = (num, den) => {
-  if (!known(num, den) || den <= 0) return null
-  const tenths = units(num, den, 3)
-  return `${Math.floor(tenths / 10)}.${tenths % 10}%`
-}
+// Tenths of a percent, half up on the exact fraction: 224 is 22.4%. null when
+// a count is missing or the denominator is 0 or less.
+const tenthsOf = (num, den) => (known(num, den) && den > 0 ? units(num, den, 3) : null)
+
+// Tenths as one decimal with a percent sign, "22.4%" or "-3.1%".
+const showTenths = (t) => (t === null ? null : `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 10)}.${Math.abs(t) % 10}%`)
+
+// so / pa and bb / pa to one decimal: "22.4%".
+const percent = (num, den) => showTenths(tenthsOf(num, den))
 
 export function kPct(r) {
   return percent(r.so, r.pa)
@@ -73,6 +76,28 @@ export function kPct(r) {
 
 export function bbPct(r) {
   return percent(r.bb, r.pa)
+}
+
+// A pitcher's K% and BB% are so / bf and bb / bf, from batters faced. The API
+// sends neither (nor K-BB%) for a pitcher, so there is no API string to check
+// them against; the fixture tests only prove bf is on the rows.
+export function pitchKPct(r) {
+  return percent(r.so, r.bf)
+}
+
+export function pitchBbPct(r) {
+  return percent(r.bb, r.bf)
+}
+
+// (so - bb) / bf, from the exact fraction, not from the two rounded cells: 101
+// K and 37 BB in 466 BF is 64 / 466, 13.7%, though the K% (21.7%) and BB%
+// (7.9%) cells beside it differ by 13.8%. The API sends no K-BB%, so the exact
+// value is the one to show. A negative value rounds half away from zero, as a
+// positive one rounds half up.
+export function kbbPct(r) {
+  if (!known(r.so, r.bb)) return null
+  const t = tenthsOf(Math.abs(r.so - r.bb), r.bf)
+  return showTenths(t === null || r.so >= r.bb ? t : -t)
 }
 
 // (H - HR) / (AB - SO - HR + SF). The API sends babip on MiLB and MLB lines
@@ -107,10 +132,12 @@ export function bb9(r) {
 // The row with its rates added, under the names the stat tables read.
 export function withRates(group, r) {
   if (group === 'hitting') {
-    const base = { avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r) }
-    return { ...r, ...base, iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
+    return { ...r, avg: avg(r), obp: obp(r), slg: slg(r), ops: ops(r), iso: iso(r), kPct: kPct(r), bbPct: bbPct(r), babip: babip(r) }
   }
-  return { ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r) }
+  return {
+    ...r, ip: ip(r), era: era(r), whip: whip(r), k9: k9(r), bb9: bb9(r),
+    kPct: pitchKPct(r), bbPct: pitchBbPct(r), kbbPct: kbbPct(r),
+  }
 }
 
 // One entry with rates on every row: an org.json or careers.json player, whose

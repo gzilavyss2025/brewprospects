@@ -99,3 +99,7 @@ Consequences line about other clubs holds only for a player with no entry.
 - Scripts read a season file only through `scripts/data/lib/season-file.mjs`,
   which unpacks it. A raw read finds no `rosters` key, and
   `brewersRanked` then matches 0 prospects with no error.
+- The season files, `org.json`, `careers.json` and `mlb.json` were refetched
+  on 2026-09-30, with `gen-org`, `gen-archive --refetch`, `gen-careers --refetch`
+  and `gen-mlb`, to add `bf` (batters faced) to every pitching row, for a
+  pitcher's K% and BB% (#38). No other stored count changed.
