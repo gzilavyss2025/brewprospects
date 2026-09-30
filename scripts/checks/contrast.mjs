@@ -1,8 +1,10 @@
 // Contrast lines in tokens.css. PAIRS lists text on a background and needs
 // WCAG AA text contrast (4.5:1). FOCUS lists the focus ring on each surface
-// it can sit on and needs non-text contrast (3:1, WCAG 1.4.11). A pair is
-// `fg/bg`; `a|b/bg` passes when either ring color reaches the bar, because
-// the ring is two-tone (ring plus halo).
+// it can sit on and needs non-text contrast (3:1, WCAG 1.4.11). GRAPHIC lists
+// each chart color on the surfaces a chart sits on and needs the same 3:1: a
+// bar or a line is a graphic, not text. A pair is `fg/bg`; `a|b/bg` passes
+// when either ring color reaches the bar, because the ring is two-tone (ring
+// plus halo).
 //
 // Every line is checked in every theme. Each theme block is read into its own
 // map, so a dark value never stands in for a light one. A token defined as
@@ -13,6 +15,7 @@ import { contrastRatio } from '../../src/lib/identity/color.js'
 export const LINES = [
   { label: 'PAIRS', min: 4.5 },
   { label: 'FOCUS', min: 3 },
+  { label: 'GRAPHIC', min: 3 },
 ]
 
 export const THEMES = [
@@ -21,8 +24,9 @@ export const THEMES = [
 ]
 
 // Color roles (ADR-0012). Each one is defined in every theme.
-const ROLE = /^(?:surface|text|line|focus|brand|club)-/
+const ROLE = /^(?:surface|text|line|focus|brand|club|chart)-/
 // Brewers and club colors are identity, not theme: the same hex everywhere.
+// Chart colors are not in this list: each theme picks its own.
 const FIXED = /^(?:brand|club)-/
 const HEX = /^#[0-9a-f]{6}$/i
 

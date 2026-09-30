@@ -45,10 +45,17 @@ site does not follow the OS setting).
 | `--brand-gold` | Brewers gold | `#ffc52f` | same |
 | `--club-bar` | a club's own color band (default) | navy | same |
 | `--club-on-bar` | text on the club band (default) | `#ffffff` | same |
+| `--chart-band-low` | OPS band: below .500 | `#7e8ba3`† | `#667590`† |
+| `--chart-band-fair` | OPS band: .500 to .799 | `#9c6800`† | `#5a9be8`† |
+| `--chart-band-good` | OPS band: .800 to 1.099 | `#2a5aa0`† | gold† |
+| `--chart-band-great` | OPS band: 1.100 and up | navy† | `#fbf6e9`† |
+| `--chart-line-season` | the season OPS line | `#c8102e`† | `#ff6b81`† |
+| `--chart-line-rolling` | the 10-game rolling OPS line | `#0b7a75`† | `#3fd0c4`† |
 
 Dark paper, card, ink and link come from the approved palette study. The
 study set no other dark values; \* marks the values this PR chose. They pass
 every check. They were provisional until the dark theme shipped (ADR-0013).
+The chart rows are new (issue #37); † marks the values that PR chose.
 
 Three roles are new, each for a foreground or edge job the old names hid:
 
@@ -83,13 +90,56 @@ There are three sites: `SeasonClub.astro`, `depth-chart.astro`, and the home
 page club cards, whose 10px top border now reads `var(--club-bar)` from an
 inline `--club-bar`. The rendered light pages are unchanged.
 
+### Chart colors
+
+`chart` is a role for the per-game OPS chart on the player page. It has six
+tokens: four OPS bands and two lines. Unlike `brand` and `club`, chart colors
+may differ between themes, so `chart` is not in `FIXED`. The dark values are
+lighter, because a dark bar needs a light color to show.
+
+The bands rise in lightness with OPS. On paper, each band is darker than the
+one before it. On the dark ground, each band is lighter. Hue changes too:
+slate, bronze, blue and navy in light; slate, blue, gold and cream in dark.
+The bands sit side by side, so they must differ from each other and not only
+from the page. The chart will also print a text label on each band and use a
+pattern, so no reader depends on color alone. Those come with the chart.
+
+A new `GRAPHIC` line in `tokens.css` lists each chart token on
+`surface-paper` and on `surface-card`. Each pair needs 3:1 (WCAG 1.4.11,
+non-text contrast) in both themes. `chart` is a role, so every chart token
+must also resolve to a hex in both theme blocks.
+
+Measured 2026-09-30, on paper and on card:
+
+| Token | Light | Dark |
+| --- | --- | --- |
+| `chart-band-low` | 3.19 and 3.44 | 4.12 and 3.60 |
+| `chart-band-fair` | 4.43 and 4.78 | 6.66 and 5.81 |
+| `chart-band-good` | 6.34 and 6.84 | 12.13 and 10.59 |
+| `chart-band-great` | 13.60 and 14.68 | 17.78 and 15.52 |
+| `chart-line-season` | 5.45 and 5.88 | 7.01 and 6.12 |
+| `chart-line-rolling` | 4.80 and 5.18 | 10.08 and 8.80 |
+
+All 24 pass 3:1. The lowest is `chart-band-low` on paper in light (3.19:1).
+
+Adjacent bands, low to fair, fair to good, good to great: 1.39, 1.43 and
+2.14 in light; 1.62, 1.82 and 1.47 in dark. This is a rough check. Lightness
+alone is a small step, so the bands also differ in hue, and the chart labels
+each one. The two lines are 1.14:1
+(light) and 1.44:1 (dark) apart, so they differ by hue (red and teal; pink
+and teal) and the chart must also give them different strokes. Against the
+bands, the lines reach 1.05:1 at the closest (dark season line on the fair
+band), so the chart must not rely on line color alone where a line crosses
+a bar.
+
 ### Checks
 
 - `scripts/checks/contrast.mjs` reads each theme block into its own map. A
   `var(--x)` resolves in its own theme; a token that does not reach a
-  six-digit hex fails. `PAIRS` (4.5:1) and `FOCUS` (3:1) run in both themes.
+  six-digit hex fails. `PAIRS` (4.5:1), `FOCUS` (3:1) and `GRAPHIC` (3:1) run in both themes.
   Every role must resolve in both themes, and `brand-*` and `club-*` must be
-  equal in both. A missing theme block or check line fails.
+  equal in both. A missing theme block or check line fails. `GRAPHIC` (3:1)
+  is the third line; see Chart colors.
 - `PAIRS` now matches the real uses: `text-link/surface-card` (links in
   tables and cards) and `club-on-bar/club-bar` were added. `gold/navy` was
   dropped: no rule sets gold text on navy.
