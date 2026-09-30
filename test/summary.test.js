@@ -4,7 +4,7 @@
 // breaks these tests too.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { seasonSummary } from '../src/lib/model/player/summary.js'
+import { seasonSummary, summaryDescription } from '../src/lib/model/player/summary.js'
 import { withRates } from '../src/lib/model/player/rates.js'
 import { hit, pitch, player, index, entries, BREWERS, SEASON } from './peer-rows.js'
 
@@ -203,4 +203,12 @@ test('a short stint at a higher level does not hide a full season at a lower one
   assert.equal(out.text, 'Hitting .240/.296/.340 for Biloxi Shuckers. 70th percentile in OPS among 5 Brewers Double-A hitters.')
   const arm = player(657649, { pitching: [pitch('aaa', { ip: 4, er: 1 }), pitch('aa', { ip: 60, er: 15 })] })
   assert.match(summarize(index(arm), arm).text, /^Pitching 2\.25 ERA, 1\.00 WHIP for Biloxi Shuckers\./)
+})
+
+test('the meta description opens with the player name, then the summary', () => {
+  assert.equal(
+    summaryDescription('Ryan Smith', { text: 'Hitting .240/.296/.340 for Biloxi Shuckers.' }),
+    'Ryan Smith: Hitting .240/.296/.340 for Biloxi Shuckers.',
+  )
+  assert.equal(summaryDescription('Ryan Smith', null), null)
 })

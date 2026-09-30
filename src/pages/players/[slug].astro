@@ -15,7 +15,7 @@ import { personLd } from '../../lib/jsonld.js'
 import { heightWeight, batsThrows, orDash } from '../../lib/format.js'
 import { ARCHIVE_FIRST_SEASON } from '../../config/site.js'
 import { peerPercentiles, underMinimum } from '../../lib/build/peers.js'
-import { seasonSummary } from '../../lib/model/player/summary.js'
+import { seasonSummary, summaryDescription } from '../../lib/model/player/summary.js'
 import { brewersClubIds } from '../../lib/model/archive.js'
 import { allPosts, playerNotes, postUrl } from '../../lib/build/content.js'
 import { postsForPlayer } from '../../lib/model/posts.js'
@@ -74,7 +74,7 @@ const draftText = draft
 ---
 <Base
   title={player.name}
-  description={summary?.text ?? `${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}
+  description={summaryDescription(player.name, summary) ?? `${player.name}: ${player.pos || 'player'}, ${where}. Level path and MiLB stats.`}
   jsonLd={personLd({ name: player.name, url: canonicalUrl(Astro.site, paths.player(player.name, player.id)), jobTitle: player.pos })}
 >
   <div class="player-head">

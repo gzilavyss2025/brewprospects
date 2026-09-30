@@ -97,3 +97,10 @@ export function seasonSummary({ player, season, brewersIds, peers = [], clubName
   }
   return sentences.length ? { text: sentences.join(' ') } : null
 }
+
+// The page's meta description: the player's name, then the summary, so a search
+// snippet says whose page it is. null when there is no summary; the page keeps
+// its own description then.
+export function summaryDescription(name, summary) {
+  return summary ? `${name}: ${summary.text}` : null
+}
