@@ -19,6 +19,16 @@ function fold(text) {
     .replace(/[̀-ͯ]/g, '')
 }
 
+// The text a row is searched by: folded, with one space between words.
+export const searchKey = (name) => fold(name).split(/\s+/).filter(Boolean).join(' ')
+
+// The words of a query: folded, split on spaces. An empty query has none.
+export const queryWords = (query) => searchKey(query).split(' ').filter(Boolean)
+
+// True when every word is in the search key, in any order. No words matches
+// every row. The page script imports this function.
+export const matchesWords = (key, words) => words.every((w) => key.includes(w))
+
 // "Jesús" -> "J". A name that does not start with a letter A to Z -> "#".
 export function letterFor(text) {
   const first = fold(text).trim().charAt(0).toUpperCase()
@@ -56,6 +66,7 @@ function entryFor(p, archive, currentSeason) {
   return {
     id: p.id,
     name: p.name,
+    search: searchKey(p.name),
     path: paths.player(p.name, p.id),
     pos: p.pos ? String(p.pos) : DASH,
     current,

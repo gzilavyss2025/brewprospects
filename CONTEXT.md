@@ -63,7 +63,11 @@ the one list.
 page, grouped by the first letter of his last name. Each row shows his
 position and his years in the Brewers system (first to last affiliate season,
 plus this season for a current player). A player with no `lastName` goes under
-"#". The grouping is in `src/lib/model/player/a-z-index.js`.
+"#". The grouping is in `src/lib/model/player/a-z-index.js`. A search box
+(shown only when JavaScript runs) hides every row that does not match: each
+word of the query must appear in the row's folded name (`data-search`), in any
+order. A letter with no match hides, and the jump bar shows it as plain text.
+`matchesWords` is in the same file.
 
 **Major-league rows**: a player's MLB year-by-year lines, from
 `src/data/mlb.json` (`gen-mlb`). MLB is not a level: `LEVELS` and the level

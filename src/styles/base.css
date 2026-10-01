@@ -11,6 +11,9 @@ body {
   line-height: 1.5;
 }
 
+/* Class rules that set display must not undo the hidden attribute. */
+[hidden] { display: none !important; }
+
 img { max-width: 100%; display: block; }
 
 a { color: var(--text-link); text-underline-offset: 3px; }

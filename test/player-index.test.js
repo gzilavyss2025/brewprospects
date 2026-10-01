@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buildPlayerIndex, letterFor, anchorFor, yearsText, LETTERS } from '../src/lib/model/player/a-z-index.js'
+import { buildPlayerIndex, letterFor, anchorFor, yearsText, searchKey, queryWords, matchesWords, LETTERS } from '../src/lib/model/player/a-z-index.js'
 import { paths } from '../src/lib/slug.js'
 
 const p = (id, firstName, lastName, extra = {}) => ({
@@ -117,4 +117,34 @@ test('the index page path is /players/a-z and no player slug can match it', () =
   // Every player slug ends in a numeric id, and "a-z" does not.
   assert.doesNotMatch('a-z', /\d+$/)
   assert.match(paths.player('A Z', 5), /-5$/)
+})
+
+test('searchKey lowercases, folds accents and squeezes spaces', () => {
+  assert.equal(searchKey('Jesús  Made'), 'jesus made')
+  assert.equal(searchKey('  Ørjan Łukasz '), 'orjan lukasz')
+  assert.equal(searchKey(null), '')
+})
+
+test('every index entry carries its search key', () => {
+  const idx = build([p(1, 'Jesús', 'Made')])
+  assert.equal(idx.groups[0].entries[0].search, 'jesus made')
+})
+
+test('matchesWords: case, accents, word order and extra spaces', () => {
+  const key = searchKey('Jesús Made')
+  assert.equal(matchesWords(key, queryWords('JESUS')), true)
+  assert.equal(matchesWords(key, queryWords('jesús')), true)
+  assert.equal(matchesWords(key, queryWords('jesus made')), true)
+  assert.equal(matchesWords(key, queryWords('made jes')), true)
+  assert.equal(matchesWords(key, queryWords('  made    jes  ')), true)
+  assert.equal(matchesWords(key, queryWords('jesus ortiz')), false)
+})
+
+test('matchesWords: an empty query matches everything, a stray word matches nothing', () => {
+  const key = searchKey('Jesús Made')
+  assert.equal(matchesWords(key, queryWords('')), true)
+  assert.equal(matchesWords(key, queryWords('   ')), true)
+  assert.equal(matchesWords(key, queryWords(null)), true)
+  assert.equal(matchesWords(key, queryWords('zzz')), false)
+  assert.equal(matchesWords('', queryWords('a')), false)
 })
