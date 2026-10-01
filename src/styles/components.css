@@ -178,3 +178,33 @@ table.peer-stats tbody th { text-align: left; font-weight: 400; }
 .ops-caption { text-align: left; padding: var(--space-2) var(--space-2-5); font-weight: 700; }
 table.ops-table tbody th { font-weight: 400; }
 table.ops-table th:nth-child(6), table.ops-table td:nth-child(6) { text-align: left; }
+
+/* A to Z player index (/players/a-z). The letter bar sticks to the top and
+   wraps at phone width, so it never becomes a sideways scroll box. The page
+   scrolls to a letter with room left for the bar. */
+html:has(.letter-bar) { scroll-padding-top: var(--space-16); }
+.letter-bar {
+  position: sticky; top: 0; z-index: 2; margin-top: var(--space-4);
+  background: var(--surface-paper); border-bottom: 1px solid var(--line-rule);
+}
+.letter-bar ul { display: flex; flex-wrap: wrap; gap: var(--space-1); list-style: none; margin: 0; padding: var(--space-2) 0; }
+.letter-bar a, .letter-empty {
+  display: block; min-width: var(--space-8); padding: var(--space-1) var(--space-1-5);
+  text-align: center; font-family: var(--font-num); font-weight: 700; font-size: 18px;
+}
+.letter-bar a { border-radius: var(--radius-sm); background: var(--surface-card); }
+.letter-bar a:hover { background: var(--surface-hover); }
+.letter-empty { color: var(--text-ink-soft); font-weight: 400; }
+.letter-group { margin-top: var(--space-6); scroll-margin-top: var(--space-2); }
+.letter-group h2 { margin: 0 0 var(--space-2); font-size: 28px; }
+.index-list { list-style: none; margin: 0; padding: 0; }
+.index-list li {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-0-5) var(--space-3);
+  padding: var(--space-1-5) 0; border-bottom: 1px solid var(--line-rule);
+}
+.index-list li > :last-child { margin-left: auto; }
+.current-mark {
+  padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-pill);
+  background: var(--brand-navy); color: var(--text-on-navy); font-size: 12px; font-weight: 700;
+}
+@media (max-width: 640px) { html:has(.letter-bar) { scroll-padding-top: calc(var(--space-16) + var(--space-10)); } }

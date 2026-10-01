@@ -23,6 +23,7 @@ const ROUTES = [
   '/',
   '/depth-chart',
   '/players',
+  '/players/a-z',
   topProspect,
   pastPlayer,
   '/seasons',
