@@ -12,12 +12,20 @@ const present = new Set(groups.map((g) => g.letter))
     {total} players, by last name. Years are seasons on a Brewers affiliate.
     <a href="/players">See current players by club</a>.
   </p>
+  <div class="index-filter" id="index-filter" hidden>
+    <label for="index-filter-input">Find a player</label>
+    <input id="index-filter-input" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a name" />
+    <p class="muted" id="index-filter-count" aria-live="polite"></p>
+  </div>
   <nav class="letter-bar" aria-label="Jump to a letter">
     <ul>
       {LETTERS.map((l) => (
         <li>
           {present.has(l)
-            ? <a href={`#${anchorFor(l)}`}>{l}</a>
+            ? <>
+                <a href={`#${anchorFor(l)}`} data-letter={anchorFor(l)}>{l}</a>
+                <span class="letter-empty" data-letter-empty={anchorFor(l)} hidden>{l}</span>
+              </>
             : <span class="letter-empty">{l}</span>}
         </li>
       ))}
@@ -28,7 +36,7 @@ const present = new Set(groups.map((g) => g.letter))
       <h2 id={`${g.id}-title`}>{g.letter}</h2>
       <ul class="index-list">
         {g.entries.map((e) => (
-          <li>
+          <li data-search={e.search}>
             <a href={e.path}>{e.name}</a>
             {e.current && <span class="current-mark">Current</span>}
             <span class="muted">{e.pos}</span>
@@ -38,4 +46,42 @@ const present = new Set(groups.map((g) => g.letter))
       </ul>
     </section>
   ))}
+  <p id="index-filter-none" hidden>No players match.</p>
 </Base>
+
+<script>
+  // Progressive filter: the box ships hidden and this script reveals it, so a
+  // reader without JavaScript sees the full index and no dead control.
+  import { matchesQuery } from '../../lib/model/player/a-z-index.js'
+  const box = document.getElementById('index-filter')
+  const input = document.getElementById('index-filter-input')
+  const count = document.getElementById('index-filter-count')
+  const none = document.getElementById('index-filter-none')
+  const rows = [...document.querySelectorAll('li[data-search]')]
+  const groups = [...document.querySelectorAll('.letter-group')]
+  const toggle = (el, shown) => { if (el) el.hidden = !shown }
+
+  function apply() {
+    const query = input.value
+    let shown = 0
+    for (const row of rows) {
+      const match = matchesQuery(row.dataset.search, query)
+      row.hidden = !match
+      if (match) shown += 1
+    }
+    for (const group of groups) {
+      const any = Boolean(group.querySelector('li[data-search]:not([hidden])'))
+      group.hidden = !any
+      toggle(document.querySelector(`[data-letter="${group.id}"]`), any)
+      toggle(document.querySelector(`[data-letter-empty="${group.id}"]`), !any)
+    }
+    count.textContent = `${shown} of ${rows.length} players`
+    none.hidden = shown > 0
+  }
+
+  if (box && input && count && none) {
+    box.hidden = false
+    input.addEventListener('input', apply)
+    apply()
+  }
+</script>

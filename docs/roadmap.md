@@ -48,9 +48,10 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Done
 
-- **A to Z player index** (2026-10-01; Phase 2, item 3, index only).
+- **A to Z player index** (2026-10-01; Phase 2, item 3).
   `/players/a-z` lists every player with a page, grouped by last-name letter,
   with a sticky jump bar (ADR-0009, `src/lib/model/player/a-z-index.js`).
+  A live filter hides rows as the reader types; it needs no data file.
 - **Club records and level pages** (2026-09-29). Each club on
   `/seasons/{year}` shows its record, or "not on record". `/levels/{level-slug}`
   lists the Brewers clubs at each level, season by season (ADR-0009,
@@ -128,8 +129,8 @@ Most of what is left needs the domain (open decision 1).
    `RETIRED` in `scripts/checks/post-paths.mjs`. Start with a guide per
    affiliate.
 2. Club pages at `/clubs/{name-id}`, with the affiliate accent.
-3. Find any player: the A to Z index is done (`/players/a-z`). Only the
-   filter is left.
+3. ~~Find any player~~ Done: the A to Z index and its live filter
+   (`/players/a-z`).
 4. Prospect cards for past and traded players, from the archive, not only
    `org.json`.
 5. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
@@ -165,6 +166,7 @@ Dates are approximate. Check each one every year.
 - Per-player share images, rendered at build time only.
 - A byte budget for data shipped to islands.
 - `people/changes?updatedSince=` to cut nightly fetches.
+- Search from any page (needs a data file of names).
 - Past club logos from a sourced table keyed on (id, season) (ADR-0008).
 
 ## Do not copy from Tally

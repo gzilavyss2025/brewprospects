@@ -195,6 +195,14 @@ html:has(.letter-bar) { scroll-padding-top: var(--space-16); }
 .letter-bar a { border-radius: var(--radius-sm); background: var(--surface-card); }
 .letter-bar a:hover { background: var(--surface-hover); }
 .letter-empty { color: var(--text-ink-soft); font-weight: 400; }
+.index-filter { margin-top: var(--space-4); }
+.index-filter label { display: block; font-weight: 700; margin-bottom: var(--space-1); }
+.index-filter input {
+  width: 100%; max-width: 28rem; padding: var(--space-2) var(--space-3);
+  font: inherit; color: var(--text-ink); background: var(--surface-card);
+  border: 1px solid var(--line-edge); border-radius: var(--radius-sm);
+}
+.index-filter p { margin: var(--space-1) 0 0; }
 .letter-group { margin-top: var(--space-6); scroll-margin-top: var(--space-2); }
 .letter-group h2 { margin: 0 0 var(--space-2); font-size: 28px; }
 .index-list { list-style: none; margin: 0; padding: 0; }

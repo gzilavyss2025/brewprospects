@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buildPlayerIndex, letterFor, anchorFor, yearsText, LETTERS } from '../src/lib/model/player/a-z-index.js'
+import { buildPlayerIndex, letterFor, anchorFor, yearsText, searchKey, matchesQuery, LETTERS } from '../src/lib/model/player/a-z-index.js'
 import { paths } from '../src/lib/slug.js'
 
 const p = (id, firstName, lastName, extra = {}) => ({
@@ -117,4 +117,34 @@ test('the index page path is /players/a-z and no player slug can match it', () =
   // Every player slug ends in a numeric id, and "a-z" does not.
   assert.doesNotMatch('a-z', /\d+$/)
   assert.match(paths.player('A Z', 5), /-5$/)
+})
+
+test('searchKey lowercases, folds accents and squeezes spaces', () => {
+  assert.equal(searchKey('Jesús  Made'), 'jesus made')
+  assert.equal(searchKey('  Ørjan Łukasz '), 'orjan lukasz')
+  assert.equal(searchKey(null), '')
+})
+
+test('every index entry carries its search key', () => {
+  const idx = build([p(1, 'Jesús', 'Made')])
+  assert.equal(idx.groups[0].entries[0].search, 'jesus made')
+})
+
+test('matchesQuery: case, accents, word order and extra spaces', () => {
+  const key = searchKey('Jesús Made')
+  assert.equal(matchesQuery(key, 'JESUS'), true)
+  assert.equal(matchesQuery(key, 'jesús'), true)
+  assert.equal(matchesQuery(key, 'jesus made'), true)
+  assert.equal(matchesQuery(key, 'made jes'), true)
+  assert.equal(matchesQuery(key, '  made    jes  '), true)
+  assert.equal(matchesQuery(key, 'jesus ortiz'), false)
+})
+
+test('matchesQuery: an empty query matches everything, a stray word matches nothing', () => {
+  const key = searchKey('Jesús Made')
+  assert.equal(matchesQuery(key, ''), true)
+  assert.equal(matchesQuery(key, '   '), true)
+  assert.equal(matchesQuery(key, null), true)
+  assert.equal(matchesQuery(key, 'zzz'), false)
+  assert.equal(matchesQuery('', 'a'), false)
 })
