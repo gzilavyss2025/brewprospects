@@ -48,7 +48,7 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 
 ## Done
 
-- **A to Z player index** (2026-10-01; Phase 2, item 3).
+- **A to Z player index** (2026-10-01; was Phase 2, item 3).
   `/players/a-z` lists every player with a page, grouped by last-name letter,
   with a sticky jump bar (ADR-0009, `src/lib/model/player/a-z-index.js`).
   A live filter hides rows as the reader types; it needs no data file.
@@ -129,11 +129,9 @@ Most of what is left needs the domain (open decision 1).
    `RETIRED` in `scripts/checks/post-paths.mjs`. Start with a guide per
    affiliate.
 2. Club pages at `/clubs/{name-id}`, with the affiliate accent.
-3. ~~Find any player~~ Done: the A to Z index and its live filter
-   (`/players/a-z`).
-4. Prospect cards for past and traded players, from the archive, not only
+3. Prospect cards for past and traded players, from the archive, not only
    `org.json`.
-5. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
+4. The Top 100 gaps. `prospect-history.json` ends at 2024; 2025 has no list,
    and 2026 is missing (ADR-0007 source). Add each new year's list as it
    comes out (see the calendar).
 

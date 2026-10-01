@@ -52,7 +52,7 @@ const present = new Set(groups.map((g) => g.letter))
 <script>
   // Progressive filter: the box ships hidden and this script reveals it, so a
   // reader without JavaScript sees the full index and no dead control.
-  import { matchesQuery } from '../../lib/model/player/a-z-index.js'
+  import { queryWords, matchesWords } from '../../lib/model/player/a-z-index.js'
   const box = document.getElementById('index-filter')
   const input = document.getElementById('index-filter-input')
   const count = document.getElementById('index-filter-count')
@@ -62,10 +62,10 @@ const present = new Set(groups.map((g) => g.letter))
   const toggle = (el, shown) => { if (el) el.hidden = !shown }
 
   function apply() {
-    const query = input.value
+    const words = queryWords(input.value)
     let shown = 0
     for (const row of rows) {
-      const match = matchesQuery(row.dataset.search, query)
+      const match = matchesWords(row.dataset.search, words)
       row.hidden = !match
       if (match) shown += 1
     }
@@ -79,9 +79,7 @@ const present = new Set(groups.map((g) => g.letter))
     none.hidden = shown > 0
   }
 
-  if (box && input && count && none) {
-    box.hidden = false
-    input.addEventListener('input', apply)
-    apply()
-  }
+  box.hidden = false
+  input.addEventListener('input', apply)
+  apply()
 </script>

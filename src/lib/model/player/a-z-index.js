@@ -22,12 +22,12 @@ function fold(text) {
 // The text a row is searched by: folded, with one space between words.
 export const searchKey = (name) => fold(name).split(/\s+/).filter(Boolean).join(' ')
 
-// True when every word of the query is in the search key, in any order. An
-// empty query matches every row. The page script imports this function.
-export function matchesQuery(key, query) {
-  const words = searchKey(query).split(' ').filter(Boolean)
-  return words.every((w) => String(key).includes(w))
-}
+// The words of a query: folded, split on spaces. An empty query has none.
+export const queryWords = (query) => searchKey(query).split(' ').filter(Boolean)
+
+// True when every word is in the search key, in any order. No words matches
+// every row. The page script imports this function.
+export const matchesWords = (key, words) => words.every((w) => key.includes(w))
 
 // "Jesús" -> "J". A name that does not start with a letter A to Z -> "#".
 export function letterFor(text) {

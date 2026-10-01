@@ -67,7 +67,7 @@ plus this season for a current player). A player with no `lastName` goes under
 (shown only when JavaScript runs) hides every row that does not match: each
 word of the query must appear in the row's folded name (`data-search`), in any
 order. A letter with no match hides, and the jump bar shows it as plain text.
-`matchesQuery` is in the same file.
+`matchesWords` is in the same file.
 
 **Major-league rows**: a player's MLB year-by-year lines, from
 `src/data/mlb.json` (`gen-mlb`). MLB is not a level: `LEVELS` and the level

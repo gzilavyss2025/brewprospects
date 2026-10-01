@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buildPlayerIndex, letterFor, anchorFor, yearsText, searchKey, matchesQuery, LETTERS } from '../src/lib/model/player/a-z-index.js'
+import { buildPlayerIndex, letterFor, anchorFor, yearsText, searchKey, queryWords, matchesWords, LETTERS } from '../src/lib/model/player/a-z-index.js'
 import { paths } from '../src/lib/slug.js'
 
 const p = (id, firstName, lastName, extra = {}) => ({
@@ -130,21 +130,21 @@ test('every index entry carries its search key', () => {
   assert.equal(idx.groups[0].entries[0].search, 'jesus made')
 })
 
-test('matchesQuery: case, accents, word order and extra spaces', () => {
+test('matchesWords: case, accents, word order and extra spaces', () => {
   const key = searchKey('Jesús Made')
-  assert.equal(matchesQuery(key, 'JESUS'), true)
-  assert.equal(matchesQuery(key, 'jesús'), true)
-  assert.equal(matchesQuery(key, 'jesus made'), true)
-  assert.equal(matchesQuery(key, 'made jes'), true)
-  assert.equal(matchesQuery(key, '  made    jes  '), true)
-  assert.equal(matchesQuery(key, 'jesus ortiz'), false)
+  assert.equal(matchesWords(key, queryWords('JESUS')), true)
+  assert.equal(matchesWords(key, queryWords('jesús')), true)
+  assert.equal(matchesWords(key, queryWords('jesus made')), true)
+  assert.equal(matchesWords(key, queryWords('made jes')), true)
+  assert.equal(matchesWords(key, queryWords('  made    jes  ')), true)
+  assert.equal(matchesWords(key, queryWords('jesus ortiz')), false)
 })
 
-test('matchesQuery: an empty query matches everything, a stray word matches nothing', () => {
+test('matchesWords: an empty query matches everything, a stray word matches nothing', () => {
   const key = searchKey('Jesús Made')
-  assert.equal(matchesQuery(key, ''), true)
-  assert.equal(matchesQuery(key, '   '), true)
-  assert.equal(matchesQuery(key, null), true)
-  assert.equal(matchesQuery(key, 'zzz'), false)
-  assert.equal(matchesQuery('', 'a'), false)
+  assert.equal(matchesWords(key, queryWords('')), true)
+  assert.equal(matchesWords(key, queryWords('   ')), true)
+  assert.equal(matchesWords(key, queryWords(null)), true)
+  assert.equal(matchesWords(key, queryWords('zzz')), false)
+  assert.equal(matchesWords('', queryWords('a')), false)
 })
