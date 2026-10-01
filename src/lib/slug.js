@@ -18,6 +18,7 @@ export function playerSlug(name, id) {
 // Every public path is built here, so the URL contract (ADR-0009) lives in
 // one file. A path never ends in a slash, except the home page.
 export const paths = {
+  playerIndex: () => '/players/a-z',
   player: (name, id) => `/players/${playerSlug(name, id)}`,
   club: (name, id) => `/clubs/${playerSlug(name, id)}`,
   season: (year) => `/seasons/${year}`,

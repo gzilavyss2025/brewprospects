@@ -59,6 +59,12 @@ affiliates, and says so. His major-league rows show every club.
 at `/players/{name-id}`. `playerPages()` in `src/lib/build/archive.js` is
 the one list.
 
+**Player index**: `/players/a-z`, one page that lists every player with a
+page, grouped by the first letter of his last name. Each row shows his
+position and his years in the Brewers system (first to last affiliate season,
+plus this season for a current player). A player with no `lastName` goes under
+"#". The grouping is in `src/lib/model/player/a-z-index.js`.
+
 **Major-league rows**: a player's MLB year-by-year lines, from
 `src/data/mlb.json` (`gen-mlb`). MLB is not a level: `LEVELS` and the level
 path never hold it (ADR-0014).

@@ -17,6 +17,7 @@ them; no page writes a path by hand.
 | Path | Example |
 | --- | --- |
 | `/players/{name-id}` | `/players/jesus-made-815908` |
+| `/players/a-z` | every player with a page, A to Z by last name. A static route, so it wins over `[slug]`; no player slug can equal `a-z`, because each ends in a numeric id |
 | `/clubs/{name-id}` | `/clubs/wilson-warbirds-249` (reserved, no page yet) |
 | `/seasons/{year}` | `/seasons/2019` |
 | `/levels/{level-slug}` | `/levels/rookie` (slugs: `aaa`, `double-a`, `high-a`, `single-a`, `short-season-a`, `rookie-advanced`, `rookie`; every level has a page, even one with no Brewers club) |

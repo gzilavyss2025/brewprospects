@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro'
+import { playerIndex } from '../../lib/build/player-index.js'
+import { LETTERS, anchorFor } from '../../lib/model/player/a-z-index.js'
+
+const { total, groups } = playerIndex()
+const present = new Set(groups.map((g) => g.letter))
+---
+<Base title="Players A to Z" description={`All ${total} players who have played in the Brewers farm system, A to Z by last name.`}>
+  <h1>Players A to Z</h1>
+  <p class="muted">
+    {total} players, by last name. Years are seasons on a Brewers affiliate.
+    <a href="/players">See current players by club</a>.
+  </p>
+  <nav class="letter-bar" aria-label="Jump to a letter">
+    <ul>
+      {LETTERS.map((l) => (
+        <li>
+          {present.has(l)
+            ? <a href={`#${anchorFor(l)}`}>{l}</a>
+            : <span class="letter-empty">{l}</span>}
+        </li>
+      ))}
+    </ul>
+  </nav>
+  {groups.map((g) => (
+    <section class="letter-group" id={g.id} aria-labelledby={`${g.id}-title`}>
+      <h2 id={`${g.id}-title`}>{g.letter}</h2>
+      <ul class="index-list">
+        {g.entries.map((e) => (
+          <li>
+            <a href={e.path}>{e.name}</a>
+            {e.current && <span class="current-mark">Current</span>}
+            <span class="muted">{e.pos}</span>
+            <span class="muted">{e.years}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
