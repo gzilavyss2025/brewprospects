@@ -20,15 +20,15 @@ concurrency:
   cancel-in-progress: false
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # main only changes through a PR (the repo's ruleset). This deploy key is
       # the one actor the ruleset lets push to main, so the job checks out and
       # pushes with it. Its private half is the NIGHTLY_DEPLOY_KEY secret.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ssh-key: ${{ secrets.NIGHTLY_DEPLOY_KEY }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
