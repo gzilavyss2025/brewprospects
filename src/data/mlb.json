@@ -1,4 +1,4 @@
-{"generatedAt":"2026-09-30T12:48:21.179Z",
+{"generatedAt":"2026-10-03T14:53:47.595Z",
 "columns":{"hitting":["season","club","age","teams","g","pa","ab","h","d","t","hr","r","rbi","bb","so","sb","cs","hbp","sf"],"pitching":["season","club","age","teams","g","gs","w","l","sv","outs","h","bb","so","hr","er","bf"]},
 "clubColumns":["sportId","teamId","team","league"],
 "clubs":[
