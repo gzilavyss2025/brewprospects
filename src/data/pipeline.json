@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T15:37:25.243Z",
+  "generatedAt": "2026-11-03T18:00:43.015Z",
   "source": "https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1",
   "prospects": [
     {
@@ -100,7 +100,7 @@
       "position": "SS",
       "levelRaw": "AAA",
       "statLine": ".233, 9 HR, 41 RBI",
-      "age": 22
+      "age": 23
     },
     {
       "orgRank": 11,
