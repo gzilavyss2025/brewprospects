@@ -16,7 +16,9 @@ export default defineConfig({
   output: 'static',
   site: process.env.SITE_URL || undefined,
   trailingSlash: 'never',
-  adapter: vercel(),
+  // Vercel Web Analytics: page views only, cookieless. The adapter injects
+  // the /_vercel/insights script, so no extra package (roadmap decision 3).
+  adapter: vercel({ webAnalytics: { enabled: true } }),
   // The sitemap needs `site`, so with SITE_URL unset it writes nothing
   // (roadmap Phase 1, item 1). The editor and the 404 page are not listed.
   integrations: [

@@ -44,7 +44,9 @@ Settled 2026-09-25 unless dated. Write an ADR when one of these shapes code.
 2. **Risk appetite for MLB assets.** Hotlinked logos and headshots, and the
    Pipeline scrape (ADR-0004). The placeholder URL is public now, so this
    matters now.
-3. **Analytics: none, or Vercel Analytics?** If yes, see Phase 1 item 3.
+3. **Analytics.** Decided (2026-10-29): Vercel Web Analytics, page views
+   only, through the adapter's `webAnalytics` option. Custom events wait for
+   Phase 1 item 3.
 
 ## Done
 
