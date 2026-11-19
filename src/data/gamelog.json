@@ -1,4 +1,4 @@
-{"generatedAt":"2026-11-18T19:02:15.169Z",
+{"generatedAt":"2026-11-19T19:09:22.924Z",
 "season":2026,
 "columns":{"hitting":["gamePk","date","gameNumber","club","oppId","isHome","isWin","pa","ab","h","d","t","hr","r","rbi","bb","so","hbp","sf"],"pitching":["gamePk","date","gameNumber","club","oppId","isHome","isWin","gs","outs","h","r","er","bb","so","bf"]},
 "clubColumns":["sportId","teamId","team"],

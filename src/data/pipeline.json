@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T19:01:50.971Z",
+  "generatedAt": "2026-11-19T19:09:05.119Z",
   "source": "https://www.mlb.com/prospects/stats/top-prospects?type=all&minPA=1",
   "prospects": [
     {
@@ -70,7 +70,7 @@
       "position": "RHP",
       "levelRaw": "ALL (2)",
       "statLine": "119.2 IP, 5.34 ERA, 139 SO",
-      "age": 24
+      "age": 25
     },
     {
       "orgRank": 8,
@@ -127,7 +127,7 @@
       "topRank": null,
       "playerId": 702726,
       "name": "Luke Adams",
-      "position": "1B",
+      "position": "3B",
       "levelRaw": "ALL (2)",
       "statLine": ".267, 16 HR, 43 RBI",
       "age": 22
